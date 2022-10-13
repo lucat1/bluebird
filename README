@@ -1,0 +1,9 @@
+embedded db: github.com/ostafen/clover
+logger: github.com/rs/zerolog
+rate limiter: golang.org/x/time
+http router: github.com/kataras/muxie o github.com/gin-gonic/gin **
+oauth2: golang.org/x/oauth2
+tempalte: https://awesome-go.com/template-engines/ **
+
+** depends on how we decide to write our frontend and how much will be exposed
+through an api.
