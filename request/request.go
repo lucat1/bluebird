@@ -17,13 +17,20 @@ type tweet struct {
 	id   string
 	text string
 }
-type dataTweetFromRecentByKeywork struct {
+type tweetRawFromRespone struct {
 	EditHistoryTweetIds []string `json:"edit_history_tweet_ids"`
 	Id                  string
 	Text                string
 }
-type responseFromRecentByKeyword struct {
-	Data []dataTweetFromRecentByKeywork
+type metaTweet struct {
+	NextToken   string `json:"next_token"`
+	ResultCount int    `json:"result_count"`
+	NewestId    string `json:"newest_id"`
+	OldestId    string `json:"oldest_id"`
+}
+type responseFromAPI struct {
+	Data []tweetRawFromRespone
+	Meta metaTweet
 }
 
 func (t *transportWithHeader) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -39,8 +46,8 @@ func Init() {
 	client = &http.Client{Transport: &transportWithHeader{}}
 }
 
-func recentByKeyword(keyword string) []tweet {
-	resp, err := client.Get("https://api.twitter.com/2/tweets/search/recent?query=" + url.QueryEscape(keyword))
+func requestToAPI(url string) []tweet {
+	resp, err := client.Get(url)
 	if err != nil {
 		log.Panic("Errore richiesta twitter")
 	}
@@ -50,7 +57,7 @@ func recentByKeyword(keyword string) []tweet {
 		log.Panic("Errore richiesta twitter")
 	}
 
-	var jsonMap responseFromRecentByKeyword
+	var jsonMap responseFromAPI
 	err = json.Unmarshal([]byte(string(body)), &jsonMap)
 	if err != nil {
 		log.Panic("Errore richiesta twitter")
@@ -59,10 +66,17 @@ func recentByKeyword(keyword string) []tweet {
 	for i := 0; i < len(jsonMap.Data); i++ {
 		tweets = append(tweets, tweet{id: jsonMap.Data[i].Id, text: jsonMap.Data[i].Text})
 	}
-	fmt.Println(tweets[0].text)
 	return tweets
+}
+
+func recentByKeyword(keyword string) []tweet {
+	return requestToAPI("https://api.twitter.com/2/tweets/search/recent?query=" + url.QueryEscape(keyword))
+}
+func tweetByUserId(userId string) []tweet {
+	return requestToAPI("https://api.twitter.com/2/users/" + url.QueryEscape(userId) + "/tweets")
 }
 
 func Test() {
 	recentByKeyword("#eredita")
+	tweetByUserId("2244994945")
 }
