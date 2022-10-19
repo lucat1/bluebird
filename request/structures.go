@@ -94,7 +94,7 @@ func (res *responseFromTweetAPI) Tweets() ([]Tweet, error) {
 	tweets := []Tweet{}
 	users := res.Users()
 	for _, t := range res.Data {
-		if _, has := users[t.AuthorID]; has {
+		if _, has := users[t.AuthorID]; !has {
 			return tweets, fmt.Errorf("User with id %s is not included in Twitter's response", t.AuthorID)
 		}
 
