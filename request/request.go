@@ -2,7 +2,6 @@ package request
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
 )
@@ -14,7 +13,6 @@ func requestRaw(url *url.URL) (raw tweetResponse, err error) {
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
-	fmt.Println(string(body))
 	if err != nil {
 		return
 	}
@@ -33,7 +31,8 @@ func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {
 		if err != nil {
 			return
 		}
-		tweets = append(tweets, twts...)
+		needed := n - uint(len(tweets))
+		tweets = append(tweets, twts[:needed]...)
 		if raw.Meta.ResultCount == 0 || raw.Meta.NextToken == "" {
 			break
 		}

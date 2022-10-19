@@ -1,27 +1,17 @@
 package request
 
 import (
-	"os"
 	"testing"
 
-	"git.hjkl.gq/bluebird/bluebird/test"
 	"github.com/stretchr/testify/assert"
 )
 
-var response tweetResponse
-
-func TestMain(m *testing.M) {
-	test.ReadJSON("../mock/by_keyword.json", &response)
-	code := m.Run()
-	os.Exit(code)
-}
-
 func TestUsers(t *testing.T) {
-	users := response.Users()
+	users := byKeywordResponse.Users()
 	if len(users) <= 0 {
 		t.Errorf("Expected a non-empty users list")
 	}
-	for _, u := range response.Includes.Users {
+	for _, u := range byKeywordResponse.Includes.Users {
 		user, has := users[u.ID]
 		if !has {
 			t.Errorf("Expected to find decoded user with id %s", u.ID)
@@ -34,14 +24,14 @@ func TestUsers(t *testing.T) {
 }
 
 func TestTweets(t *testing.T) {
-	tweets, err := response.Tweets()
+	tweets, err := byKeywordResponse.Tweets()
 	if err != nil {
 		t.Errorf("Did not expect an error during conversion: %e", err)
 	}
 	if len(tweets) <= 0 {
 		t.Errorf("Expected a non-empty users list")
 	}
-	for i, tw := range response.Data {
+	for i, tw := range byKeywordResponse.Data {
 		tweet := tweets[i]
 		assert.Equal(t, tweet.ID, tw.ID, "Expected IDs to match")
 		assert.Equal(t, tweet.Text, tw.Text, "Expected Texts to match")
