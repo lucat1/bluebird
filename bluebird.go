@@ -10,6 +10,10 @@ const ADDR = ":8080"
 
 func main() {
 	bearer := os.Getenv("TWITTER_BEARER")
-	request.SetClient(request.NewClient(bearer))
+	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
+	if err != nil {
+		panic(err)
+	}
+	request.SetClient(client)
 	fmt.Println(request.TweetsByKeyword("#eredita", 10))
 }

@@ -1,7 +1,7 @@
 package request
 
 func TweetsByKeyword(keyword string, n uint) (tweets []Tweet, err error) {
-	url, err := buildURL(NewRequest("https://api.twitter.com/2/tweets/search/recent").
+	url, err := buildURL(NewRequest("tweets/search/recent").
 		WithQuery(keyword).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo).
 		AddUserFields(

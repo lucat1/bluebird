@@ -2,17 +2,19 @@ package request
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/url"
 )
 
-func requestRaw(url *url.URL) (raw responseFromTweetAPI, err error) {
-	res, err := client.Get(url.String())
+func requestRaw(url *url.URL) (raw tweetResponse, err error) {
+	res, err := client.HTTP.Get(client.URL.ResolveReference(url).String())
 	if err != nil {
 		return
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
+	fmt.Println(string(body))
 	if err != nil {
 		return
 	}
@@ -20,7 +22,7 @@ func requestRaw(url *url.URL) (raw responseFromTweetAPI, err error) {
 }
 
 func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {
-	var raw responseFromTweetAPI
+	var raw tweetResponse
 	var twts []Tweet
 
 	for uint(len(tweets)) < n {

@@ -23,7 +23,7 @@ type userRawMetrics struct {
 	ListedCount    int `json:"listed_count"`
 }
 
-type userRawEntitiesURL struct {
+type rawUserEntitiesURL struct {
 	Start       int
 	End         int
 	URL         string `json:"url"`
@@ -31,15 +31,7 @@ type userRawEntitiesURL struct {
 	DisplayURL  string `json:"display_url"`
 }
 
-type userRawEntitiesURLs struct {
-	URLs userRawEntitiesURL `json:"urls"`
-}
-
-type userRawEntities struct {
-	URL userRawEntitiesURLs `json:"url"`
-}
-
-type userRawResponse struct {
+type rawUser struct {
 	ID              string `json:"id"`
 	Name            string
 	Username        string
@@ -52,11 +44,11 @@ type userRawResponse struct {
 	PublicMetrics   userRawMetrics `json:"public_metrics"`
 }
 
-type responseFromUserAPI struct {
-	Data userRawResponse
+type userResponse struct {
+	Data rawUser
 }
 
-type tweetRawResponse struct {
+type rawTweet struct {
 	EditHistoryTweetIds []string `json:"edit_history_tweet_ids"`
 	ID                  string   `json:"id"`
 	Text                string
@@ -72,16 +64,16 @@ type metaTweet struct {
 }
 
 type includesTweet struct {
-	Users []userRawResponse
+	Users []rawUser
 }
 
-type responseFromTweetAPI struct {
-	Data     []tweetRawResponse
+type tweetResponse struct {
+	Data     []rawTweet
 	Meta     metaTweet
 	Includes includesTweet
 }
 
-func (res *responseFromTweetAPI) Users() map[string]User {
+func (res *tweetResponse) Users() map[string]User {
 	users := map[string]User{}
 	for _, u := range res.Includes.Users {
 		user := User{ID: u.ID, Name: u.Name, Username: u.Username, ProfileImage: u.ProfileImageURL}
@@ -90,7 +82,7 @@ func (res *responseFromTweetAPI) Users() map[string]User {
 	return users
 }
 
-func (res *responseFromTweetAPI) Tweets() ([]Tweet, error) {
+func (res *tweetResponse) Tweets() ([]Tweet, error) {
 	tweets := []Tweet{}
 	users := res.Users()
 	for _, t := range res.Data {
