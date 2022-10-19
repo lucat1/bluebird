@@ -5,13 +5,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"net/url"
-	"os"
 )
-
-type transportWithHeader struct {
-}
 
 type tweet struct {
 	ID       string
@@ -50,19 +45,6 @@ type metaTweet struct {
 type responseFromTweetAPI struct {
 	Data []tweetRawResponse
 	Meta metaTweet
-}
-
-func (t *transportWithHeader) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Add("Authorization", "Bearer "+bearer)
-	return http.DefaultTransport.RoundTrip(req)
-}
-
-var bearer string
-var client *http.Client
-
-func Init() {
-	bearer = os.Getenv("TWITTER_BEARER")
-	client = &http.Client{Transport: &transportWithHeader{}}
 }
 
 func requestToTweetAPI(link string, count int) []tweet {
