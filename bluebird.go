@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"git.hjkl.gq/bluebird/bluebird/request"
 	"os"
+
+	"git.hjkl.gq/bluebird/bluebird/request"
+	"git.hjkl.gq/bluebird/bluebird/server"
 )
 
 const ADDR = ":8080"
@@ -15,5 +16,5 @@ func main() {
 		panic(err)
 	}
 	request.SetClient(client)
-	fmt.Println(request.TweetsByKeyword("#eredita", 10))
+	server.RunServer(ADDR)
 }
