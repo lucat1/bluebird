@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -41,10 +42,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, result)
 }
 
-func RunServer(listener string) {
+func RunServer(host string) {
 	mux := muxie.NewMux()
 
 	mux.HandleFunc("/search/hashtag/:hashtag", indexHandler)
 
-	http.ListenAndServe(listener, mux)
+	log.Printf("Listening on %s\n", host)
+	http.ListenAndServe(host, mux)
 }
