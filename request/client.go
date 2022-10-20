@@ -2,9 +2,15 @@ package request
 
 import (
 	"net/http"
+	"net/url"
 )
 
-var client *http.Client
+type RequestClient struct {
+	URL  *url.URL
+	HTTP *http.Client
+}
+
+var client *RequestClient
 
 type transportWithHeader struct {
 	bearer string
@@ -16,16 +22,24 @@ func (t *transportWithHeader) RoundTrip(req *http.Request) (*http.Response, erro
 }
 
 // NewClient instantiates a new http.Client for use with a bearer token authentication
-func NewClient(token string) *http.Client {
-	return &http.Client{Transport: &transportWithHeader{bearer: token}}
+func NewClient(URL string, token string) (client *RequestClient, err error) {
+	url, err := url.Parse(URL)
+	if err != nil {
+		return
+	}
+	client = &RequestClient{
+		URL:  url,
+		HTTP: &http.Client{Transport: &transportWithHeader{bearer: token}},
+	}
+	return
 }
 
 // SetClient sets the http.Client to use for HTTP requests
-func SetClient(c *http.Client) {
+func SetClient(c *RequestClient) {
 	client = c
 }
 
 // Client returns the current http.Client being used to send requests
-func Client() *http.Client {
+func Client() *RequestClient {
 	return client
 }

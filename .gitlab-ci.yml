@@ -18,4 +18,4 @@ golang-check:
   image: golang:latest
   script:
     - go vet $(go list ./...)
-    - go test -race $(go list ./...)
+    - go test -v -race $(go list ./...)

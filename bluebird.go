@@ -1,14 +1,24 @@
 package main
 
 import (
-	"git.hjkl.gq/bluebird/bluebird/request"
+	"log"
 	"os"
+
+	"git.hjkl.gq/bluebird/bluebird/request"
+	"git.hjkl.gq/bluebird/bluebird/server"
 )
 
 const ADDR = ":8080"
 
 func main() {
 	bearer := os.Getenv("TWITTER_BEARER")
-	request.SetClient(request.NewClient(bearer))
-	request.Test()
+	if bearer == "" {
+		log.Fatalln("Missing environment variable TWITTER_BEARER")
+	}
+	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
+	if err != nil {
+		log.Fatalln("Could not create http.Client")
+	}
+	request.SetClient(client)
+	server.RunServer(ADDR)
 }
