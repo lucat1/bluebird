@@ -12,7 +12,6 @@
         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">bluebird</span>
     </a>
     <div class="flex md:order-2">
-        <button type="button" class="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">Get started</button>
         <button data-collapse-toggle="navbar-cta" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-cta" aria-expanded="false">
           <span class="sr-only">Open main menu</span>
           <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
@@ -37,7 +36,7 @@
     </div>
   </nav>
 
-      <form class="m-4 grid grid-cols-6 grap-4 ">   
+      <form class="m-4 grid grid-cols-6 grap-4">
         <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your Email</label>
         <div class="relative col-start-3 col-span-2">
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -49,12 +48,13 @@
       </form>
 
       <div class="grid grid-cols-6 grap-4 text-left">
-        <div class="bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-gray-700 shadow-grey-300 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
-        i think miku should be a character in more anime but not like actually be important to the plot just like shit is going on but also Hatsune Miku Is Here
-        </div>
+        
+    {{#each Tweets}}
         <div class="bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-grey-300 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
-          i think miku should be a character in more anime but not like actually be important to the plot just like shit is going on but also Hatsune Miku Is Here
-          </div>
+          {{this.Text}}
+          {{this.User.Name}} - {{this.User.Username}}
+        </div>
+    {{/each}}
       </div>
 
     </body>
