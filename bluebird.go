@@ -17,7 +17,7 @@ func main() {
 	}
 	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
 	if err != nil {
-		panic(err)
+		log.Fatalln("Could not create http.Client")
 	}
 	request.SetClient(client)
 	server.RunServer(ADDR)
