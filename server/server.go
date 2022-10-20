@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 
 	"git.hjkl.gq/bluebird/bluebird/request"
 	"github.com/aymerick/raymond"
@@ -13,10 +12,11 @@ import (
 )
 
 type indexPayload struct {
+	Query  string
 	Tweets []request.Tweet
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func keywordHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html;charset=utf8")
 
 	tplByte, err := ioutil.ReadFile("views/index.tpl")
@@ -25,16 +25,16 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	tpl := string(tplByte)
 
-	escaped, err := url.QueryUnescape(muxie.GetParam(w, "hashtag"))
-	if err != nil {
-		panic(err)
-	}
-	tweets, err := request.TweetsByKeyword("#"+escaped, 10)
-	if err != nil {
-		panic(err)
+	query := r.URL.Query().Get("query")
+	tweets := []request.Tweet{}
+	if query != "" {
+		tweets, err = request.TweetsByKeyword(query, 10)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	result, err := raymond.Render(tpl, indexPayload{Tweets: tweets})
+	result, err := raymond.Render(tpl, indexPayload{Query: query, Tweets: tweets})
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +45,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func RunServer(host string) {
 	mux := muxie.NewMux()
 
-	mux.HandleFunc("/search/hashtag/:hashtag", indexHandler)
+	mux.HandleFunc("/search/keyword", keywordHandler)
 
 	log.Printf("Listening on %s\n", host)
 	http.ListenAndServe(host, mux)
