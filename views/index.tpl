@@ -50,8 +50,22 @@
         
     {{#each Tweets}}
         <div class="bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-grey-300 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
+        
+        <div class="flex items-center justify-between mb-4">
+            <a class="flex space-x-4" href="https://twitter.com/{{this.User.Username}}" target="_blank">
+              <img class="w-10 h-10 rounded-full" src="{{this.User.ProfileImage}}" alt="">
+              <div class="font-medium dark:text-white">
+                  <div>{{this.User.Name}}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">@{{this.User.Username}}</div>
+              </div>
+            </a>
+            <a class="flex space-x-4" href="https://twitter.com/{{this.User.Username}}/status/{{this.ID}}" target="_blank">
+              <button class="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">Go to tweet</button>
+            </a>
+        </div>
+
           {{this.Text}}
-          {{this.User.Name}} - {{this.User.Username}}
+
         </div>
     {{/each}}
       </div>
