@@ -49,7 +49,7 @@
       <div class="grid grid-cols-6 grap-4 text-left">
         
     {{#each Tweets}}
-        <div class="bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-grey-300 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
+        <div class="dark:bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 shadow-sky-900 shadow-grey-300 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
         
         <div class="flex items-center justify-between mb-4">
             <a class="flex space-x-4" href="https://twitter.com/{{this.User.Username}}" target="_blank">
