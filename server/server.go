@@ -21,7 +21,10 @@ func keywordHandler(w http.ResponseWriter, r *http.Request) {
 
 	tplByte, err := ioutil.ReadFile("views/index.tpl")
 	if err != nil {
-		panic(err)
+		sendError(w, 500, Error{
+			message: "Could not read template",
+			error:   err,
+		})
 	}
 	tpl := string(tplByte)
 
@@ -30,13 +33,19 @@ func keywordHandler(w http.ResponseWriter, r *http.Request) {
 	if query != "" {
 		tweets, err = request.TweetsByKeyword(query, 10)
 		if err != nil {
-			panic(err)
+			sendError(w, 500, Error{
+				message: "Could not fetch tweets by keyword",
+				error:   err,
+			})
 		}
 	}
 
 	result, err := raymond.Render(tpl, indexPayload{Query: query, Tweets: tweets})
 	if err != nil {
-		panic(err)
+		sendError(w, 500, Error{
+			message: "Could not render tweets",
+			error:   err,
+		})
 	}
 
 	fmt.Fprintf(w, result)
