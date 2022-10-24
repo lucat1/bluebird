@@ -2,9 +2,10 @@ package request
 
 import (
 	"encoding/json"
-	"golang.org/x/exp/constraints"
 	"io"
 	"net/url"
+
+	"golang.org/x/exp/constraints"
 )
 
 func min[T constraints.Ordered](a, b T) T {
