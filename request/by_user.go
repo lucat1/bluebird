@@ -2,7 +2,8 @@ package request
 
 func TweetsByUser(username string, n uint) (tweets []Tweet, err error) {
 	user, err := requestUserByUsername(username)
-	if err != nil {
+	// TODO: not really a solution just a temp fix
+	if err != nil && username != "" {
 		return
 	}
 	url, err := buildURL(NewRequest("users/"+user.ID+"/tweets").
