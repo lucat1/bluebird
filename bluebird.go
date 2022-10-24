@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"git.hjkl.gq/bluebird/bluebird/cache"
 	"git.hjkl.gq/bluebird/bluebird/request"
 	"git.hjkl.gq/bluebird/bluebird/server"
 )
@@ -20,5 +21,10 @@ func main() {
 		log.Fatalln("Could not create http.Client")
 	}
 	request.SetClient(client)
+
+	cache.InitCache()
+
 	server.RunServer(ADDR)
+
+	defer cache.DB.Close()
 }

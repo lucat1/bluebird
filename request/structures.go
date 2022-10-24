@@ -3,22 +3,23 @@ package request
 import "fmt"
 
 type Tweet struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	User User   `json:"user"`
-	Geo  *Geo   `json:"geo"`
+	ID        string `json:"id" clover:"ID"`
+	Text      string `json:"text" clover:"Text"`
+	User      User   `json:"user" clover:"User"`
+	Geo       *Geo   `json:"geo" clover:"Geo"`
+	CreatedAt string `json:"created_at" clover:"CreatedAt"`
 }
 
 type Geo struct {
-	Coordinates []float64 `json:"coordinates"`
-	PlaceID     string    `json:"place_id"`
+	Coordinates []float64 `json:"coordinates" clover:"Coordinates"`
+	PlaceID     string    `json:"place_id" clover:"PlaceID"`
 }
 
 type User struct {
-	ID           string `json:"id"`
-	Name         string `json:"name"`
-	Username     string `json:"username"`
-	ProfileImage string `json:"profile_image"`
+	ID           string `json:"id" clover:"ID"`
+	Name         string `json:"name" clover:"Name"`
+	Username     string `json:"username" clover:"Username"`
+	ProfileImage string `json:"profile_image" clover:"ProfileImage"`
 }
 
 type userRawMetrics struct {
@@ -58,6 +59,7 @@ type rawTweet struct {
 	ID                  string   `json:"id"`
 	Text                string
 	AuthorID            string `json:"author_id"`
+	CreatedAt           string `json:"created_at"`
 	Geo                 *rawGeo
 }
 
@@ -115,10 +117,11 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		}
 
 		tweets = append(tweets, Tweet{
-			ID:   t.ID,
-			Text: t.Text,
-			User: users[t.AuthorID],
-			Geo:  geo,
+			ID:        t.ID,
+			Text:      t.Text,
+			User:      users[t.AuthorID],
+			CreatedAt: t.CreatedAt,
+			Geo:       geo,
 		})
 	}
 	return tweets, nil

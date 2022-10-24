@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"git.hjkl.gq/bluebird/bluebird/cache"
 	"git.hjkl.gq/bluebird/bluebird/request"
 	"github.com/kataras/muxie"
 )
@@ -42,6 +43,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tweets, err = handler(query, 10)
+		cache.AddTweets(tweets)
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets",
