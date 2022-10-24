@@ -3,22 +3,22 @@ package request
 import "fmt"
 
 type Tweet struct {
-	ID   string
-	Text string
-	User User
-	Geo  *Geo
+	ID   string `json:"id"`
+	Text string `json:"text"`
+	User User   `json:"user"`
+	Geo  *Geo   `json:"geo"`
 }
 
 type Geo struct {
-	Coordinates []float64
-	PlaceID     string `json:"place_id"`
+	Coordinates []float64 `json:"coordinates"`
+	PlaceID     string    `json:"place_id"`
 }
 
 type User struct {
-	ID           string
-	Name         string
-	Username     string
-	ProfileImage string
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	Username     string `json:"username"`
+	ProfileImage string `json:"profile_image"`
 }
 
 type userRawMetrics struct {
