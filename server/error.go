@@ -17,7 +17,6 @@ type rawError struct {
 }
 
 func sendError(w http.ResponseWriter, code int, error APIError) {
-	fmt.Println(error.Error)
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
 	buf, err := json.Marshal(rawError{
