@@ -2,12 +2,10 @@ package server
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
 	"git.hjkl.gq/bluebird/bluebird/request"
-	"github.com/aymerick/raymond"
 	"github.com/kataras/muxie"
 )
 
