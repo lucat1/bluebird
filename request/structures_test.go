@@ -36,6 +36,11 @@ func TestTweets(t *testing.T) {
 		assert.Equal(t, tweet.ID, tw.ID, "Expected IDs to match")
 		assert.Equal(t, tweet.Text, tw.Text, "Expected Texts to match")
 		assert.Equal(t, tweet.User.ID, tw.AuthorID, "Expected User.ID to match")
-		assert.Equal(t, tweet.Geo, tw.Geo, "Expected Geos to match")
+		if tweet.Geo != nil {
+			assert.Equal(t, tweet.Geo.PlaceID, tw.Geo.PlaceID, "Expected Geo.PlaceID to match")
+			assert.Equal(t, tweet.Geo.Coordinates, tw.Geo.Coordinates.Coordinates, "Expected Geo.Coordinates to match")
+		} else {
+			assert.Nil(t, tw.Geo, "Expected original Tweet's Geo to be null")
+		}
 	}
 }

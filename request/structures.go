@@ -6,7 +6,12 @@ type Tweet struct {
 	ID   string
 	Text string
 	User User
-	Geo  string
+	Geo  *Geo
+}
+
+type Geo struct {
+	Coordinates []float64
+	PlaceID     string `json:"place_id"`
 }
 
 type User struct {
@@ -49,11 +54,21 @@ type userResponse struct {
 }
 
 type rawTweet struct {
-	EditHistoryTweetIds []string `json:"edit_history_tweet_ids"`
+	EditHistoryTweetIDs []string `json:"edit_history_tweet_ids"`
 	ID                  string   `json:"id"`
 	Text                string
 	AuthorID            string `json:"author_id"`
-	Geo                 string
+	Geo                 *rawGeo
+}
+
+type rawGeo struct {
+	Coordinates rawCoordinates
+	PlaceID     string `json:"place_id"`
+}
+
+type rawCoordinates struct {
+	Type        string
+	Coordinates []float64
 }
 
 type metaTweet struct {
@@ -90,11 +105,20 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 			return tweets, fmt.Errorf("User with id %s is not included in Twitter's response", t.AuthorID)
 		}
 
+		var geo *Geo = nil
+		if t.Geo != nil && t.Geo.Coordinates.Type == "Point" {
+			geo = &Geo{
+				Coordinates: t.Geo.Coordinates.Coordinates,
+				PlaceID:     t.Geo.PlaceID,
+			}
+
+		}
+
 		tweets = append(tweets, Tweet{
 			ID:   t.ID,
 			Text: t.Text,
 			User: users[t.AuthorID],
-			Geo:  t.Geo,
+			Geo:  geo,
 		})
 	}
 	return tweets, nil
