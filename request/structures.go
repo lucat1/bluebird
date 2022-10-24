@@ -123,3 +123,7 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 	}
 	return tweets, nil
 }
+
+func (res *userResponse) User() User {
+	return User{ID: res.Data.ID, Name: res.Data.Name, Username: res.Data.Username, ProfileImage: res.Data.ProfileImageURL}
+}

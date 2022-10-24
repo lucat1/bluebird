@@ -35,8 +35,13 @@
     </div>
     </div>
   </nav>
-      <form method="GET" url="/search/keyword" class="m-4 grid grid-cols-6 grap-4">
-        <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your Email</label>
+      <form method="GET" url="/search" class="m-4 grid grid-cols-6 grap-4">
+        <label for="type" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search Type</label>
+        <select id="type" name="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option value="keyword">Keyword</option>
+          <option value="user">User</option>
+        </select>
+        <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your search</label>
         <div class="relative col-start-3 col-span-2">
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                 <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>

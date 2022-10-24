@@ -6,15 +6,24 @@ import (
 	"net/http"
 )
 
-type Error struct {
-	message string
-	error   error
+type APIError struct {
+	Message string
+	Error   error
 }
 
-func sendError(w http.ResponseWriter, code int, error Error) {
+type rawError struct {
+	Message string `json:"message"`
+	Error   string `json:"error"`
+}
+
+func sendError(w http.ResponseWriter, code int, error APIError) {
+	fmt.Println(error.Error)
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
-	buf, err := json.Marshal(error)
+	buf, err := json.Marshal(rawError{
+		Message: error.Message,
+		Error:   error.Error.Error(),
+	})
 	if err != nil {
 		panic(fmt.Sprintf("Could not send error: %e", err))
 	}
