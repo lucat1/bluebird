@@ -16,45 +16,63 @@ type indexPayload struct {
 	Tweets []request.Tweet
 }
 
-func keywordHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html;charset=utf8")
+var searchHandlerMap = map[string]func(string, uint) (tweets []request.Tweet, err error){
+	"keyword": request.TweetsByKeyword,
+	"user":    request.TweetsByUser,
+}
+
+func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	tplByte, err := ioutil.ReadFile("views/index.tpl")
 	if err != nil {
-		sendError(w, 500, Error{
-			message: "Could not read template",
-			error:   err,
+		sendError(w, 500, APIError{
+			Message: "Could not read template",
+			Error:   err,
 		})
+		return
 	}
 	tpl := string(tplByte)
 
 	query := r.URL.Query().Get("query")
 	tweets := []request.Tweet{}
 	if query != "" {
-		tweets, err = request.TweetsByKeyword(query, 10)
-		if err != nil {
-			sendError(w, 500, Error{
-				message: "Could not fetch tweets by keyword",
-				error:   err,
+		search_type := r.URL.Query().Get("type")
+		handler, has := searchHandlerMap[search_type]
+		if !has {
+			sendError(w, 500, APIError{
+				Message: "Unknown search type",
+				Error:   fmt.Errorf("Search error"),
 			})
+			return
+		}
+
+		tweets, err = handler(query, 10)
+		if err != nil {
+			sendError(w, 500, APIError{
+				Message: "Could not fetch tweets",
+				Error:   err,
+			})
+			return
 		}
 	}
 
 	result, err := raymond.Render(tpl, indexPayload{Query: query, Tweets: tweets})
 	if err != nil {
-		sendError(w, 500, Error{
-			message: "Could not render tweets",
-			error:   err,
+		sendError(w, 500, APIError{
+			Message: "Could not render tweets",
+			Error:   err,
 		})
+		return
 	}
 
+	w.Header().Set("Content-Type", "text/html;charset=utf8")
 	fmt.Fprintf(w, result)
 }
 
 func RunServer(host string) {
 	mux := muxie.NewMux()
 
-	mux.HandleFunc("/search/keyword", keywordHandler)
+	mux.HandleFunc("/search", searchHandler)
 
 	log.Printf("Listening on %s\n", host)
 	http.ListenAndServe(host, mux)
