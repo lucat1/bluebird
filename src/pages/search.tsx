@@ -40,6 +40,7 @@ const Search: React.FC = () => {
               <option key={type}>{type}</option>
             ))}
           </select>
+          {errors.type?.message && <label className="red">{errors.type?.message}</label>}
         </div>
 
         <div className="relative col-start-3 col-span-2 m-3">
@@ -73,6 +74,7 @@ const Search: React.FC = () => {
             placeholder="Search"
             {...register("query", { required: true })}
           />
+          {errors.query && "blablabla"}
           <button
             type="submit"
             className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
