@@ -16,7 +16,6 @@ const Search: React.FC = () => {
   const { data: tweets } = useQuery(['search', type, query], () => fetch<Tweet[]>(type && query ? `search?type=${type}&query=${query}` : `search`), { suspense: true })
   const [inputQuery, setInputQuery] = React.useState(query || '')
   const [inputType, setInputType] = React.useState(type || searchTypes[0])
-  const [dropdownOpen, setDropdownOpen] = React.useState(false)
   const handleSubmit = () => {
     navigate(`/search?type=${inputType}&query=${inputQuery}`)
   }

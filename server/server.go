@@ -31,8 +31,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	tweets := []request.Tweet{}
 	if query != "" {
-		search_type := r.URL.Query().Get("type")
-		handler, has := searchHandlerMap[search_type]
+		searchType := r.URL.Query().Get("type")
+		handler, has := searchHandlerMap[searchType]
 		if !has {
 			sendError(w, 500, APIError{
 				Message: "Unknown search type",
