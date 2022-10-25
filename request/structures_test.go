@@ -42,5 +42,6 @@ func TestTweets(t *testing.T) {
 		} else {
 			assert.Nil(t, tw.Geo, "Expected original Tweet's Geo to be null")
 		}
+		assert.Equal(t, tweet.CreatedAt, tw.CreatedAt, "Expected User.CreatedAt to match")
 	}
 }

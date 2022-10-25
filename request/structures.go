@@ -3,23 +3,23 @@ package request
 import "fmt"
 
 type Tweet struct {
-	ID        string `json:"id" clover:"ID"`
-	Text      string `json:"text" clover:"Text"`
-	User      User   `json:"user" clover:"User"`
-	Geo       *Geo   `json:"geo" clover:"Geo"`
-	CreatedAt string `json:"created_at" clover:"CreatedAt"`
+	ID        string `json:"id" clover:"id"`
+	Text      string `json:"text" clover:"text"`
+	User      User   `json:"user" clover:"user"`
+	Geo       *Geo   `json:"geo" clover:"geo"`
+	CreatedAt string `json:"created_at" clover:"created_at"`
 }
 
 type Geo struct {
-	Coordinates []float64 `json:"coordinates" clover:"Coordinates"`
-	PlaceID     string    `json:"place_id" clover:"PlaceID"`
+	Coordinates []float64 `json:"coordinates" clover:"coordinate"`
+	PlaceID     string    `json:"place_id" clover:"place_id"`
 }
 
 type User struct {
-	ID           string `json:"id" clover:"ID"`
-	Name         string `json:"name" clover:"Name"`
-	Username     string `json:"username" clover:"Username"`
-	ProfileImage string `json:"profile_image" clover:"ProfileImage"`
+	ID           string `json:"id" clover:"id"`
+	Name         string `json:"name" clover:"name"`
+	Username     string `json:"username" clover:"username"`
+	ProfileImage string `json:"profile_image" clover:"profile_image"`
 }
 
 type userRawMetrics struct {

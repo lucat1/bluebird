@@ -15,7 +15,9 @@ type indexPayload struct {
 	Tweets []request.Tweet
 }
 
-var searchHandlerMap = map[string]func(string, uint) (tweets []request.Tweet, err error){
+type Fetcher func(string, uint) (tweets []request.Tweet, err error)
+
+var searchHandlerMap = map[string]Fetcher{
 	"keyword": request.TweetsByKeyword,
 	"user":    request.TweetsByUser,
 }
@@ -43,7 +45,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tweets, err = handler(query, 10)
-		cache.AddTweets(tweets)
+		cache.InsertTweets(tweets)
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets",

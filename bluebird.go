@@ -18,13 +18,12 @@ func main() {
 	}
 	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
 	if err != nil {
-		log.Fatalln("Could not create http.Client")
+		log.Fatalf("Could not create http.Client: %v", err)
 	}
 	request.SetClient(client)
-
-	cache.InitCache()
-
+	if err = cache.Open(); err != nil {
+		log.Fatalf("Could not open database: %v", err)
+	}
+	defer cache.Close()
 	server.RunServer(ADDR)
-
-	defer cache.DB.Close()
 }

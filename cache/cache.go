@@ -1,111 +1,106 @@
 package cache
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"git.hjkl.gq/bluebird/bluebird/request"
 	"github.com/ostafen/clover/v2"
 )
 
-const colTweets = "col-tweets"
+const tweetsCollection = "tweets"
 
 type TweetField string
 
 const (
-	TweetFieldText TweetField = "Text"
-	TweetFieldID              = "ID"
+	TweetFieldText      TweetField = "text"
+	TweetFieldID                   = "id"
+	TweetFieldCreatedAt            = "created_at"
 )
 
-var DB clover.DB
+var db *clover.DB
 
-func InitCache() {
-	tmpDB, err := createDB()
-	DB = *tmpDB
-	if err != nil {
-		panic(err)
+func Open() (err error) {
+	if db, err = clover.Open("bluebird_db"); err != nil {
+		return
 	}
-	has, err := DB.HasCollection(colTweets)
-	if err != nil {
-		panic(err)
+	return initialize()
+}
+
+func initialize() (err error) {
+	var has bool
+	if has, err = db.HasCollection(tweetsCollection); err != nil {
+		return
 	}
 	if !has {
-		err = DB.CreateCollection(colTweets)
-	}
-	all, _ := FindTweetByUsername("salvinimi")
-	fmt.Println(len(all))
-}
-
-func createDB() (*clover.DB, error) {
-	return clover.Open("swe-DB")
-}
-
-func docToStruct[T any](doc *clover.Document, el *T) error {
-	docMap := (doc.ToMap())
-	ss, _ := json.Marshal(docMap)
-	err := json.Unmarshal(ss, &el)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func docArrayToStruct[T any](docs []*clover.Document, arr []T) error {
-	for i, doc := range docs {
-		err := docToStruct(doc, &arr[i])
-		if err != nil {
-			return err
+		if err = db.CreateCollection(tweetsCollection); err != nil {
+			return
 		}
 	}
-	return nil
+	return
 }
 
-func AddTweet(tweet request.Tweet) (string, error) {
-	doc := clover.NewDocumentOf(tweet)
-	return DB.InsertOne(colTweets, doc)
+func Close() error {
+	return db.Close()
 }
-func AddTweets(tweets []request.Tweet) ([]string, error) {
-	IDs := []string{}
-	for _, t := range tweets {
-		doc := clover.NewDocumentOf(t)
-		ID, err := DB.InsertOne(colTweets, doc)
+
+func multiUnmarshal[T any](docs []*clover.Document) (res []T, err error) {
+	var obj T
+	for _, doc := range docs {
+		if err = doc.Unmarshal(&obj); err != nil {
+			return
+		}
+		res = append(res, obj)
+	}
+	return
+}
+
+func InsertTweet(tweet request.Tweet) (string, error) {
+	return db.InsertOne(tweetsCollection, clover.NewDocumentOf(tweet))
+}
+
+func InsertTweets(tweets []request.Tweet) (IDs []string, err error) {
+	var ID string
+	for _, doc := range tweets {
+		ID, err = InsertTweet(doc)
 		if err != nil {
-			return nil, err
+			return
 		}
 		IDs = append(IDs, ID)
 	}
-	return IDs, nil
+	return
 }
 
-func findTweetBy(field string, filter string) ([]request.Tweet, error) {
-	docs, err := DB.FindAll(clover.NewQuery(colTweets).Where(clover.Field(string(field)).Like(filter)))
+func tweetsBy(field TweetField, filter string) (res []request.Tweet, err error) {
+	docs, err := db.FindAll(clover.NewQuery(tweetsCollection).Where(clover.Field(string(field)).Like(filter)))
 	if err != nil {
 		return nil, nil
 	}
-	arr := make([]request.Tweet, len(docs))
-	docArrayToStruct(docs, arr)
-
-	return arr, nil
+	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
+		return
+	}
+	return
 }
 
-func FindTweetByText(filter string) ([]request.Tweet, error) {
-	return findTweetBy(string(TweetFieldText), filter)
+func TweetsByKeyword(filter string) ([]request.Tweet, error) {
+	return tweetsBy(TweetFieldText, filter)
 }
-func FindTweetByID(filter string) ([]request.Tweet, error) {
-	return findTweetBy(string(TweetFieldID), filter)
+
+func TweetsByID(filter string) ([]request.Tweet, error) {
+	return tweetsBy(TweetFieldID, filter)
 }
-func FindTweetByUsername(filter string) ([]request.Tweet, error) {
-	docs, err := DB.FindAll(clover.NewQuery(colTweets))
+
+func TweetsByUser(filter string) (res []request.Tweet, err error) {
+	docs, err := db.FindAll(clover.NewQuery(tweetsCollection))
 	if err != nil {
 		return nil, nil
 	}
-	arr := make([]request.Tweet, len(docs))
-	docArrayToStruct(docs, arr)
-	res := []request.Tweet{}
-	for _, el := range arr {
-		if el.User.Username == filter {
-			res = append(res, el)
+	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
+		return
+	}
+	filtered := []request.Tweet{}
+	for _, el := range res {
+		if el.User.Username != filter {
+			filtered = append(filtered, el)
 		}
 	}
 
-	return res, nil
+	return filtered, nil
 }
