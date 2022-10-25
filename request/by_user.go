@@ -1,11 +1,15 @@
 package request
 
 func TweetsByUser(username string, n uint) (tweets []Tweet, err error) {
-	user, err := requestUserByUsername(username)
+	url, err := buildURL(NewRequest("users/by/username/" + username))
 	if err != nil {
 		return
 	}
-	url, err := buildURL(NewRequest("users/"+user.ID+"/tweets").
+	user, err := requestUser(url)
+	if err != nil {
+		return
+	}
+	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo).
 		AddUserFields(
 			RequestFieldWithheld,

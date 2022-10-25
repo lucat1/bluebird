@@ -34,7 +34,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		searchType := r.URL.Query().Get("type")
 		handler, has := searchHandlerMap[searchType]
 		if !has {
-			sendError(w, 500, APIError{
+			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Unknown search type",
 				Error:   fmt.Errorf("Search error"),
 			})
@@ -43,7 +43,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		tweets, err = handler(query, 10)
 		if err != nil {
-			sendError(w, 500, APIError{
+			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets",
 				Error:   err,
 			})

@@ -24,7 +24,7 @@ func sendError(w http.ResponseWriter, code int, error APIError) {
 		Error:   error.Error.Error(),
 	})
 	if err != nil {
-		panic(fmt.Sprintf("Could not send error: %e", err))
+		panic(fmt.Sprintf("Could not send error: %v", err))
 	}
 	w.Write(buf)
 }

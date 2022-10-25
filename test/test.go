@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+
+	"github.com/kataras/muxie"
 )
 
 func ReadFile(filename string) []byte {
@@ -22,8 +24,20 @@ func ReadJSON(filename string, dest interface{}) {
 	}
 }
 
-func CreateServer(contents []byte) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(contents)
-	}))
+func CreateSimpleServer(contents []byte) *httptest.Server {
+	return httptest.NewServer(staticHandler(contents))
+}
+
+func staticHandler(buf []byte) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(buf)
+	})
+}
+
+func CreateMultiServer(contentsMap map[string][]byte) *httptest.Server {
+	mux := muxie.NewMux()
+	for path, res := range contentsMap {
+		mux.Handle(path, staticHandler(res))
+	}
+	return httptest.NewServer(mux)
 }

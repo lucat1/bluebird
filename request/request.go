@@ -2,9 +2,11 @@ package request
 
 import (
 	"encoding/json"
-	"golang.org/x/exp/constraints"
 	"io"
+	"net/http"
 	"net/url"
+
+	"golang.org/x/exp/constraints"
 )
 
 func min[T constraints.Ordered](a, b T) T {
@@ -17,7 +19,7 @@ func min[T constraints.Ordered](a, b T) T {
 // url should never start with '/'
 func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error) {
 	res, err := client.HTTP.Get(client.URL.ResolveReference(url).String())
-	if err != nil {
+	if err != nil || res.StatusCode != http.StatusOK {
 		return
 	}
 	defer res.Body.Close()
@@ -28,12 +30,13 @@ func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error)
 	return raw, json.Unmarshal(body, &raw)
 }
 
-func requestUserByUsername(username string) (User, error) {
-	var user User
-	var raw userResponse
-	parsedUrl, err := url.Parse("users/by/username/" + username)
-	if raw, err = requestRaw[userResponse](parsedUrl); err != nil {
-		return user, err
+func requestUser(url *url.URL) (User, error) {
+	var (
+		raw userResponse
+		err error
+	)
+	if raw, err = requestRaw[userResponse](url); err != nil {
+		return User{}, err
 	}
 
 	return raw.User(), nil

@@ -1,21 +1,22 @@
 package request
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestByKeyword(t *testing.T) {
+func TestByUser(t *testing.T) {
 	const l = 5
-	SetClient(byKeywordClient)
-	tweets, err := TweetsByKeyword("", l)
+	SetClient(byUserClient)
+	tweets, err := TweetsByUser("salvinimi", l)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
 	if len(tweets) != 5 {
 		t.Errorf("Expected the amount of tweets to be as requested")
 	}
-	twts, err := byKeywordResponse.Tweets()
+	twts, err := byUserResponse.Tweets()
 	if err != nil {
 		t.Errorf("Did not expect error while decoding sample tweet data")
 	}

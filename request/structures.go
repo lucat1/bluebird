@@ -50,7 +50,7 @@ type rawUser struct {
 }
 
 type userResponse struct {
-	Data rawUser
+	Data rawUser `json:"data"`
 }
 
 type rawTweet struct {

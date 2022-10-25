@@ -26,7 +26,7 @@ func TestUsers(t *testing.T) {
 func TestTweets(t *testing.T) {
 	tweets, err := byKeywordResponse.Tweets()
 	if err != nil {
-		t.Errorf("Did not expect an error during conversion: %e", err)
+		t.Errorf("Did not expect an error during conversion: %v", err)
 	}
 	if len(tweets) <= 0 {
 		t.Errorf("Expected a non-empty users list")
