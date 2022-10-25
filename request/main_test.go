@@ -15,9 +15,12 @@ var (
 
 func TestMain(m *testing.M) {
 	var err error
-	byKeywordServer := test.CreateServer(test.ReadFile("../mock/by_keyword.json"))
+	byKeywordServer := test.CreateSimpleServer(test.ReadFile("../mock/by_keyword.json"))
 	defer byKeywordServer.Close()
-	byUserServer := test.CreateServer(test.ReadFile("../mock/by_user.json"))
+	byUserServer := test.CreateMultiServer(map[string][]byte{
+		"/users/by/username/salvinimi": test.ReadFile("../mock/id_by_user.json"),
+		"/users/270839361/tweets":      test.ReadFile("../mock/by_user.json"),
+	})
 	defer byUserServer.Close()
 	byKeywordClient, err = NewClient(byKeywordServer.URL, "")
 	if err != nil {

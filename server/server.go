@@ -25,7 +25,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	tplByte, err := ioutil.ReadFile("views/index.tpl")
 	if err != nil {
-		sendError(w, 500, APIError{
+		sendError(w, http.StatusInternalServerError, APIError{
 			Message: "Could not read template",
 			Error:   err,
 		})
@@ -39,7 +39,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		search_type := r.URL.Query().Get("type")
 		handler, has := searchHandlerMap[search_type]
 		if !has {
-			sendError(w, 500, APIError{
+			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Unknown search type",
 				Error:   fmt.Errorf("Search error"),
 			})
@@ -48,7 +48,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		tweets, err = handler(query, 10)
 		if err != nil {
-			sendError(w, 500, APIError{
+			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets",
 				Error:   err,
 			})
@@ -58,7 +58,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	result, err := raymond.Render(tpl, indexPayload{Query: query, Tweets: tweets})
 	if err != nil {
-		sendError(w, 500, APIError{
+		sendError(w, http.StatusInternalServerError, APIError{
 			Message: "Could not render tweets",
 			Error:   err,
 		})

@@ -17,7 +17,6 @@ type rawError struct {
 }
 
 func sendError(w http.ResponseWriter, code int, error APIError) {
-	fmt.Println(error.Error)
 	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
 	buf, err := json.Marshal(rawError{
@@ -25,7 +24,7 @@ func sendError(w http.ResponseWriter, code int, error APIError) {
 		Error:   error.Error.Error(),
 	})
 	if err != nil {
-		panic(fmt.Sprintf("Could not send error: %e", err))
+		panic(fmt.Sprintf("Could not send error: %v", err))
 	}
 	w.Write(buf)
 }
