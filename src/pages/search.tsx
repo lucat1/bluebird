@@ -22,7 +22,7 @@ const Search: React.FC = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-row items-center justify-center grid grid-cols-5 gap-2 mb-4"
+        className="flex items-center justify-center grid grid-cols-5 gap-2 mb-4"
       >
         <div className="col-start-2 col-span-1 m-2">
           <label
@@ -40,10 +40,10 @@ const Search: React.FC = () => {
               <option key={type}>{type}</option>
             ))}
           </select>
-          {errors.type?.message && <label className="red">{errors.type?.message}</label>}
+          {/* {errors.type?.message && <label className="red">{errors.type?.message}</label>} */}
         </div>
-
-        <div className="relative col-start-3 col-span-2 m-3">
+        <div className="col-start-3 col-span-2 m-3 row-span-1">
+        <div className="relative">
           <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <svg
               aria-hidden="true"
@@ -74,13 +74,15 @@ const Search: React.FC = () => {
             placeholder="Search"
             {...register("query", { required: true })}
           />
-          {errors.query && "blablabla"}
           <button
             type="submit"
             className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
           >
             Search
           </button>
+          
+        </div>
+        {errors.query && <label className="text-red-800 dark:text-red-500 col-start-5 p-3 text-sm italic row-span-1 m-2">Type in something</label>}
         </div>
       </form>
 
