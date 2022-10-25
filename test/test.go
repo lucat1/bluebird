@@ -24,10 +24,6 @@ func ReadJSON(filename string, dest interface{}) {
 	}
 }
 
-func CreateSimpleServer(contents []byte) *httptest.Server {
-	return httptest.NewServer(staticHandler(contents))
-}
-
 func staticHandler(buf []byte) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(buf)

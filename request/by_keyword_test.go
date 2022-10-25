@@ -9,15 +9,9 @@ func TestByKeyword(t *testing.T) {
 	const l = 5
 	SetClient(byKeywordClient)
 	tweets, err := TweetsByKeyword("", l)
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-	if len(tweets) != 5 {
-		t.Errorf("Expected the amount of tweets to be as requested")
-	}
+	assert.NotNil(t, err, "Expected TweetsByKeyword not to error")
+	assert.Equal(t, len(tweets), l, "Expected the amount of tweets to be as required")
 	twts, err := byKeywordResponse.Tweets()
-	if err != nil {
-		t.Errorf("Did not expect error while decoding sample tweet data")
-	}
-	assert.Equal(t, tweets, twts[:l], "Expected IDs to match")
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, tweets, twts[:l], "Expected Tweets to match")
 }

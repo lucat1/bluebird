@@ -2,6 +2,7 @@ package request
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,8 +20,11 @@ func min[T constraints.Ordered](a, b T) T {
 // url should never start with '/'
 func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error) {
 	res, err := client.HTTP.Get(client.URL.ResolveReference(url).String())
-	if err != nil || res.StatusCode != http.StatusOK {
+	if err != nil {
 		return
+	}
+	if res.StatusCode != http.StatusOK {
+		return raw, fmt.Errorf("Non 200 status code")
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
