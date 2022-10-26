@@ -1,10 +1,10 @@
 # Logs
 logs
+*.db
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
 pnpm-debug.log*
 lerna-debug.log*
 

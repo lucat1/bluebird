@@ -2,6 +2,9 @@ package cache
 
 import (
 	"git.hjkl.gq/bluebird/bluebird/request"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TweetField string
@@ -12,99 +15,45 @@ const (
 	TweetFieldCreatedAt            = "created_at"
 )
 
-var db *bbolt.DB
+var db *gorm.DB
 
 func Open() (err error) {
-	if db, err = clover.Open("bluebird.db"); err != nil {
+	if db, err = gorm.Open(sqlite.Open("bluebird.db"), &gorm.Config{}); err != nil {
 		return
 	}
-	return initialize()
-}
+	db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
 
-func initialize() (err error) {
-	/// init tables n stuff
+	return
 }
 
 func Close() error {
-	return db.Close()
-}
-
-func multiUnmarshal[T any](docs []*clover.Document) (res []T, err error) {
-	var obj T
-	for _, doc := range docs {
-		if err = doc.Unmarshal(&obj); err != nil {
-			return
-		}
-		res = append(res, obj)
-	}
-	return
-}
-
-func InsertTweets(tweets []request.Tweet) (IDs []string, err error) {
-	tx, err := db.Begin(true)
+	closingDB, err := db.DB()
 	if err != nil {
-		return
+		return err
 	}
-	defer tx.Rollback()
-	tweetsById := tx.Bucket(tweetsByID)
-
-	for tweet := range tweets {
-		_, err = tx.CreateBucket(bucket)
-		if err != nil {
-			return
-		}
-	}
-
-	return tx.Commit()
-	var ID string
-	for _, doc := range tweets {
-		ID, err = InsertTweet(doc)
-		if err != nil {
-			return
-		}
-		IDs = append(IDs, ID)
-	}
-	return
+	return closingDB.Close()
 }
 
-func TweetsAny() (res []request.Tweet, err error) {
-	docs, err := db.FindAll(clover.NewQuery(tweetsCollection))
-	if err != nil {
-		return nil, nil
-	}
-	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
-		return
-	}
-	return
+func InsertTweets(tweets []request.Tweet) error {
+	return db.Clauses(clause.OnConflict{
+		UpdateAll: true,
+	}).Create(&tweets).Error
 }
 
-func tweetsBy(field TweetField, filter string) (res []request.Tweet, err error) {
-	docs, err := db.FindAll(clover.NewQuery(tweetsCollection).Where(clover.Field(string(field)).Like(filter)))
-	if err != nil {
-		return nil, nil
-	}
-	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
-		return
-	}
-	return
+func TweetsAny() (res []request.Tweet, _ error) {
+	return res, db.Find(&res).Error
 }
 
-func TweetsByKeyword(filter string) ([]request.Tweet, error) {
-	return tweetsBy(TweetFieldText, filter)
+func TweetsByKeyword(filter string) (res []request.Tweet, _ error) {
+	return res, db.Where("text LIKE ?", "%"+filter+"%").Find(&res).Error
 }
 
-func TweetsByID(filter string) ([]request.Tweet, error) {
-	return tweetsBy(TweetFieldID, filter)
+func TweetByID(filter string) (res request.Tweet, _ error) {
+	return res, db.First(&res, request.Tweet{ID: filter}).Error
 }
 
 func TweetsByUser(filter string) (res []request.Tweet, err error) {
-	docs, err := db.FindAll(clover.NewQuery(tweetsCollection))
-	if err != nil {
-		return nil, nil
-	}
-	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
-		return
-	}
+	err = db.Find(&res, request.Tweet{User: request.User{Username: filter}}).Error
 	filtered := []request.Tweet{}
 	for _, el := range res {
 		if el.User.Username != filter {

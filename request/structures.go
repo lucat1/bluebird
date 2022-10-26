@@ -1,25 +1,44 @@
 package request
 
-import "fmt"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type Tweet struct {
-	ID        string `json:"id" clover:"id"`
-	Text      string `json:"text" clover:"text"`
-	User      User   `json:"user" clover:"user"`
-	Geo       *Geo   `json:"geo" clover:"geo"`
-	CreatedAt string `json:"created_at" clover:"created_at"`
+	gorm.Model
+	ID        string `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text      string `json:"text"`
+	User      User   `json:"user" gorm:"foreignKey:ID"`
+	Geo       *Geo   `json:"geo" gorm:"foreignKey:PlaceID"`
+	CreatedAt string `json:"created_at"`
 }
 
 type Geo struct {
-	Coordinates []float64 `json:"coordinates" clover:"coordinate"`
-	PlaceID     string    `json:"place_id" clover:"place_id"`
+	gorm.Model
+	Coordinates Coordinates `json:"coordinates" gorm:"type:text"`
+	PlaceID     string      `json:"place_id" gorm:"primaryKey;uniqueIndex"`
+}
+type Coordinates []float64
+
+func (sla *Coordinates) Scan(src interface{}) error {
+	return json.Unmarshal(src.([]byte), &sla)
+}
+
+func (sla Coordinates) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
 }
 
 type User struct {
-	ID           string `json:"id" clover:"id"`
-	Name         string `json:"name" clover:"name"`
-	Username     string `json:"username" clover:"username"`
-	ProfileImage string `json:"profile_image" clover:"profile_image"`
+	gorm.Model
+	ID           string `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Name         string `json:"name"`
+	Username     string `json:"username"`
+	ProfileImage string `json:"profile_image"`
 }
 
 type userRawMetrics struct {
