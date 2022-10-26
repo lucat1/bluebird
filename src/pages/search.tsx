@@ -70,7 +70,7 @@ const Search: React.FC = () => {
           <input
             id="query"
             type="search"
-            className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
+            className="mb-2 block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
             placeholder="Search"
             {...register("query", { required: true })}
           />
@@ -82,7 +82,7 @@ const Search: React.FC = () => {
           </button>
           
         </div>
-        {errors.query && <label className="text-red-800 dark:text-red-500 col-start-5 p-3 text-sm italic row-span-1 m-2">Type in something</label>}
+        {errors.query && <label className="text-red-800 dark:text-red-500 col-start-5 p-3 text-sm italic row-span-1">Type in something</label>}
         </div>
       </form>
 
