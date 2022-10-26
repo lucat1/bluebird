@@ -24,6 +24,11 @@ func main() {
 	if err = cache.Open(); err != nil {
 		log.Fatalf("Could not open database: %v", err)
 	}
+	tweets, err := cache.TweetsAny()
+	if err != nil {
+		log.Fatalf("Could not fetch all cached tweets: %v", err)
+	}
+	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
 	server.RunServer(ADDR)
 }

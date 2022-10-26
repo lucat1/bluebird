@@ -2,10 +2,7 @@ package cache
 
 import (
 	"git.hjkl.gq/bluebird/bluebird/request"
-	"github.com/ostafen/clover/v2"
 )
-
-const tweetsCollection = "tweets"
 
 type TweetField string
 
@@ -15,26 +12,17 @@ const (
 	TweetFieldCreatedAt            = "created_at"
 )
 
-var db *clover.DB
+var db *bbolt.DB
 
 func Open() (err error) {
-	if db, err = clover.Open("bluebird_db"); err != nil {
+	if db, err = clover.Open("bluebird.db"); err != nil {
 		return
 	}
 	return initialize()
 }
 
 func initialize() (err error) {
-	var has bool
-	if has, err = db.HasCollection(tweetsCollection); err != nil {
-		return
-	}
-	if !has {
-		if err = db.CreateCollection(tweetsCollection); err != nil {
-			return
-		}
-	}
-	return
+	/// init tables n stuff
 }
 
 func Close() error {
@@ -52,11 +40,22 @@ func multiUnmarshal[T any](docs []*clover.Document) (res []T, err error) {
 	return
 }
 
-func InsertTweet(tweet request.Tweet) (string, error) {
-	return db.InsertOne(tweetsCollection, clover.NewDocumentOf(tweet))
-}
-
 func InsertTweets(tweets []request.Tweet) (IDs []string, err error) {
+	tx, err := db.Begin(true)
+	if err != nil {
+		return
+	}
+	defer tx.Rollback()
+	tweetsById := tx.Bucket(tweetsByID)
+
+	for tweet := range tweets {
+		_, err = tx.CreateBucket(bucket)
+		if err != nil {
+			return
+		}
+	}
+
+	return tx.Commit()
 	var ID string
 	for _, doc := range tweets {
 		ID, err = InsertTweet(doc)
@@ -64,6 +63,17 @@ func InsertTweets(tweets []request.Tweet) (IDs []string, err error) {
 			return
 		}
 		IDs = append(IDs, ID)
+	}
+	return
+}
+
+func TweetsAny() (res []request.Tweet, err error) {
+	docs, err := db.FindAll(clover.NewQuery(tweetsCollection))
+	if err != nil {
+		return nil, nil
+	}
+	if res, err = multiUnmarshal[request.Tweet](docs); err != nil {
+		return
 	}
 	return
 }
