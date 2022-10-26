@@ -44,8 +44,8 @@ func TweetsAny() (res []request.Tweet, _ error) {
 	return res, db.Find(&res).Error
 }
 
-func TweetsByKeyword(filter string) (res []request.Tweet, _ error) {
-	return res, db.Where("text LIKE ?", "%"+filter+"%").Find(&res).Error
+func TweetsByKeyword(filter string, n uint) (res []request.Tweet, _ error) {
+	return res, db.Where("text LIKE ?", "%"+filter+"%").Limit(int(n)).Find(&res).Error
 }
 
 func TweetByID(filter string) (res request.Tweet, _ error) {
