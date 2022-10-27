@@ -10,7 +10,7 @@ const App: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             version="1.1"
-            className="w-3/6 h-3/6"
+            className="w-4/6 h-3/6"
             viewBox="0 0 1000 138"
           >
             <g transform="matrix(1,0,0,1,-0.6060606060606233,0.11062449270619368)">
