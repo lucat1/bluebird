@@ -19,8 +19,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "composite": true,
-    "types": ["react-leaflet"]
+    "composite": true
   },
   "include": [
     "src",
