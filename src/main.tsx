@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./components/app";
 import Search from "./pages/search";
+import Map from "./pages/map";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route index element={<h1>home</h1>} />
             <Route path="search" element={<Search />} />
+            <Route path="map" element={<Map />} />
             <Route path="*" element={<h1>Not found</h1>} />
           </Routes>
         </App>
