@@ -21,10 +21,10 @@ func main() {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
 	request.SetClient(client)
-	if err = cache.Open(); err != nil {
+	if err = cache.Open("bluebird.db"); err != nil {
 		log.Fatalf("Could not open database: %v", err)
 	}
-	tweets, err := cache.TweetsAny()
+	tweets, err := cache.TweetsAll()
 	if err != nil {
 		log.Fatalf("Could not fetch all cached tweets: %v", err)
 	}

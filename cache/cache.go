@@ -17,8 +17,8 @@ const (
 
 var db *gorm.DB
 
-func Open() (err error) {
-	if db, err = gorm.Open(sqlite.Open("bluebird.db"), &gorm.Config{}); err != nil {
+func Open(path string) (err error) {
+	if db, err = gorm.Open(sqlite.Open(path), &gorm.Config{}); err != nil {
 		return
 	}
 	db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
@@ -40,16 +40,20 @@ func InsertTweets(tweets []request.Tweet) error {
 	}).Create(&tweets).Error
 }
 
-func TweetsAny() (res []request.Tweet, _ error) {
-	return res, db.Find(&res).Error
+func TweetsAll() (res []request.Tweet, _ error) {
+	return res, db.Preload("User").Preload("Geo").Find(&res).Error
+}
+
+func TweetsCount() (n int64, _ error) {
+	return n, db.Model(&request.Tweet{}).Count(&n).Error
 }
 
 func TweetsByKeyword(filter string, n uint) (res []request.Tweet, _ error) {
-	return res, db.Where("text LIKE ?", "%"+filter+"%").Limit(int(n)).Find(&res).Error
+	return res, db.Where("text LIKE ?", "%"+filter+"%").Limit(int(n)).Preload("User").Preload("Geo").Find(&res).Error
 }
 
 func TweetByID(filter string) (res request.Tweet, _ error) {
-	return res, db.First(&res, request.Tweet{ID: filter}).Error
+	return res, db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: filter}).Error
 }
 
 func TweetsByUser(filter string) (res []request.Tweet, err error) {

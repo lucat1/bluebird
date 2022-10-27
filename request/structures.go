@@ -3,29 +3,30 @@ package request
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"time"
 	"fmt"
-
 	"gorm.io/gorm"
 )
 
 type Tweet struct {
-	gorm.Model
+	gorm.Model `json:"-"`
 	ID        string `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Text      string `json:"text"`
 	User      User   `json:"user" gorm:"foreignKey:ID"`
 	Geo       *Geo   `json:"geo" gorm:"foreignKey:PlaceID"`
-	CreatedAt string `json:"created_at"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Geo struct {
-	gorm.Model
+	gorm.Model `json:"-"`
+	ID        string `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Coordinates Coordinates `json:"coordinates" gorm:"type:text"`
 	PlaceID     string      `json:"place_id" gorm:"primaryKey;uniqueIndex"`
 }
 type Coordinates []float64
 
 func (sla *Coordinates) Scan(src interface{}) error {
-	return json.Unmarshal(src.([]byte), &sla)
+	return json.Unmarshal(src.([]byte), sla)
 }
 
 func (sla Coordinates) Value() (driver.Value, error) {
@@ -34,8 +35,8 @@ func (sla Coordinates) Value() (driver.Value, error) {
 }
 
 type User struct {
-	gorm.Model
-	ID           string `json:"id" gorm:"primaryKey;uniqueIndex"`
+	gorm.Model `json:"-"`
+	ID        string `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Name         string `json:"name"`
 	Username     string `json:"username"`
 	ProfileImage string `json:"profile_image"`
@@ -78,7 +79,7 @@ type rawTweet struct {
 	ID                  string   `json:"id"`
 	Text                string
 	AuthorID            string `json:"author_id"`
-	CreatedAt           string `json:"created_at"`
+	CreatedAt           time.Time `json:"created_at"`
 	Geo                 *rawGeo
 }
 
