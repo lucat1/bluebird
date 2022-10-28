@@ -37,9 +37,7 @@ func Open(path string, level logger.LogLevel) (err error) {
 	}); err != nil {
 		return
 	}
-	db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
-
-	return
+	return db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
 }
 
 func Close() error {
@@ -73,5 +71,6 @@ func TweetByID(filter string) (res request.Tweet, _ error) {
 }
 
 func TweetsByUser(username string) (res []request.Tweet, err error) {
-	return res, db.Joins("INNER JOIN users ON users.id = tweets.user_id", db.Where(&request.User{Username: username})).Find(&res).Error
+	err = db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Preload("User").Find(&res).Error
+	return res, err
 }

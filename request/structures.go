@@ -10,11 +10,11 @@ import (
 type Tweet struct {
 	ID        string    `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Text      string    `json:"text"`
-	UserID    string    `json:"-" gorm:"index"`
-	User      User      `json:"user" gorm:"foreignKey:ID;references:UserID"`
-	GeoID     string    `json:"-" gorm:"index"`
-	Geo       *Geo      `json:"geo" gorm:"foreignKey:PlaceID;references:GeoID"`
-	CreatedAt time.Time `json:"created_at"`
+	UserID    string    `json:"-"`
+	User      User      `json:"user"`
+	GeoID     *string   `json:"-"`
+	Geo       *Geo      `json:"geo"`
+	CreatedAt time.Time `json:"created_at" sql:"type:timestamp with time zone"`
 }
 
 type Geo struct {
@@ -125,8 +125,12 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 			return tweets, fmt.Errorf("User with id %s is not included in Twitter's response", t.AuthorID)
 		}
 
-		var geo *Geo = nil
+		var (
+			geoID *string = nil
+			geo   *Geo    = nil
+		)
 		if t.Geo != nil && t.Geo.Coordinates.Type == "Point" {
+			geoID = &t.Geo.PlaceID
 			geo = &Geo{
 				Coordinates: t.Geo.Coordinates.Coordinates,
 				PlaceID:     t.Geo.PlaceID,
@@ -137,8 +141,10 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		tweets = append(tweets, Tweet{
 			ID:        t.ID,
 			Text:      t.Text,
+			UserID:    t.AuthorID,
 			User:      users[t.AuthorID],
 			CreatedAt: t.CreatedAt,
+			GeoID:     geoID,
 			Geo:       geo,
 		})
 	}
