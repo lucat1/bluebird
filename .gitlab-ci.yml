@@ -1,5 +1,6 @@
 stages:
   - test
+  - build
   - rate
 
 golang-check:
@@ -13,9 +14,9 @@ golang-check:
     - coverage.out
     expire_in: 1 day
 
-build:
-  image: docker:20.10.16
+docker-build:
   stage: build
+  image: docker:20.10.16
   services:
     - docker:20.10.16-dind
   variables:
