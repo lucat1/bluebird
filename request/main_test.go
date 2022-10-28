@@ -1,9 +1,11 @@
 package request
 
 import (
-	"git.hjkl.gq/bluebird/bluebird/test"
 	"os"
 	"testing"
+
+	"git.hjkl.gq/bluebird/bluebird/test"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -35,4 +37,9 @@ func TestMain(m *testing.M) {
 	test.ReadJSON("../mock/by_keyword.json", &byKeywordResponse)
 	test.ReadJSON("../mock/by_user.json", &byUserResponse)
 	os.Exit(m.Run())
+}
+
+func TestMin(t *testing.T) {
+	assert.Equal(t, 2, min(2, 3), "The minimum between 2 and 3 is 2")
+	assert.Equal(t, 2, min(3, 2), "The minimum between 2 and 3 is 2")
 }
