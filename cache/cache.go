@@ -1,10 +1,15 @@
 package cache
 
 import (
+	"log"
+	"os"
+	"time"
+
 	"git.hjkl.gq/bluebird/bluebird/request"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 )
 
 type TweetField string
@@ -17,8 +22,19 @@ const (
 
 var db *gorm.DB
 
-func Open(path string) (err error) {
-	if db, err = gorm.Open(sqlite.Open(path), &gorm.Config{}); err != nil {
+func Open(path string, level logger.LogLevel) (err error) {
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  level,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  false,
+		},
+	)
+	if db, err = gorm.Open(sqlite.Open(path), &gorm.Config{
+		Logger: newLogger,
+	}); err != nil {
 		return
 	}
 	db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
@@ -56,14 +72,6 @@ func TweetByID(filter string) (res request.Tweet, _ error) {
 	return res, db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: filter}).Error
 }
 
-func TweetsByUser(filter string) (res []request.Tweet, err error) {
-	err = db.Find(&res, request.Tweet{User: request.User{Username: filter}}).Error
-	filtered := []request.Tweet{}
-	for _, el := range res {
-		if el.User.Username != filter {
-			filtered = append(filtered, el)
-		}
-	}
-
-	return filtered, nil
+func TweetsByUser(username string) (res []request.Tweet, err error) {
+	return res, db.Joins("INNER JOIN users ON users.id = tweets.user_id", db.Where(&request.User{Username: username})).Find(&res).Error
 }

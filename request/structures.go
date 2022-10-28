@@ -10,8 +10,10 @@ import (
 type Tweet struct {
 	ID        string    `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Text      string    `json:"text"`
-	User      User      `json:"user" gorm:"foreignKey:ID"`
-	Geo       *Geo      `json:"geo" gorm:"foreignKey:PlaceID"`
+	UserID    string    `json:"-" gorm:"index"`
+	User      User      `json:"user" gorm:"foreignKey:ID;references:UserID"`
+	GeoID     string    `json:"-" gorm:"index"`
+	Geo       *Geo      `json:"geo" gorm:"foreignKey:PlaceID;references:GeoID"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
