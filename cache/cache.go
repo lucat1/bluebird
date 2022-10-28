@@ -70,7 +70,7 @@ func TweetByID(filter string) (res request.Tweet, _ error) {
 	return res, db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: filter}).Error
 }
 
-func TweetsByUser(username string) (res []request.Tweet, err error) {
-	err = db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Preload("User").Find(&res).Error
+func TweetsByUser(username string, n uint) (res []request.Tweet, err error) {
+	err = db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Limit(int(n)).Preload("User").Find(&res).Error
 	return res, err
 }

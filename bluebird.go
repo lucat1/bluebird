@@ -31,5 +31,8 @@ func main() {
 	}
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
-	server.RunServer(ADDR)
+	if err = server.RunServer(ADDR); err != nil {
+		log.Fatalf("Could not open HTTP server: %v", err)
+	}
+	log.Println("bye")
 }

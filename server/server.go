@@ -20,9 +20,14 @@ type indexPayload struct {
 
 type Fetcher func(string, uint) (tweets []request.Tweet, err error)
 
-var searchHandlerMap = map[string]Fetcher{
+var twitterHandlerMap = map[string]Fetcher{
 	"keyword": request.TweetsByKeyword,
 	"user":    request.TweetsByUser,
+}
+
+var searchHandlerMap = map[string]Fetcher{
+	"keyword": cache.TweetsByKeyword,
+	"user":    cache.TweetsByUser,
 }
 
 func cors(f http.Handler) http.Handler {
@@ -35,6 +40,10 @@ func cors(f http.Handler) http.Handler {
 type SearchResponse struct {
 	Tweets []request.Tweet `json:"tweets"`
 	Cached uint            `json:"cached"`
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "dist/index.html")
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +61,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
-		handler, has := searchHandlerMap[searchType]
+		handler1, has := twitterHandlerMap[searchType]
 		if !has {
 			sendError(w, http.StatusBadRequest, APIError{
 				Message: "Unknown search type",
@@ -60,8 +69,16 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
+		handler2, has := searchHandlerMap[searchType]
+		if !has {
+			sendError(w, http.StatusBadRequest, APIError{
+				Message: "Unknown search type (2)",
+				Error:   fmt.Errorf("Search error"),
+			})
+			return
+		}
 
-		tweets, err = handler(query, nOfAPITweets)
+		tweets, err = handler1(query, nOfAPITweets)
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets",
@@ -78,7 +95,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tweets, err = cache.TweetsByKeyword(query, uint(amount))
+		tweets, err = handler2(query, uint(amount))
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets from cache",
@@ -93,13 +110,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func RunServer(host string) {
+func RunServer(host string) error {
 	mux := muxie.NewMux()
 
 	mux.Use(cors)
 	mux.HandleFunc("/api/search", searchHandler)
-	mux.Handle("/*path", http.FileServer(http.Dir("dist")))
+	mux.Handle("/assets/*path", http.FileServer(http.Dir("dist")))
+	mux.HandleFunc("/*path", serveIndex)
 
 	log.Printf("Listening on %s\n", host)
-	http.ListenAndServe(host, mux)
+	return http.ListenAndServe(host, mux)
 }

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LatLng } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import fetch from "../fetch";
-import type { Tweet } from "../types";
+import type { Search } from "../types";
 
 export interface TweetProps {
   type: string;
@@ -14,8 +14,8 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
   const { data: tweets } = useQuery(
     ["search", type, query],
     () =>
-      fetch<Tweet[]>(
-        type && query ? `search?type=${type}&query=${query}` : `search`
+      fetch<Search>(
+        type && query ? `search?type=${type}&query=${query}&amount=50` : `search`
       ),
     { suspense: true }
   );
@@ -30,7 +30,7 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
       scrollWheelZoom={true}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {tweets?.map(
+      {tweets?.tweets.map(
         (tweet) =>
           tweet.geo && (
             <Marker

@@ -1,3 +1,8 @@
+export interface Search {
+  tweets: Tweet[]
+  cached: number
+}
+
 export interface Tweet {
   id: string
   text: string

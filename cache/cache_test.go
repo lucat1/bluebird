@@ -103,10 +103,10 @@ func TestTweetByID(t *testing.T) {
 func TestTweetsByUser(t *testing.T) {
 	const testUser string = "_ultimotiamo_"
 	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
-	tweets, err := TweetsByUser("invalid_user")
+	tweets, err := TweetsByUser("invalid_user", 50)
 	assert.Nil(t, err, "Expected TweetsByUser not to error with an invalid username")
 	assert.Equal(t, len(tweets), 0, "Expected TweetsByUser to return an empty slice with an invalid input")
-	tweets, err = TweetsByUser(testUser)
+	tweets, err = TweetsByUser(testUser, 50)
 	assert.Nil(t, err, "Expected TweetsByUser not to error with a valid user")
 	assert.Equal(t, len(tweets), 1, "Expected to have found only one tweet")
 	assert.EqualValues(t, tweets[0], testTweets[0], "Expected the tweet retrieved by username to match the source one")

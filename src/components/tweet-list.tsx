@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import fetch from "../fetch";
-import type { Tweet } from "../types";
+import type { Search } from "../types";
 
 export interface TweetProps {
   type: string;
@@ -12,15 +12,15 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
   const { data: tweets } = useQuery(
     ["search", type, query],
     () =>
-      fetch<Tweet[]>(
-        type && query ? `search?type=${type}&query=${query}` : `search`
+      fetch<Search>(
+        type && query ? `search?type=${type}&query=${query}&amount=50` : `search`
       ),
     { suspense: true }
   );
 
   return (
     <>
-      {tweets?.map((tweet) => (
+      {tweets?.tweets.map((tweet) => (
         <div key={tweet.id} className="grid grid-cols-6 grap-4 text-left">
           <div className="dark:bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-zinc-400 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
             <div className="flex items-center justify-between mb-4">
