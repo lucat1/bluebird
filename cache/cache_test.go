@@ -25,6 +25,7 @@ func clearDB() (err error) {
 	if err != nil {
 		return
 	}
+	return
 }
 
 func TestMain(m *testing.M) {
@@ -43,7 +44,6 @@ func TestMain(m *testing.M) {
 }
 
 func TestInsertTweets(t *testing.T) {
-	assert.Nil(t, InsertTweets([]request.Tweet{}), "Expected InsertTweets not to error with an empty input")
 	assert.Nil(t, InsertTweets(testTweets[:1]), "Expected InsertTweets not to error with a single input")
 	tweet, err := TweetByID(testTweets[0].ID)
 	assert.Nil(t, err, "Expected to find the newly inserted tweet")
@@ -56,8 +56,9 @@ func TestInsertTweets(t *testing.T) {
 	}
 	assert.Nil(t, clearDB(), "Failed to clean the Database")
 }
+
 func TestTweetsAll(t *testing.T) {
-	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error with an empty input")
+	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
 	tweets, err := TweetsAll()
 	assert.Nil(t, err, "Failed to load the whole amount of tweets")
 	assert.EqualValues(t, tweets, testTweets, "The whole amount of tweets loaded is not the same")
@@ -65,7 +66,7 @@ func TestTweetsAll(t *testing.T) {
 }
 
 func TestTweetsCount(t *testing.T) {
-	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error with an empty input")
+	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
 	numOfTweets, err := TweetsCount()
 	assert.Nil(t, err, "Failed to load the number of tweets")
 	assert.EqualValues(t, len(testTweets), numOfTweets, "The number of tweets is not the same")
@@ -74,11 +75,11 @@ func TestTweetsCount(t *testing.T) {
 
 func TestTweetsByKeyword(t *testing.T) {
 	const testString string = "ciao"
-	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error with an empty input")
+	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
 	tweets, err := TweetsByKeyword(testString, 20)
 	assert.Nil(t, err, "Failed to load tweets using TweetsByKeyword")
 	for i, tweet := range tweets {
-		assert.True(t, strings.Contains(tweet.Text, testString), "Tweet number %d doesn't contain the searched keyword", i)
+		assert.True(t, strings.Contains(strings.ToLower(tweet.Text), testString), "Tweet number %d doesn't contain the searched keyword", i)
 	}
 	assert.Nil(t, clearDB(), "Failed to clean the Database")
 }
