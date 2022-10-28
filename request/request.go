@@ -34,16 +34,16 @@ func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error)
 	return raw, json.Unmarshal(body, &raw)
 }
 
-func requestUser(url *url.URL) (User, error) {
-	var (
-		raw userResponse
-		err error
-	)
+func requestUser(url *url.URL) (user User, err error) {
+	var raw userResponse
 	if raw, err = requestRaw[userResponse](url); err != nil {
 		return User{}, err
 	}
-
-	return raw.User(), nil
+	user = raw.User()
+	if user.ID == "" {
+		return user, fmt.Errorf("User not found")
+	}
+	return
 }
 
 func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {

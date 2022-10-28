@@ -1,21 +1,40 @@
 package request
 
-import "fmt"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 type Tweet struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	User User   `json:"user"`
-	Geo  *Geo   `json:"geo"`
+	ID        string    `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text      string    `json:"text"`
+	UserID    string    `json:"-"`
+	User      User      `json:"user"`
+	GeoID     *string   `json:"-"`
+	Geo       *Geo      `json:"geo"`
+	CreatedAt time.Time `json:"created_at" sql:"type:timestamp with time zone"`
 }
 
 type Geo struct {
-	Coordinates []float64 `json:"coordinates"`
-	PlaceID     string    `json:"place_id"`
+	ID          string      `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Coordinates Coordinates `json:"coordinates" gorm:"type:text"`
+	PlaceID     string      `json:"place_id" gorm:"primaryKey;uniqueIndex"`
+}
+type Coordinates []float64
+
+func (sla *Coordinates) Scan(src interface{}) error {
+	return json.Unmarshal(src.([]byte), sla)
+}
+
+func (sla Coordinates) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
 }
 
 type User struct {
-	ID           string `json:"id"`
+	ID           string `json:"id" gorm:"primaryKey;uniqueIndex"`
 	Name         string `json:"name"`
 	Username     string `json:"username"`
 	ProfileImage string `json:"profile_image"`
@@ -57,7 +76,8 @@ type rawTweet struct {
 	EditHistoryTweetIDs []string `json:"edit_history_tweet_ids"`
 	ID                  string   `json:"id"`
 	Text                string
-	AuthorID            string `json:"author_id"`
+	AuthorID            string    `json:"author_id"`
+	CreatedAt           time.Time `json:"created_at"`
 	Geo                 *rawGeo
 }
 
@@ -105,8 +125,12 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 			return tweets, fmt.Errorf("User with id %s is not included in Twitter's response", t.AuthorID)
 		}
 
-		var geo *Geo = nil
+		var (
+			geoID *string = nil
+			geo   *Geo    = nil
+		)
 		if t.Geo != nil && t.Geo.Coordinates.Type == "Point" {
+			geoID = &t.Geo.PlaceID
 			geo = &Geo{
 				Coordinates: t.Geo.Coordinates.Coordinates,
 				PlaceID:     t.Geo.PlaceID,
@@ -115,10 +139,13 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		}
 
 		tweets = append(tweets, Tweet{
-			ID:   t.ID,
-			Text: t.Text,
-			User: users[t.AuthorID],
-			Geo:  geo,
+			ID:        t.ID,
+			Text:      t.Text,
+			UserID:    t.AuthorID,
+			User:      users[t.AuthorID],
+			CreatedAt: t.CreatedAt,
+			GeoID:     geoID,
+			Geo:       geo,
 		})
 	}
 	return tweets, nil

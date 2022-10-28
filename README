@@ -1,4 +1,4 @@
-embedded db: github.com/ostafen/clover
+embedded db: gorm.io/gorm 
 logger: github.com/rs/zerolog
 rate limiter: golang.org/x/time
 http router: github.com/kataras/muxie o github.com/gin-gonic/gin **
