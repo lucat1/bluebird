@@ -13,6 +13,6 @@ RUN yarn build
 
 FROM scratch
 COPY --from=go-builder /workdir/bluebird /bluebird
-COPY --from=go-build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=go-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=node-builder /workdir/dist /dist
 ENTRYPOINT ["/bluebird"]
