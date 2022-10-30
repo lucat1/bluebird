@@ -4,7 +4,7 @@ interface Err {
 }
 
 const f = async <T>(api: string): Promise<T> => {
-  const req = await fetch(`http://localhost:8080/api/${api}`)
+  const req = await fetch(`/api/${api}`)
   let json = await req.json()
   if (req.status != 200) {
     json = json as Err
