@@ -6,17 +6,7 @@
       "edit_history_tweet_ids": [
         "1582366850716819457"
       ],
-      "author_id": "3025426804",
-      "geo": {
-        "coordinates": {
-          "type": "Point",
-          "coordinates": [
-            -73.99960455,
-            40.74168819
-          ]
-        },
-        "place_id": "01a9a39529b27f36"
-      }
+      "author_id": "3025426804"
     },
     {
       "id": "1582330776238292993",
