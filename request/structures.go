@@ -19,7 +19,7 @@ type Tweet struct {
 
 type Geo struct {
 	ID          string      `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Coordinates Coordinates `json:"coordinates" gorm:"type:text"`
+	Coordinates Coordinates `json:"coordinates" gorm:"type:bytes"`
 	PlaceID     string      `json:"place_id" gorm:"primaryKey;uniqueIndex"`
 }
 type Coordinates []float64
