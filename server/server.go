@@ -87,12 +87,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		cached = uint(amount - len(tweets))
-		if err = cache.InsertTweets(tweets); err != nil {
-			sendError(w, http.StatusInternalServerError, APIError{
-				Message: "Could not store gathered tweets in cache",
-				Error:   err,
-			})
-			return
+		if len(tweets) > 0 {
+			if err = cache.InsertTweets(tweets); err != nil {
+				sendError(w, http.StatusInternalServerError, APIError{
+					Message: "Could not store gathered tweets in cache",
+					Error:   err,
+				})
+				return
+			}
 		}
 
 		tweets, err = handler2(query, uint(amount))

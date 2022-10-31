@@ -19,7 +19,13 @@ func TweetsByKeyword(keyword string, n uint) (tweets []Tweet, err error) {
 			RequestFieldEntities,
 			RequestFieldDescription,
 			RequestFieldCreatedAt,
-		).AddExpansions(RequestExpansionAuthorID),
+		).
+		AddPlaceFields(
+			RequestFieldID,
+			RequestFieldGeo,
+			RequestFieldFullName,
+		).
+		AddExpansions(RequestExpansionAuthorID, RequestExpansionGeoPlaceID),
 	)
 	if err != nil {
 		return

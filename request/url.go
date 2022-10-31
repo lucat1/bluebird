@@ -23,22 +23,25 @@ const (
 	RequestFieldUsername                     = "username"
 	RequestFieldVerified                     = "verified"
 	RequestFieldWithheld                     = "withheld"
+	RequestFieldFullName                     = "full_name"
 )
 
 type RequestExpansions string
 
 const (
-	RequestExpansionAuthorID RequestExpansions = "author_id"
+	RequestExpansionAuthorID   RequestExpansions = "author_id"
+	RequestExpansionGeoPlaceID                   = "geo.place_id"
 )
 
 type RequestQuery string
 
 const (
 	RequestQueryQuery           RequestQuery = "query"
-	RequestQueryTweetFields     RequestQuery = "tweet.fields"
-	RequestQueryUserFields      RequestQuery = "user.fields"
-	RequestQueryExpansions      RequestQuery = "expansions"
-	RequestQueryPaginationToken RequestQuery = "pagination_token"
+	RequestQueryTweetFields                  = "tweet.fields"
+	RequestQueryUserFields                   = "user.fields"
+	RequestQueryPlaceFields                  = "place.fields"
+	RequestQueryExpansions                   = "expansions"
+	RequestQueryPaginationToken              = "pagination_token"
 )
 
 type RequestURL struct {
@@ -46,6 +49,7 @@ type RequestURL struct {
 	query           string
 	tweetFields     []RequestField
 	userFields      []RequestField
+	placeFields     []RequestField
 	expansions      []RequestExpansions
 	paginationToken string
 }
@@ -68,6 +72,11 @@ func (req RequestURL) WithQuery(query string) RequestURL {
 
 func (req RequestURL) AddTweetFields(fields ...RequestField) RequestURL {
 	req.tweetFields = append(req.tweetFields, fields...)
+	return req
+}
+
+func (req RequestURL) AddPlaceFields(fields ...RequestField) RequestURL {
+	req.placeFields = append(req.placeFields, fields...)
 	return req
 }
 
@@ -107,6 +116,7 @@ func buildURL(req RequestURL) (parsed *url.URL, err error) {
 	queryAdd(query, string(RequestQueryQuery), req.query)
 	queryAdd(query, string(RequestQueryTweetFields), join(req.tweetFields, ","))
 	queryAdd(query, string(RequestQueryUserFields), join(req.userFields, ","))
+	queryAdd(query, string(RequestQueryPlaceFields), join(req.placeFields, ","))
 	queryAdd(query, string(RequestQueryExpansions), join(req.expansions, ","))
 	queryAdd(query, string(RequestQueryPaginationToken), req.paginationToken)
 	parsed.RawQuery = query.Encode()

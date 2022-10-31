@@ -19,13 +19,14 @@ type Tweet struct {
 
 type Geo struct {
 	ID          string      `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Coordinates Coordinates `json:"coordinates" gorm:"type:bytes"`
-	PlaceID     string      `json:"place_id" gorm:"primaryKey;uniqueIndex"`
+	Type        string      `json:"type"`
+	Coordinates Coordinates `json:"coordinates"`
 }
+
 type Coordinates []float64
 
 func (sla *Coordinates) Scan(src interface{}) error {
-	return json.Unmarshal(src.([]byte), sla)
+	return json.Unmarshal([]byte(src.(string)), sla)
 }
 
 func (sla Coordinates) Value() (driver.Value, error) {
@@ -78,12 +79,21 @@ type rawTweet struct {
 	Text                string
 	AuthorID            string    `json:"author_id"`
 	CreatedAt           time.Time `json:"created_at"`
-	Geo                 *rawGeo
+	Geo                 *struct {
+		PlaceID string `json:"place_id"`
+	}
+}
+
+type rawPlace struct {
+	ID       string `json:"id"`
+	FullName string `json:"full_name"`
+	Geo      rawGeo `json:"geo"`
 }
 
 type rawGeo struct {
-	Coordinates rawCoordinates
-	PlaceID     string `json:"place_id"`
+	Type        string    `json:"type"`
+	BoundingBox []float64 `json:"bbox"`
+	Coordinates []float64 `json:"coordinates"`
 }
 
 type rawCoordinates struct {
@@ -99,7 +109,8 @@ type metaTweet struct {
 }
 
 type includesTweet struct {
-	Users []rawUser
+	Users  []rawUser
+	Places []rawPlace
 }
 
 type tweetResponse struct {
@@ -117,9 +128,29 @@ func (res *tweetResponse) Users() map[string]User {
 	return users
 }
 
+func (res *tweetResponse) Places() map[string]Geo {
+	places := map[string]Geo{}
+	for _, p := range res.Includes.Places {
+		var loc Coordinates
+		if p.Geo.Type == "Point" {
+			loc = Coordinates(p.Geo.Coordinates)
+		} else {
+			loc = Coordinates(p.Geo.BoundingBox)
+		}
+		place := Geo{
+			ID:          p.ID,
+			Type:        p.Geo.Type,
+			Coordinates: loc,
+		}
+		places[p.ID] = place
+	}
+	return places
+}
+
 func (res *tweetResponse) Tweets() ([]Tweet, error) {
 	tweets := []Tweet{}
 	users := res.Users()
+	places := res.Places()
 	for _, t := range res.Data {
 		if _, has := users[t.AuthorID]; !has {
 			return tweets, fmt.Errorf("User with id %s is not included in Twitter's response", t.AuthorID)
@@ -129,13 +160,10 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 			geoID *string = nil
 			geo   *Geo    = nil
 		)
-		if t.Geo != nil && t.Geo.Coordinates.Type == "Point" {
+		if t.Geo != nil {
 			geoID = &t.Geo.PlaceID
-			geo = &Geo{
-				Coordinates: t.Geo.Coordinates.Coordinates,
-				PlaceID:     t.Geo.PlaceID,
-			}
-
+			g := places[*geoID]
+			geo = &g
 		}
 
 		tweets = append(tweets, Tweet{

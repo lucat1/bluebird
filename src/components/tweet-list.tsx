@@ -13,10 +13,12 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
     ["search", type, query],
     () =>
       fetch<Search>(
-        type && query ? `search?type=${type}&query=${query}&amount=50` : `search`
+        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50` : `search`
       ),
     { suspense: true }
   );
+
+  console.log(tweets?.tweets.map(t => t.geo).filter(t => t != null))
 
   return (
     <>
