@@ -66,6 +66,7 @@ const TweetList: React.FC<TweetProps> = (props) => {
               </a>
             </div>
             {tweet.text}
+            <span className="block mt-4">{new Date(tweet.created_at).toLocaleString()}</span>
           </div>
         </div>
       ))}

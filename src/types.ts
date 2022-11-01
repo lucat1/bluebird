@@ -7,6 +7,7 @@ export interface Tweet {
   id: string
   text: string
   user: User
+  created_at: string
   geo?: Geo
 }
 
