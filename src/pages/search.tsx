@@ -29,10 +29,10 @@ const Search: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center">
         <form
           onSubmit={handleSubmit(setProps)}
-          className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl"
+          className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl dark:text-white"
         >
           <div className="flex items-center">
             <label

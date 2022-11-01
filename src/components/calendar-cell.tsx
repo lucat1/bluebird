@@ -53,7 +53,7 @@ const CalendarCell: React.FC<AriaCalendarCellProps & { state: RangeCalendarState
         ref={ref as any}
         hidden={isOutsideVisibleRange}
         className={`w-10 h-10 outline-none group ${isRoundedLeft ? "rounded-l-full" : ""
-          } ${isRoundedRight ? "rounded-r-full" : ""} ${isSelected ? (isInvalid ? "bg-red-300" : "bg-violet-300") : ""
+          } ${isRoundedRight ? "rounded-r-full" : ""} ${isSelected ? (isInvalid ? "bg-red-300" : "bg-sky-300") : ""
           } ${isDisabled ? "disabled" : ""}`}
       >
         <div
@@ -61,25 +61,25 @@ const CalendarCell: React.FC<AriaCalendarCellProps & { state: RangeCalendarState
             } ${
             // Focus ring, visible while the cell has keyboard focus.
             isFocusVisible
-              ? "ring-2 group-focus:z-2 ring-violet-600 ring-offset-2"
+              ? "ring-2 group-focus:z-2 ring-sky-600 ring-offset-2"
               : ""
             } ${
             // Darker selection background for the start and end.
             isSelectionStart || isSelectionEnd
               ? isInvalid
                 ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-violet-600 text-white hover:bg-violet-700"
+                : "bg-sky-600 text-white hover:bg-sky-700"
               : ""
             } ${
             // Hover state for cells in the middle of the range.
             isSelected && !isDisabled && !(isSelectionStart || isSelectionEnd)
               ? isInvalid
                 ? "hover:bg-red-400"
-                : "hover:bg-violet-400"
+                : "hover:bg-sky-400"
               : ""
             } ${
             // Hover state for non-selected cells.
-            !isSelected && !isDisabled ? "hover:bg-violet-100" : ""
+            !isSelected && !isDisabled ? "hover:bg-sky-100 dark:text-black" : ""
             } cursor-default`}
         >
           {formattedDate}

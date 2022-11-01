@@ -12,8 +12,8 @@ export const CalendarButton: React.FC<AriaButtonProps<'button'>> = (props) => {
     <button
       {...mergeProps(buttonProps, focusProps)}
       ref={ref as any}
-      className={`p-2 rounded-full ${props.isDisabled ? "text-gray-400" : ""} ${!props.isDisabled ? "hover:bg-violet-100 active:bg-violet-200" : ""
-        } outline-none ${isFocusVisible ? "ring-2 ring-offset-2 ring-purple-600" : ""
+      className={`p-2 rounded-full ${props.isDisabled ? "text-gray-400" : ""} ${!props.isDisabled ? "hover:bg-sky-100 active:bg-sky-200" : ""
+        } outline-none ${isFocusVisible ? "ring-2 ring-offset-2 ring-sky-600" : ""
         }`}
     >
       {props.children}
@@ -30,9 +30,9 @@ export const FieldButton: React.FC<AriaButtonProps<'button'> & { isPressed: bool
     <button
       {...buttonProps}
       ref={ref as any}
-      className={`px-2 -ml-px border transition-colors rounded-r-md group-focus-within:border-violet-600 group-focus-within:group-hover:border-violet-600 outline-none ${isPressed || props.isPressed
+      className={`px-2 -ml-px border transition-colors rounded-r-md group-focus-within:border-sky-600 group-focus-within:group-hover:border-sky-600 outline-none ${isPressed || props.isPressed
         ? "bg-gray-200 border-gray-400"
-        : "bg-gray-50 border-gray-300 group-hover:border-gray-400"
+        : "bg-gray-50 dark:bg-gray-700 border-gray-300 group-hover:border-gray-400"
         }`}
     >
       {props.children}

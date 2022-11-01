@@ -18,7 +18,7 @@ const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }>
         minWidth:
           segment.maxValue && String(segment.maxValue).length + "ch"
       }}
-      className={`px-0.5 box-content tabular-nums text-right outline-none rounded-sm focus:bg-violet-600 focus:text-white group ${!segment.isEditable ? "text-gray-500" : "text-gray-800"
+      className={`px-0.5 box-content tabular-nums text-right outline-none rounded-sm focus:bg-sky-600 focus:text-white group ${!segment.isEditable ? "text-gray-500 dark:text-gray-500" : "text-gray-800 dark:text-gray-400"
         }`}
     >
       {/* Always reserve space for the placeholder, to prevent layout shift when editing. */}
@@ -37,7 +37,6 @@ const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }>
     </div>
   );
 }
-
 const DateField: React.FC<AriaDatePickerProps<DateValue>> = (props) => {
   let { locale } = useLocale();
   let state = useDateFieldState({
