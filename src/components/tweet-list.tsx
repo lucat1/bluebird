@@ -2,18 +2,23 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import fetch from "../fetch";
 import type { Search } from "../types";
-
 export interface TweetProps {
   type: string;
   query: string;
 }
+export interface TweetForm {
+  type: string;
+  query: string;
+  startTime: string;
+  endTime: string;
+}
 
-const TweetList: React.FC<TweetProps> = ({ type, query }) => {
+const TweetList: React.FC<TweetForm> = ({ type, query, startTime, endTime }) => {
   const { data: tweets } = useQuery(
     ["search", type, query],
     () =>
       fetch<Search>(
-        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50` : `search`
+        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50&startTime=${startTime}&endTime=${endTime}` : `search`
       ),
     { suspense: true }
   );

@@ -1,22 +1,57 @@
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import Loading from "../components/loading";
-import TweetList, { TweetProps } from "../components/tweet-list";
+import TweetList, { TweetForm, TweetProps } from "../components/tweet-list";
+
+import DatePicker from "react-datepicker";
 
 const searchTypes = ["keyword", "user"];
 
 const Search: React.FC = () => {
-  const [props, setProps] = React.useState<TweetProps>({
+  const [props, setProps] = React.useState<TweetForm>({
     type: searchTypes[0],
     query: "",
+    startTime: "",
+    endTime: ""
   });
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm<TweetProps>();
-  const onSubmit = (data: TweetProps) => setProps(data);
+  } = useForm<TweetForm>();
+  const onSubmit = (data: TweetForm) => {
+    let td = new Date();
+    if (data.startTime && data.endTime) {
+      let st = new Date(data.startTime);
+      let et = new Date(data.endTime);
+      if (st > td || et > td) {
+        alert("Non posso vedere nel futuro");
+        return
+      }
+      if (et < st) {
+        alert("La data di fine periodo non puo' essere prima di quella di inizio periodo");
+        return
+      }
+
+      data.startTime = new Date(st).toISOString();
+      data.endTime = new Date(et).toISOString();
+      if (data.startTime == data.endTime) {
+        let next = (new Date(et).getDate() + 1)
+        let toSet = new Date(et)
+        toSet.setDate(next)
+        data.endTime = toSet.toISOString();
+      }
+    } else {
+      let next = (new Date(td).getDate() - 7)
+      let toSet = new Date(td)
+      toSet.setDate(next)
+      data.startTime = toSet.toISOString();
+      data.endTime = new Date().toISOString();
+    }
+    setProps(data);
+  };
 
   return (
     <>
@@ -77,14 +112,40 @@ const Search: React.FC = () => {
               placeholder="Search"
               {...register("query", { required: true })}
             />
-            {errors.query && "blablabla"}
-            <button
-              type="submit"
-              className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
-            >
-              Search
-            </button>
+            <div className="relative">
+              <button
+                type="submit"
+                className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+              >
+                Search
+              </button>
+            </div>
           </div>
+
+          <Controller
+            control={control}
+            name='startTime'
+            render={({ field }) => (
+              <DatePicker
+                placeholderText='Select date'
+                onChange={(date: Date) => { field.onChange(date) }}
+                selected={field.value}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name='endTime'
+            render={({ field }) => (
+              <DatePicker
+                placeholderText='Select date'
+                onChange={(date: Date) => { field.onChange(date) }}
+                selected={field.value}
+              />
+            )}
+          />
+
+          {errors.query && "blablabla"}
         </form>
       </div>
       <React.Suspense fallback={<Loading />}>

@@ -18,7 +18,7 @@ type indexPayload struct {
 	Tweets []request.Tweet
 }
 
-type Fetcher func(string, uint) (tweets []request.Tweet, err error)
+type Fetcher func(string, uint, string, string) (tweets []request.Tweet, err error)
 
 var twitterHandlerMap = map[string]Fetcher{
 	"keyword": request.TweetsByKeyword,
@@ -78,13 +78,12 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tweets, err = handler1(query, nOfAPITweets)
+		startTime := r.URL.Query().Get("startTime")
+		endTime := r.URL.Query().Get("endTime")
+
+		tweets, err = handler1(query, nOfAPITweets, startTime, endTime)
 		if err != nil {
-			sendError(w, http.StatusInternalServerError, APIError{
-				Message: "Could not fetch tweets",
-				Error:   err,
-			})
-			return
+			tweets = []request.Tweet{}
 		}
 		cached = uint(amount - len(tweets))
 		if len(tweets) > 0 {
@@ -97,7 +96,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		tweets, err = handler2(query, uint(amount))
+		tweets, err = handler2(query, uint(amount), startTime, endTime)
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets from cache",

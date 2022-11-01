@@ -1,6 +1,6 @@
 package request
 
-func TweetsByUser(username string, n uint) (tweets []Tweet, err error) {
+func TweetsByUser(username string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("users/by/username/" + username))
 	if err != nil {
 		return
@@ -10,7 +10,7 @@ func TweetsByUser(username string, n uint) (tweets []Tweet, err error) {
 		return
 	}
 	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
-		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo).
+		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,
 			RequestFieldVerified,
