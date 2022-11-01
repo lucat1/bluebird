@@ -5,6 +5,7 @@ import Loading from "../components/loading";
 import TweetList, { TweetForm, TweetProps } from "../components/tweet-list";
 
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const searchTypes = ["keyword", "user"];
 
