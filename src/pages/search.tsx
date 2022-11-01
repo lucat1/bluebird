@@ -2,63 +2,36 @@ import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import Loading from "../components/loading";
-import TweetList, { TweetForm, TweetProps } from "../components/tweet-list";
-
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import TweetList, { TweetProps } from "../components/tweet-list";
+import DateRangePicker from '../components/date-range-picker'
+import { now, getLocalTimeZone } from '@internationalized/date';
 
 const searchTypes = ["keyword", "user"];
 
 const Search: React.FC = () => {
-  const [props, setProps] = React.useState<TweetForm>({
+  const [props, setProps] = React.useState<TweetProps>({
     type: searchTypes[0],
     query: "",
-    startTime: "",
-    endTime: ""
+    timeRange: {
+      start: now(getLocalTimeZone()).subtract({
+        days: 7
+      }),
+      end: now(getLocalTimeZone())
+    }
   });
   const {
     register,
     control,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<TweetForm>();
-  const onSubmit = (data: TweetForm) => {
-    let td = new Date();
-    if (data.startTime && data.endTime) {
-      let st = new Date(data.startTime);
-      let et = new Date(data.endTime);
-      if (st > td || et > td) {
-        alert("Non posso vedere nel futuro");
-        return
-      }
-      if (et < st) {
-        alert("La data di fine periodo non puo' essere prima di quella di inizio periodo");
-        return
-      }
-
-      data.startTime = new Date(st).toISOString();
-      data.endTime = new Date(et).toISOString();
-      if (data.startTime == data.endTime) {
-        let next = (new Date(et).getDate() + 1)
-        let toSet = new Date(et)
-        toSet.setDate(next)
-        data.endTime = toSet.toISOString();
-      }
-    } else {
-      let next = (new Date(td).getDate() - 7)
-      let toSet = new Date(td)
-      toSet.setDate(next)
-      data.startTime = toSet.toISOString();
-      data.endTime = new Date().toISOString();
-    }
-    setProps(data);
-  };
+  } = useForm<TweetProps>({ defaultValues: props });
 
   return (
     <>
       <div className="flex justify-center">
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(setProps)}
           className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl"
         >
           <div className="flex items-center">
@@ -122,32 +95,29 @@ const Search: React.FC = () => {
               </button>
             </div>
           </div>
-
-          <Controller
-            control={control}
-            name='startTime'
-            render={({ field }) => (
-              <DatePicker
-                placeholderText='Select date'
-                onChange={(date: Date) => { field.onChange(date) }}
-                selected={field.value}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name='endTime'
-            render={({ field }) => (
-              <DatePicker
-                placeholderText='Select date'
-                onChange={(date: Date) => { field.onChange(date) }}
-                selected={field.value}
-              />
-            )}
-          />
-
           {errors.query && "blablabla"}
         </form>
+
+        <Controller
+          control={control}
+          name='timeRange'
+          rules={{
+            validate: range => {
+              if (!range) return true;
+              return range.end.compare(now(getLocalTimeZone())) <= 0
+            }
+          }}
+          render={({ field: { onChange, value } }) => (
+            <DateRangePicker
+              label="Between dates"
+              granularity="minute"
+              hourCycle={24}
+              hideTimeZone
+              onChange={onChange}
+              value={value}
+            />
+          )} />
+        {errors.timeRange && "Cannot pick a date in the future"}
       </div>
       <React.Suspense fallback={<Loading />}>
         {props.query != "" && <TweetList {...props} />}

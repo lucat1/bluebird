@@ -107,6 +107,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			startTime = maxTime
 		}
 
+		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
 		tweets, err = handler1(query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
 		if err != nil {
 			log.Printf("Error while querying Twitter: %v", err)

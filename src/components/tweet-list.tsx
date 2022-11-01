@@ -1,25 +1,34 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import fetch from "../fetch";
+import { getLocalTimeZone } from '@internationalized/date';
+
+import type { DateRange } from "@react-types/datepicker";
 import type { Search } from "../types";
+
 export interface TweetProps {
   type: string;
   query: string;
-}
-export interface TweetForm {
-  type: string;
-  query: string;
-  startTime: string;
-  endTime: string;
+  timeRange?: DateRange
 }
 
-const TweetList: React.FC<TweetForm> = ({ type, query, startTime, endTime }) => {
+const url = ({ type, query, timeRange }: TweetProps): string => {
+  if (!type || !query) return `search`
+
+  let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=50`
+  if (timeRange) {
+    const start = timeRange.start.toDate(getLocalTimeZone()).toISOString()
+    const end = timeRange.end.toDate(getLocalTimeZone()).toISOString()
+    base += `&startTime=${start}&endTime=${end}`
+  }
+  return base
+}
+
+const TweetList: React.FC<TweetProps> = (props) => {
   const { data: tweets } = useQuery(
-    ["search", type, query],
+    ["search", props],
     () =>
-      fetch<Search>(
-        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50&startTime=${startTime}&endTime=${endTime}` : `search`
-      ),
+      fetch<Search>(url(props)),
     { suspense: true }
   );
 
