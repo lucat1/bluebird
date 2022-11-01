@@ -1,9 +1,11 @@
+import * as React from 'react'
 import { useCalendarGrid } from "@react-aria/calendar";
 import { getWeeksInMonth } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
-import { CalendarCell } from "./calendar-cell";
+import { RangeCalendarState } from '@react-stately/calendar';
+import CalendarCell from "./calendar-cell";
 
-export function CalendarGrid({ state, ...props }) {
+const CalendarGrid: React.FC<{ state: RangeCalendarState }> = ({ state, ...props }) => {
   let { locale } = useLocale();
   let { gridProps, headerProps, weekDays } = useCalendarGrid(props, state);
 
@@ -39,3 +41,5 @@ export function CalendarGrid({ state, ...props }) {
     </table>
   );
 }
+
+export default CalendarGrid

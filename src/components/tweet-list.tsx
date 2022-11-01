@@ -32,8 +32,6 @@ const TweetList: React.FC<TweetProps> = (props) => {
     { suspense: true }
   );
 
-  console.log(tweets?.tweets.map(t => t.geo).filter(t => t != null))
-
   return (
     <>
       {tweets?.tweets.map((tweet) => (

@@ -95,7 +95,7 @@ const Search: React.FC = () => {
               </button>
             </div>
           </div>
-          {errors.query && "blablabla"}
+          {errors.query && "A query is required"}
         </form>
 
         <Controller
