@@ -11,6 +11,8 @@ export interface Tweet {
 }
 
 export interface Geo {
+  type: string
+  id: string
   coordinates: [number, number],
 }
 

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
-import Loading from "../components/loading";
-import TweetMap, { TweetProps } from "../components/tweet-map";
+import Loading from "./components/loading";
+import TweetList, { TweetProps } from "./components/tweet-list";
+
 const searchTypes = ["keyword", "user"];
 
 const Search: React.FC = () => {
@@ -87,7 +88,7 @@ const Search: React.FC = () => {
         </form>
       </div>
       <React.Suspense fallback={<Loading />}>
-        {props.query != "" && <TweetMap {...props} />}
+        {props.query != "" && <TweetList {...props} />}
       </React.Suspense>
     </>
   );

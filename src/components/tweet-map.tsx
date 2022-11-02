@@ -1,25 +1,9 @@
 import * as React from "react";
-import { useQuery } from "@tanstack/react-query";
 import { LatLng } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import fetch from "../fetch";
-import type { Search } from "../types";
+import type { Tweet } from "../types";
 
-export interface TweetProps {
-  type: string;
-  query: string;
-}
-
-const TweetList: React.FC<TweetProps> = ({ type, query }) => {
-  const { data: tweets } = useQuery(
-    ["search", type, query],
-    () =>
-      fetch<Search>(
-        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50` : `search`
-      ),
-    { suspense: true }
-  );
-
+const TweetMap: React.FC<{ tweets?: Tweet[] }> = ({ tweets }) => {
   const position = [51.505, -0.09];
   return (
     <MapContainer
@@ -30,10 +14,11 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
       scrollWheelZoom={true}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {tweets?.tweets.map(
-        (tweet) =>
+      {tweets?.map(
+        (tweet, i) =>
           tweet.geo && (
             <Marker
+              key={i}
               position={
                 new LatLng(tweet.geo.coordinates[0], tweet.geo.coordinates[1])
               }
@@ -46,4 +31,4 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
   );
 };
 
-export default TweetList;
+export default TweetMap;
