@@ -79,7 +79,7 @@ func TweetByID(filter string) (res request.Tweet, _ error) {
 func TweetsByUser(username string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
 	query := db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Limit(int(n)).Preload("User").Preload("Geo")
 	if startTime != "" && endTime != "" {
-		err = query.Find(&res, "created_at >= ? AND created_at <= ?", startTime, endTime).Error
+		err = query.Find(&res, "tweets.created_at >= ? AND tweets.created_at <= ?", startTime, endTime).Error
 	} else {
 		err = query.Find(&res).Error
 	}

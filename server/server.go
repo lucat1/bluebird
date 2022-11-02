@@ -112,7 +112,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error while querying Twitter: %v", err)
 		}
-		cached = uint(amount - len(tweets))
+		cached = uint(len(tweets))
 		if len(tweets) > 0 {
 			if err = cache.InsertTweets(tweets); err != nil {
 				sendError(w, http.StatusInternalServerError, APIError{
@@ -131,6 +131,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
+		cached = uint(len(tweets) - int(cached))
 	}
 	sendJSON(w, 200, SearchResponse{
 		Tweets: tweets,
