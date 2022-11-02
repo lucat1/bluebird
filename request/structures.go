@@ -65,7 +65,7 @@ type rawUser struct {
 	ProfileImageURL string `json:"profile_image_url"`
 	Verified        bool
 	Protected       bool
-	CreatedAt       string         `json:"created_at"`
+	CreatedAt       time.Time      `json:"created_at"`
 	PublicMetrics   userRawMetrics `json:"public_metrics"`
 }
 

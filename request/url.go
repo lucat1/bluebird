@@ -27,6 +27,7 @@ const (
 )
 
 type RequestExpansions string
+type RequestTime string
 
 const (
 	RequestExpansionAuthorID   RequestExpansions = "author_id"
@@ -40,6 +41,8 @@ const (
 	RequestQueryTweetFields                  = "tweet.fields"
 	RequestQueryUserFields                   = "user.fields"
 	RequestQueryPlaceFields                  = "place.fields"
+	RequestQueryStartTime                    = "start_time"
+	RequestQueryEndTime                      = "end_time"
 	RequestQueryExpansions                   = "expansions"
 	RequestQueryPaginationToken              = "pagination_token"
 )
@@ -51,6 +54,8 @@ type RequestURL struct {
 	userFields      []RequestField
 	placeFields     []RequestField
 	expansions      []RequestExpansions
+	startTime       RequestTime
+	endTime         RequestTime
 	paginationToken string
 }
 
@@ -90,6 +95,16 @@ func (req RequestURL) AddExpansions(expansions ...RequestExpansions) RequestURL 
 	return req
 }
 
+func (req RequestURL) AddStartTime(startTime RequestTime) RequestURL {
+	req.startTime = startTime
+	return req
+}
+
+func (req RequestURL) AddEndTime(endTime RequestTime) RequestURL {
+	req.endTime = endTime
+	return req
+}
+
 func join[K ~string](strs []K, sep string) (s string) {
 	l := len(strs)
 	for i, v := range strs {
@@ -118,6 +133,8 @@ func buildURL(req RequestURL) (parsed *url.URL, err error) {
 	queryAdd(query, string(RequestQueryUserFields), join(req.userFields, ","))
 	queryAdd(query, string(RequestQueryPlaceFields), join(req.placeFields, ","))
 	queryAdd(query, string(RequestQueryExpansions), join(req.expansions, ","))
+	queryAdd(query, string(RequestQueryStartTime), string(req.startTime))
+	queryAdd(query, string(RequestQueryEndTime), string(req.endTime))
 	queryAdd(query, string(RequestQueryPaginationToken), req.paginationToken)
 	parsed.RawQuery = query.Encode()
 	return

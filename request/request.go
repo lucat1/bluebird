@@ -49,11 +49,11 @@ func requestUser(url *url.URL) (user User, err error) {
 func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {
 	var raw tweetResponse
 	var twts []Tweet
-
 	for uint(len(tweets)) < n {
 		if raw, err = requestRaw[tweetResponse](url); err != nil {
 			return
 		}
+
 		twts, err = raw.Tweets()
 		if err != nil {
 			return

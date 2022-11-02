@@ -1,8 +1,10 @@
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { now, getLocalTimeZone } from '@internationalized/date';
 
 import Loading from "./components/loading";
 import TweetList, { TweetProps } from "./components/tweet-list";
+import DateRangePicker from './components/date-range-picker'
 
 const searchTypes = ["keyword", "user"];
 
@@ -10,20 +12,27 @@ const Search: React.FC = () => {
   const [props, setProps] = React.useState<TweetProps>({
     type: searchTypes[0],
     query: "",
+    timeRange: {
+      start: now(getLocalTimeZone()).subtract({
+        days: 7
+      }),
+      end: now(getLocalTimeZone())
+    }
   });
   const {
     register,
+    control,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<TweetProps>();
-  const onSubmit = (data: TweetProps) => setProps(data);
+  } = useForm<TweetProps>({ defaultValues: props });
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center">
         <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl"
+          onSubmit={handleSubmit(setProps)}
+          className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl dark:text-white"
         >
           <div className="flex items-center">
             <label
@@ -77,15 +86,38 @@ const Search: React.FC = () => {
               placeholder="Search"
               {...register("query", { required: true })}
             />
-            {errors.query && "blablabla"}
-            <button
-              type="submit"
-              className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
-            >
-              Search
-            </button>
+            <div className="relative">
+              <button
+                type="submit"
+                className="text-white absolute right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+              >
+                Search
+              </button>
+            </div>
           </div>
+          {errors.query && "A query is required"}
         </form>
+
+        <Controller
+          control={control}
+          name='timeRange'
+          rules={{
+            validate: range => {
+              if (!range) return true;
+              return range.end.compare(now(getLocalTimeZone())) <= 0
+            }
+          }}
+          render={({ field: { onChange, value } }) => (
+            <DateRangePicker
+              label="Between dates"
+              granularity="minute"
+              hourCycle={24}
+              hideTimeZone
+              onChange={onChange}
+              value={value}
+            />
+          )} />
+        {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
       </div>
       <React.Suspense fallback={<Loading />}>
         {props.query != "" && <TweetList {...props} />}
