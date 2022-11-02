@@ -1,24 +1,36 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import fetch from "../fetch";
+import { getLocalTimeZone } from '@internationalized/date';
+
+import type { DateRange } from "@react-types/datepicker";
 import type { Search } from "../types";
 
 export interface TweetProps {
   type: string;
   query: string;
+  timeRange?: DateRange
 }
 
-const TweetList: React.FC<TweetProps> = ({ type, query }) => {
+const url = ({ type, query, timeRange }: TweetProps): string => {
+  if (!type || !query) return `search`
+
+  let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=50`
+  if (timeRange) {
+    const start = timeRange.start.toDate(getLocalTimeZone()).toISOString()
+    const end = timeRange.end.toDate(getLocalTimeZone()).toISOString()
+    base += `&startTime=${start}&endTime=${end}`
+  }
+  return base
+}
+
+const TweetList: React.FC<TweetProps> = (props) => {
   const { data: tweets } = useQuery(
-    ["search", type, query],
+    ["search", props],
     () =>
-      fetch<Search>(
-        type && query ? `search?type=${type}&query=${encodeURIComponent(query)}&amount=50` : `search`
-      ),
+      fetch<Search>(url(props)),
     { suspense: true }
   );
-
-  console.log(tweets?.tweets.map(t => t.geo).filter(t => t != null))
 
   return (
     <>
@@ -54,6 +66,7 @@ const TweetList: React.FC<TweetProps> = ({ type, query }) => {
               </a>
             </div>
             {tweet.text}
+            <span className="block mt-4">{new Date(tweet.created_at).toLocaleString()}</span>
           </div>
         </div>
       ))}

@@ -10,18 +10,16 @@ import Map from "./pages/map";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App>
-          <Routes>
-            <Route index element={<h1>home</h1>} />
-            <Route path="search" element={<Search />} />
-            <Route path="map" element={<Map />} />
-            <Route path="*" element={<h1>Not found</h1>} />
-          </Routes>
-        </App>
-      </BrowserRouter>
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <App>
+        <Routes>
+          <Route index element={<h1>home</h1>} />
+          <Route path="search" element={<Search />} />
+          <Route path="map" element={<Map />} />
+          <Route path="*" element={<h1>Not found</h1>} />
+        </Routes>
+      </App>
+    </BrowserRouter>
+  </QueryClientProvider>
 );

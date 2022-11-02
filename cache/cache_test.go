@@ -78,7 +78,7 @@ func TestTweetsCount(t *testing.T) {
 func TestTweetsByKeyword(t *testing.T) {
 	const testString string = "ciao"
 	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
-	tweets, err := TweetsByKeyword(testString, 20)
+	tweets, err := TweetsByKeyword(testString, 20, "", "")
 	assert.Nil(t, err, "Failed to load tweets using TweetsByKeyword")
 	for i, tweet := range tweets {
 		assert.True(t, strings.Contains(strings.ToLower(tweet.Text), testString), "Tweet number %d doesn't contain the searched keyword", i)
@@ -103,12 +103,25 @@ func TestTweetByID(t *testing.T) {
 func TestTweetsByUser(t *testing.T) {
 	const testUser string = "_ultimotiamo_"
 	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
-	tweets, err := TweetsByUser("invalid_user", 50)
+	tweets, err := TweetsByUser("invalid_user", 50, "", "")
 	assert.Nil(t, err, "Expected TweetsByUser not to error with an invalid username")
 	assert.Equal(t, len(tweets), 0, "Expected TweetsByUser to return an empty slice with an invalid input")
-	tweets, err = TweetsByUser(testUser, 50)
+	tweets, err = TweetsByUser(testUser, 50, "", "")
 	assert.Nil(t, err, "Expected TweetsByUser not to error with a valid user")
-	assert.Equal(t, len(tweets), 1, "Expected to have found only one tweet")
+	assert.Equal(t, 1, len(tweets), "Expected to have found only one tweet")
 	assert.EqualValues(t, tweets[0], testTweets[0], "Expected the tweet retrieved by username to match the source one")
+	assert.Nil(t, clearDB(), "Failed to clean the Database")
+}
+
+func TestTimeRange(t *testing.T) {
+	const testUser string = "_ultimotiamo_"
+	assert.Nil(t, InsertTweets(testTweets), "Expected InsertTweets not to error while filling in test data")
+	tweets, err := TweetsByUser(testUser, 50, "2022-10-24T16:06:04.325830601+02:00", "2022-10-25T16:06:04.325830601+02:00")
+	assert.Nil(t, err, "Expected TweetsByUser not to error with an invalid time range")
+	assert.Equal(t, len(tweets), 0, "Expected TweetsByUser to return an empty slice with an invalid time range")
+	tweets, err = TweetsByUser(testUser, 50, "2022-10-27T16:06:04.325830601+02:00", "2022-10-31T16:06:04.325830601+02:00")
+	assert.Nil(t, err, "Expected TweetsByUser not to error with a valid time range")
+	assert.Equal(t, 1, len(tweets), "Expected to have found only one tweet")
+	assert.EqualValues(t, tweets[0], testTweets[0], "Expected the tweet retrieved by username and time range to match the source one")
 	assert.Nil(t, clearDB(), "Failed to clean the Database")
 }
