@@ -62,8 +62,14 @@ func TweetsCount() (n int64, _ error) {
 	return n, db.Model(&request.Tweet{}).Count(&n).Error
 }
 
-func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (res []request.Tweet, _ error) {
-	return res, db.Where("text LIKE ? and created_at >= ? and created_at <= ?", "%"+filter+"%", startTime, endTime).Limit(int(n)).Preload("User").Preload("Geo").Find(&res).Error
+func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
+	query := db.Limit(int(n)).Preload("User").Preload("Geo")
+	if startTime != "" && endTime != "" {
+		err = query.Find(&res, "text LIKE ? AND created_at >= ? AND created_at <= ?", filter, startTime, endTime).Error
+	} else {
+		err = query.Find(&res, "text LIKE ?", filter).Error
+	}
+	return res, err
 }
 
 func TweetByID(filter string) (res request.Tweet, _ error) {
@@ -71,6 +77,11 @@ func TweetByID(filter string) (res request.Tweet, _ error) {
 }
 
 func TweetsByUser(username string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
-	err = db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Limit(int(n)).Preload("User").Find(&res, "created_at >= ? AND created_at <= ?", startTime, endTime).Error
-	return res, err
+	query := db.Joins("INNER JOIN users ON users.id = tweets.user_id AND users.username = ?", username).Limit(int(n)).Preload("User").Preload("Geo")
+	if startTime != "" && endTime != "" {
+		err = query.Find(&res, "created_at >= ? AND created_at <= ?", startTime, endTime).Error
+	} else {
+		err = query.Find(&res).Error
+	}
+	return
 }
