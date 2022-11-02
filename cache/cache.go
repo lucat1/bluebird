@@ -65,7 +65,7 @@ func TweetsCount() (n int64, _ error) {
 func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
 	query := db.Limit(int(n)).Preload("User").Preload("Geo")
 	if startTime != "" && endTime != "" {
-		err = query.Find(&res, "text LIKE ? AND created_at >= ? AND created_at <= ?", filter, startTime, endTime).Error
+		err = query.Find(&res, "text LIKE ? AND created_at >= ? AND created_at <= ?", "%"+filter+"%", startTime, endTime).Error
 	} else {
 		err = query.Find(&res, "text LIKE ?", filter).Error
 	}

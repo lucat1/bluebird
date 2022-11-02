@@ -117,7 +117,7 @@ const Search: React.FC = () => {
               value={value}
             />
           )} />
-        {errors.timeRange && "Cannot pick a date in the future"}
+        {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
       </div>
       <React.Suspense fallback={<Loading />}>
         {props.query != "" && <TweetList {...props} />}
