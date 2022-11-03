@@ -47,13 +47,9 @@ const TermCloud: React.FC<TermCouldProps> = ({tweets}) => {
   //const words = React.useMemo(() => [], [tweets])
 
   return(
-    <details className="dark:bg-gray-900 mt-4 bg-white open:bg-orange-300 duration-300">
-        <summary className="dark:bg-gray-900 dark:text-white text-center bg-inherit px-5 py-3 text-lg cursor-pointer">Open the term cloud</summary>
-        <div className="bg-white dark:bg-gray-900 px-5 py-3  text-sm font-light">
-          <ReactWordcloud words={words} />
-        </div>
-    </details>
-    
+    <div className="bg-white dark:bg-gray-900 px-5 py-3  text-sm font-light">
+      <ReactWordcloud words={words} />
+      </div>
   );
 }
 
