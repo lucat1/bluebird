@@ -26,8 +26,8 @@ const DateRangePicker: React.FC<AriaDateRangePickerProps<DateValue> & DateRangeP
       <span {...labelProps} className="hidden">
         {props.label}
       </span>
-      <div {...groupProps} ref={ref as any} className="flex group">
-        <div className="flex bg-white dark:bg-gray-700 border border-gray-300 group-hover:border-gray-400 transition-colors rounded-l-md pr-10 group-focus-within:border-sky-600 group-focus-within:group-hover:border-sky-600 p-1 relative">
+      <div {...groupProps} ref={ref as any} className="flex  max-w-screen-sm group">
+        <div className="flex sm:flex-row flex-col bg-white dark:bg-gray-700 border dark:border-gray-600 border-gray-300 group-hover:border-gray-400 transition-colors rounded-l-md pr-1 group-focus-within:border-sky-500 group-focus-within:group-hover:border-sky-600 p-1 relative">
           <DateField {...startFieldProps}/>
           <span aria-hidden="true" className="px-2">
             -          

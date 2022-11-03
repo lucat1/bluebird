@@ -30,9 +30,9 @@ export const FieldButton: React.FC<AriaButtonProps<'button'> & { isPressed: bool
     <button
       {...buttonProps}
       ref={ref as any}
-      className={`px-2 -ml-px border transition-colors rounded-r-md group-focus-within:border-sky-600 group-focus-within:group-hover:border-sky-600 outline-none ${isPressed || props.isPressed
+      className={`px-2 w-10  -ml-px border transition-colors rounded-r-md group-focus-within:border-sky-600 group-focus-within:group-hover:border-sky-600 outline-none ${isPressed || props.isPressed
         ? "bg-gray-200 border-gray-400"
-        : "bg-gray-50 dark:bg-gray-700 border-gray-300 group-hover:border-gray-400"
+        : "bg-gray-50 dark:bg-gray-700 dark:border-gray-600 border-gray-300 group-hover:border-gray-400"
         }`}
     >
       {props.children}

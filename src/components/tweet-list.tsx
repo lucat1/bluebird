@@ -36,8 +36,8 @@ const TweetList: React.FC<TweetProps> = (props) => {
     <>
       <TweetMap tweets={tweets?.tweets} />
       {tweets?.tweets.map((tweet) => (
-        <div key={tweet.id} className="grid grid-cols-6 grap-4 text-left">
-          <div className="dark:bg-gray-800 p-6 rounded-lg border col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-zinc-400 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
+        <div key={tweet.id} className="grid sm:grid-cols-6 grid-cols-1 text-left">
+          <div className="dark:bg-gray-800 p-6 rounded-lg border sm: col-start-2 col-span-4 shadow-2xl m-4 dark:shadow-sky-900 shadow-zinc-400 focus:ring-sky-500 focus:border-sky-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
             <div className="flex items-center justify-between mb-4">
               <a
                 className="flex space-x-4"
