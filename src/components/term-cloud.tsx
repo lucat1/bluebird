@@ -42,13 +42,17 @@ const TermCloud: React.FC<TermCouldProps> = ({tweets}) => {
 
   const words: Word[] = Object.keys(obj)
     .map(text => ({ text, value: obj[text] }))
-    .filter(word => word.value > 1)
-    .sort((a,b) => a.value > b.value ? 1 : (a.value<b.value ? -1 : 0)).slice(0, 50)
+    .filter(word =>word.value > 1)
+    .sort((a,b) => a.value > b.value ? 1 : (a.value<b.value ? -1 : 0)).slice(0, 80)
   //const words = React.useMemo(() => [], [tweets])
 
   return(
     <div className="bg-white dark:bg-gray-900 px-5 py-3  text-sm font-light">
-      <ReactWordcloud words={words} />
+      <ReactWordcloud options={{
+        fontFamily: 'courier new',
+        fontSizes: [20, 60],
+      }} words={words} />
+
       </div>
   );
 }
