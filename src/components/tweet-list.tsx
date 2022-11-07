@@ -34,6 +34,9 @@ const TweetList: React.FC<TweetProps> = (props) => {
 
   return (
     <>
+      <div className="flex justify-center mb-4">
+        <span className="">Found <span className="text-sky-800 dark:text-sky-600">{tweets?.tweets.length || 0}</span> tweets</span>
+      </div>
       <TweetMap tweets={tweets?.tweets} />
       {tweets?.tweets.map((tweet) => (
         <div key={tweet.id} className="grid grid-cols-6 grap-4 text-left">
@@ -61,9 +64,6 @@ const TweetList: React.FC<TweetProps> = (props) => {
                 href="https://twitter.com/{{this.User.Username}}/status/{{this.ID}}"
                 target="_blank"
               >
-                <button className="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
-                  Go to tweet
-                </button>
               </a>
             </div>
             {tweet.text}
