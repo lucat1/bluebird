@@ -1,7 +1,7 @@
 import * as React from "react";
-import { LatLng, Map } from "leaflet";
+import { Map } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import type { Geo, Tweet } from "../types";
+import type { Tweet } from "../types";
 
 function findBounds(points: [number, number][]): [[number, number], [number, number]] {
   if (points.length <= 0) return [[0, 0], [0, 0]];
@@ -40,7 +40,12 @@ const TweetMap: React.FC<{ tweets?: Tweet[] }> = ({ tweets }) => {
   }, [map, show])
   return (
     <div className="flex flex-col items-center justify-center">
-      <button onClick={_ => setShow(!show)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-64">Show map</button>
+      <button
+        onClick={_ => setShow(!show)}
+        className="mb-4 w-64 text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+      >
+        Show map
+      </button>
       <div className={`flex justify-center bg-white dark:bg-gray-900 ${show ? '' : 'hidden'}`}>
         <MapContainer
           className="shadow-lg rounded-md border border-gray-300 dark:border-gray-600"
@@ -48,10 +53,9 @@ const TweetMap: React.FC<{ tweets?: Tweet[] }> = ({ tweets }) => {
           center={center}
           zoom={3}
           scrollWheelZoom={true}
-          ref={map}
+          ref={map as any}
         >
           <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
-          {/*<TileLayer url="https://mts1.google.com/vt/lyrs=m@186112443&hl=x-local&src=app&x={x}&y={y}&z={z}" />*/}
           {mappedTweets.map(
             (tweet, i) =>
               tweet.geo && (
