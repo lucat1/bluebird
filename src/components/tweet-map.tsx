@@ -3,7 +3,7 @@ import { Map } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { Tweet } from "../types";
 
-function findBounds(points: [number, number][]): [[number, number], [number, number]] {
+const findBounds = (points: [number, number][]): [[number, number], [number, number]] => {
   if (points.length <= 0) return [[0, 0], [0, 0]];
   const lo = points[0].slice() as [number, number]
   const hi = points[0].slice() as [number, number]
