@@ -23,7 +23,6 @@ const Search: React.FC = () => {
     register,
     control,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm<TweetProps>({ defaultValues: props });
 
@@ -95,29 +94,31 @@ const Search: React.FC = () => {
               </button>
             </div>
           </div>
-          {errors.query && "A query is required"}
+          {errors.query && <label className="text-red-500">A query is required</label>}
         </form>
 
-        <Controller
-          control={control}
-          name='timeRange'
-          rules={{
-            validate: range => {
-              if (!range) return true;
-              return range.end.compare(now(getLocalTimeZone())) <= 0
-            }
-          }}
-          render={({ field: { onChange, value } }) => (
-            <DateRangePicker
-              label="Between dates"
-              granularity="minute"
-              hourCycle={24}
-              hideTimeZone
-              onChange={onChange}
-              value={value}
-            />
-          )} />
-        {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
+        <div className="mb-4">
+          <Controller
+            control={control}
+            name='timeRange'
+            rules={{
+              validate: range => {
+                if (!range) return true;
+                return range.end.compare(now(getLocalTimeZone())) <= 0
+              }
+            }}
+            render={({ field: { onChange, value } }) => (
+              <DateRangePicker
+                label="Between dates"
+                granularity="minute"
+                hourCycle={24}
+                hideTimeZone
+                onChange={onChange}
+                value={value}
+              />
+            )} />
+          {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
+        </div>
       </div>
       <React.Suspense fallback={<Loading />}>
         {props.query != "" && <TweetList {...props} />}
