@@ -8,7 +8,7 @@ import { queryClient } from "../main";
 
 const App: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
   <OverlayContainer>
-    <main className="w-screen h-screen dark:bg-gray-900 dark:text-gray-800 dark:text-white">
+    <main className="w-screen h-screen dark:bg-gray-900 dark:text-gray-800 dark:text-white overflow-auto">
       <nav className="bg-sky-800 border-gray-200 px-2 sm:px-4 py-2.5  dark:bg-gray-900">
         <div className="container flex flex-wrap justify-between items-center mx-1">
           <a href="/" className="flex items-center">
