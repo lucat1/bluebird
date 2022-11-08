@@ -35,7 +35,7 @@ const TweetList: React.FC<TweetProps> = (props) => {
   return (
     <>
       <div className="flex justify-center mb-4">
-        <span className="">Found <span className="text-sky-800 dark:text-sky-600">{tweets?.tweets.length || 0}</span> tweets</span>
+        <span className="dark:text-white">Found <span className="text-sky-800 dark:text-sky-600">{tweets?.tweets.length || 0}</span> tweets</span>
       </div>
       <TweetMap tweets={tweets?.tweets} />
       {tweets?.tweets.map((tweet) => (
