@@ -9,6 +9,7 @@ export interface Tweet {
   user: User
   created_at: string
   geo?: Geo
+  sentiment: string
 }
 
 export interface Geo {
