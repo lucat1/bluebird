@@ -23,13 +23,13 @@ func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error)
 	if err != nil {
 		return
 	}
-	if res.StatusCode != http.StatusOK {
-		return raw, fmt.Errorf("Non 200 status code")
-	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return
+	}
+	if res.StatusCode != http.StatusOK {
+		return raw, fmt.Errorf("Non 200 status code (was %d): %s", res.StatusCode, string(body))
 	}
 	return raw, json.Unmarshal(body, &raw)
 }
