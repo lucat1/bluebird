@@ -100,7 +100,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
-		maxTime := time.Now().Add(time.Hour * 24 * time.Duration(-nOfDaysAllowed))
+		maxTime := time.Now().Add((time.Hour * 24 * time.Duration(-nOfDaysAllowed)) + (time.Minute * time.Duration(-1)))
 		// fixing the startTime is only worth if the user is acutally interested in
 		// the last N_OF_DAYS_ALLOWED days of activity
 		if time.Since(startTime).Hours()/24 > nOfDaysAllowed && endTime.After(maxTime) {
