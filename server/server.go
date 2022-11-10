@@ -46,6 +46,10 @@ type SearchResponse struct {
 	Cached uint            `json:"cached"`
 }
 
+type SentimentResponse struct {
+	Sentiments request.Sentiments `json:"sentiments"`
+}
+
 func serveIndex(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "dist/index.html")
 }
@@ -139,11 +143,45 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func sentimentAnalysis(w http.ResponseWriter, r *http.Request) {
+	tweetID := r.URL.Query().Get("id")
+	sentiments := request.Sentiments{}
+	if tweetID != "" {
+		tweet, err := cache.TweetByID(tweetID)
+		if err != nil {
+			sendError(w, http.StatusInternalServerError, APIError{
+				Message: "Could not fetch tweet from cache",
+				Error:   err,
+			})
+			return
+		}
+		sentiments, err = request.SentimentsFromTweet(tweet)
+		if err != nil {
+			sendError(w, http.StatusInternalServerError, APIError{
+				Message: "Could not estimate sentiments",
+				Error:   err,
+			})
+			return
+		}
+		if err = cache.InsertTweets([]request.Tweet{tweet}); err != nil {
+			sendError(w, http.StatusInternalServerError, APIError{
+				Message: "Could not store gathered tweets in cache",
+				Error:   err,
+			})
+			return
+		}
+	}
+	sendJSON(w, 200, SentimentResponse{
+		Sentiments: sentiments,
+	})
+}
+
 func RunServer(host string) error {
 	mux := muxie.NewMux()
 
 	mux.Use(cors)
 	mux.HandleFunc("/api/search", searchHandler)
+	mux.HandleFunc("/api/sentiment", sentimentAnalysis)
 	mux.Handle("/assets/*path", http.FileServer(http.Dir("dist")))
 	mux.HandleFunc("/*path", serveIndex)
 

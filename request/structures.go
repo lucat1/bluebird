@@ -8,13 +8,14 @@ import (
 )
 
 type Tweet struct {
-	ID        string    `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Text      string    `json:"text"`
-	UserID    string    `json:"-"`
-	User      User      `json:"user"`
-	GeoID     *string   `json:"-"`
-	Geo       *Geo      `json:"geo"`
-	CreatedAt time.Time `json:"created_at" sql:"type:timestamp with time zone"`
+	ID         string     `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text       string     `json:"text"`
+	UserID     string     `json:"-"`
+	User       User       `json:"user"`
+	GeoID      *string    `json:"-"`
+	Geo        *Geo       `json:"geo"`
+	CreatedAt  time.Time  `json:"created_at" sql:"type:timestamp with time zone"`
+	Sentiments Sentiments `json:"sentiments"`
 }
 
 type Geo struct {
@@ -24,12 +25,22 @@ type Geo struct {
 }
 
 type Coordinates []float64
+type Sentiments [4]Sentiment
 
 func (sla *Coordinates) Scan(src interface{}) error {
 	return json.Unmarshal([]byte(src.(string)), sla)
 }
 
 func (sla Coordinates) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
+}
+
+func (sla *Sentiments) Scan(src interface{}) error {
+	return json.Unmarshal([]byte(src.(string)), sla)
+}
+
+func (sla Sentiments) Value() (driver.Value, error) {
 	val, err := json.Marshal(sla)
 	return string(val), err
 }
@@ -183,15 +194,20 @@ func (res *userResponse) User() User {
 	return User{ID: res.Data.ID, Name: res.Data.Name, Username: res.Data.Username, ProfileImage: res.Data.ProfileImageURL}
 }
 
-type Sentiment string
+type Sentiment struct {
+	Label string  `json:"label"`
+	Score float64 `json:"score"`
+}
+
+type SentimentType string
 
 const (
-	SentimentAnger   Sentiment = "anger"
-	SentimentSadness           = "sadness"
-	SentimentFear              = "fear"
-	SentimentJoy               = "joy"
+	SentimentAnger   SentimentType = "anger"
+	SentimentSadness               = "sadness"
+	SentimentFear                  = "fear"
+	SentimentJoy                   = "joy"
 )
 
 type sentimentResponse struct {
-	Sentiment Sentiment `json:"sentiment"`
+	Sentiments Sentiments `json:"sentiment"`
 }
