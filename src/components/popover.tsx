@@ -26,10 +26,10 @@ const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({ isOpen, 
   // to allow screen reader users to dismiss the popup easily.
   return (
     <FocusScope contain restoreFocus>
-      <div
+      <div 
         {...mergeProps(overlayProps, modalProps, dialogProps)}
         ref={ref as any}
-        className="absolute top-full bg-white border border-gray-300 rounded-md shadow-lg mt-2 p-8 z-10"
+        className="absolute place-self-center  top-full bg-white border border-gray-300 rounded-md shadow-lg dark:text-black mt-2 p-8 z-10"
       >
         {children}
         <DismissButton onDismiss={onClose} />
