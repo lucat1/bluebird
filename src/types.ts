@@ -3,12 +3,20 @@ export interface Search {
   cached: number
 }
 
+export enum Sentiment {
+  Anger = 'anger',
+  Sadness = 'sadness',
+  Fear = 'fear',
+  Joy = 'joy'
+}
+
 export interface Tweet {
   id: string
   text: string
   user: User
   created_at: string
   geo?: Geo
+  sentiment: Sentiment
 }
 
 export interface Geo {
