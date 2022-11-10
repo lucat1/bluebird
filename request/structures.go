@@ -182,3 +182,16 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 func (res *userResponse) User() User {
 	return User{ID: res.Data.ID, Name: res.Data.Name, Username: res.Data.Username, ProfileImage: res.Data.ProfileImageURL}
 }
+
+type Sentiment string
+
+const (
+	SentimentAnger   Sentiment = "anger"
+	SentimentSadness           = "sadness"
+	SentimentFear              = "fear"
+	SentimentJoy               = "joy"
+)
+
+type sentimentResponse struct {
+	Sentiment Sentiment `json:"sentiment"`
+}
