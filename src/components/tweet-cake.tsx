@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 
+import { Sentiment } from '../types';
+
 function TweetCake() {
   //to edit with dataset in input
   const dataset = [
-    { title: 'Anger', value: 4, color: '#E38627' },
-    { title: 'Sadness', value: 3, color: '#C13C37' },
-    { title: 'Fear', value: 4, color: '#6A2135' },
-    { title: 'Joy', value: 6, color: '#32CD32' }
+    { title: Sentiment.Anger, value: 4, color: '#E38627' },
+    { title: Sentiment.Sadness, value: 3, color: '#C13C37' },
+    { title: Sentiment.Fear, value: 4, color: '#6A2135' },
+    { title: Sentiment.Joy, value: 6, color: '#32CD32' }
   ]
   const [selected, setSelected] = React.useState<number | undefined>(undefined);
   const [hovered, setHovered] = React.useState<number | undefined>(undefined);
