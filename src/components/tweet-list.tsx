@@ -1,8 +1,10 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getLocalTimeZone } from '@internationalized/date';
 import type { DateRange } from "@react-types/datepicker";
-import type { Search } from "../types";
+import { parseDateTime, getLocalTimeZone } from '@internationalized/date';
+import format from 'tinydate'
+
+import { Search, RawTweet, Tweet } from '../types'
 import fetch from "../fetch";
 
 export interface TweetProps {
@@ -10,6 +12,8 @@ export interface TweetProps {
   query: string;
   timeRange?: DateRange
 }
+
+const dateFormatter = format("{YYYY}/{MM}/{DD} {HH}:{mm}")
 
 const url = ({ type, query, timeRange }: TweetProps): string => {
   if (!type || !query) return `search`
@@ -23,6 +27,8 @@ const url = ({ type, query, timeRange }: TweetProps): string => {
   return base
 }
 
+const convert = (raw: RawTweet): Tweet => ({ ...raw, date: parseDateTime(raw.created_at.slice(0, -1)) })
+
 const TweetList: React.FC<TweetProps> = (props) => {
   const { data } = useQuery(
     ["search", props],
@@ -30,13 +36,14 @@ const TweetList: React.FC<TweetProps> = (props) => {
       fetch<Search>(url(props)),
     { suspense: true }
   );
+  const tweets = data!.tweets.map(convert)
 
   return (
     <>
       <div className="flex justify-center mb-4">
         <span className="dark:text-white">Found <span className="text-sky-800 dark:text-sky-600">{data?.tweets.length || 0}</span> tweets</span>
       </div>
-      {tweets?.tweets.map((tweet) => (
+      {tweets.map((tweet) => (
         <div key={tweet.id} className="dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900 border dark:border-gray-600">
           <div className="flex items-center justify-between mb-4">
             <a
@@ -56,7 +63,7 @@ const TweetList: React.FC<TweetProps> = (props) => {
                 </div>
               </div>
             </a>
-            <span>{new Date(tweet.created_at).toLocaleString()}</span>
+            <span>{dateFormatter(tweet.date.toDate(getLocalTimeZone()))}</span>
           </div>
           {tweet.text}
         </div>
