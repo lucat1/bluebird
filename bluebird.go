@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"git.hjkl.gq/bluebird/bluebird/cache"
-	"git.hjkl.gq/bluebird/bluebird/request"
-	"git.hjkl.gq/bluebird/bluebird/server"
+	"git.hjkl.gq/team14/team14/cache"
+	"git.hjkl.gq/team14/team14/request"
+	"git.hjkl.gq/team14/team14/server"
 	"gorm.io/gorm/logger"
 )
 

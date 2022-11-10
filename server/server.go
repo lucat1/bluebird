@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"git.hjkl.gq/bluebird/bluebird/cache"
-	"git.hjkl.gq/bluebird/bluebird/request"
+	"git.hjkl.gq/team14/team14/cache"
+	"git.hjkl.gq/team14/team14/request"
 	"github.com/kataras/muxie"
 )
 

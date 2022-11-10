@@ -1,4 +1,4 @@
-module git.hjkl.gq/bluebird/bluebird
+module git.hjkl.gq/team14/team14
 
 go 1.18
 
