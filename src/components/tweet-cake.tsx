@@ -1,15 +1,19 @@
 import * as React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 
-import { Sentiment } from '../types';
+import { Tweet, Sentiment } from '../types';
 
-function TweetCake() {
+interface TweetCakeProps {
+  tweets: Tweet[]
+}
+
+const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
   //to edit with dataset in input
   const dataset = [
     { title: Sentiment.Anger, value: 4, color: '#E38627' },
-    { title: Sentiment.Sadness, value: 3, color: '#C13C37' },
+    { title: Sentiment.Sadness, value: 4, color: '#C13C37' },
     { title: Sentiment.Fear, value: 4, color: '#6A2135' },
-    { title: Sentiment.Joy, value: 6, color: '#32CD32' }
+    { title: Sentiment.Joy, value: 4, color: '#32CD32' }
   ]
   const [selected, setSelected] = React.useState<number | undefined>(undefined);
   const [hovered, setHovered] = React.useState<number | undefined>(undefined);
@@ -48,4 +52,4 @@ function TweetCake() {
   );
 }
 
-export default TweetCake;
+export default TweetCake

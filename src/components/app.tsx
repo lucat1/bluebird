@@ -3,17 +3,18 @@ import { OverlayContainer } from "@react-aria/overlays";
 import { ErrorBoundary } from 'react-error-boundary'
 import { now, getLocalTimeZone } from '@internationalized/date';
 
+import Error from './error';
 import Loading from "./loading";
 import Navbar from "./navbar";
-import Error from './error';
-import TermCloud from "./term-cloud";
 import Search, { searchTypes } from "../search";
-import { queryClient } from "../main";
+import TweetFetcher from "./tweet-fetcher";
 import TweetList from "./tweet-list";
-import type { TweetProps } from "./components/tweet-list";
+import TweetBars from "./tweet-bars";
 import TweetCake from "./tweet-cake";
 
-const App: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+import type { TweetProps } from "./tweet-fetcher";
+
+const App: React.FC<React.PropsWithChildren<{}>> = () => {
   const [props, setProps] = React.useState<TweetProps>({
     type: searchTypes[0],
     query: "",
@@ -24,31 +25,43 @@ const App: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
       end: now(getLocalTimeZone())
     }
   });
+
   return (
     <OverlayContainer>
       <main className="w-screen h-screen overflow-hidden lg:overflow-none flex flex-col dark:bg-gray-900 dark:text-gray-200 dark:text-white">
         <Navbar></Navbar>
-        <div className="overflow-hidden lg:flex-1 grid grid-rows-none lg:grid-cols-[2fr_1fr] lg:grid-rows-[min-content_auto] lg:gap-x-4 mx-2 lg:mx-4">
-          <React.Suspense fallback={
-            <div className="lg:row-span-2 flex items-center justify-center">
-              <Loading />
-            </div>
-          }>
-            <div className="row-start-2 lg:row-span-2 lg:row-start-1 grid lg:grid-row-[min-content_auto]">
-              <div className="grid lg:grid-cols-[1fr_2fr] lg:row-start-1">
-                <div className="lg:col-start-1 flex items-center justify-center">
-                  <TweetCake />
-                </div>
-                <div className="lg:col-start-2"> barre</div>
+        <div className="overflow-auto lg:overflow-hidden lg:flex-1 grid grid-rows-none grid-cols-1 lg:grid-cols-[2fr_1fr] lg:grid-rows-[min-content_auto] lg:gap-x-4 mx-2 lg:mx-4">
+          <ErrorBoundary FallbackComponent={Error}>
+            <React.Suspense fallback={
+              <div className="lg:row-span-2 flex items-center justify-center">
+                <Loading />
               </div>
-              <div className="lg:row-start-2"> TermCloud</div>
-              <div className="lg:row-start-3"> bottone mappa</div>
-            </div>
-            <div className="lg:row-start-2 lg:col-start-2 overflow-auto">
-              {props.query != "" && <TweetList {...props} />}
-            </div>
-          </React.Suspense>
-          <div className="row-start-1 lg:col-start-2 flex justify-center">
+            }>
+              {props.query != "" && <TweetFetcher {...props} render={tweets => (
+                <>
+                  <div className="row-start-2 lg:row-span-2 lg:row-start-1 grid lg:grid-row-[min-content_auto] auto-rows-fr">
+                    <div className="lg:row-start-1 lg:m-4 flex flex-col lg:flex-row">
+                      <div className="flex items-center justify-center aspect-square p-8 lg:p-0">
+                        <TweetCake tweets={tweets} />
+                      </div>
+                      <div className="flex items-center justify-center aspect-video">
+                        <TweetBars tweets={tweets} />
+                      </div>
+                    </div>
+                    <div className="lg:row-start-2">TermCloud</div>
+                    <div className="lg:row-start-3">bottone mappa</div>
+                  </div>
+                  <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">
+                    {props.query != "" && <TweetList tweets={tweets} />}
+                  </div>
+                </>
+              )} />}
+            </React.Suspense>
+          </ErrorBoundary>
+          <div className={`flex items-center justify-center ${props.query == ''
+            ? 'row-start-1 col-start-1 row-span-2 col-span-2'
+            : 'row-start-1 lg:col-start-2'
+            }`}>
             <Search values={props} onSubmit={setProps} />
           </div>
         </div>
