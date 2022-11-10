@@ -1,36 +1,25 @@
 import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { now, getLocalTimeZone } from '@internationalized/date';
 
-import Loading from "./components/loading";
-import TweetList, { TweetProps } from "./components/tweet-list";
+import { TweetProps } from "./components/tweet-list";
 import DateRangePicker from './components/date-range-picker'
 
-const searchTypes = ["keyword", "user"];
+export const searchTypes = ["keyword", "user"];
 
-const Search: React.FC = () => {
-  const [props, setProps] = React.useState<TweetProps>({
-    type: searchTypes[0],
-    query: "",
-    timeRange: {
-      start: now(getLocalTimeZone()).subtract({
-        days: 7
-      }),
-      end: now(getLocalTimeZone())
-    }
-  });
+const Search: React.FC<{ values: TweetProps, onSubmit: SubmitHandler<TweetProps> }> = ({ values, onSubmit }) => {
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<TweetProps>({ defaultValues: props });
+  } = useForm<TweetProps>({ defaultValues: values });
 
   return (
     <>
       <div className="flex flex-col items-center">
         <form
-          onSubmit={handleSubmit(setProps)}
+          onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl dark:text-white"
         >
           <div className="flex items-center">
@@ -120,9 +109,6 @@ const Search: React.FC = () => {
           {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
         </div>
       </div>
-      <React.Suspense fallback={<Loading />}>
-        {props.query != "" && <TweetList {...props} />}
-      </React.Suspense>
     </>
   );
 };

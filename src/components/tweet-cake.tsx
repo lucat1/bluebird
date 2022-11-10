@@ -27,11 +27,11 @@ function TweetCake() {
   return (
     <PieChart
       data={data}
-      radius={24}
+      radius={48}
       lineWidth={lineWidth}
       segmentsStyle={{ transition: 'stroke .3s', cursor: 'pointer' }}
       segmentsShift={(index) => (index === selected ? 2 : 0.5)}
-      center={[50, 30]}
+      center={[50, 50]}
       animate
       label={({ dataEntry }) => dataEntry.title + ' ' + Math.round(dataEntry.percentage) + '%'}
       labelPosition={100 - lineWidth / 2}
