@@ -15,24 +15,26 @@ import TweetCake from "./tweet-cake";
 
 import type { TweetProps } from "./tweet-fetcher";
 
+const defaultProps = {
+  type: searchTypes[0],
+  query: "",
+  timeRange: {
+    start: now(getLocalTimeZone()).subtract({
+      days: 7
+    }),
+    end: now(getLocalTimeZone())
+  }
+}
+
 const App: React.FC<React.PropsWithChildren<{}>> = () => {
-  const [props, setProps] = React.useState<TweetProps>({
-    type: searchTypes[0],
-    query: "",
-    timeRange: {
-      start: now(getLocalTimeZone()).subtract({
-        days: 7
-      }),
-      end: now(getLocalTimeZone())
-    }
-  });
+  const [props, setProps] = React.useState<TweetProps>(defaultProps);
 
   return (
     <OverlayContainer>
       <main className="w-screen h-screen flex flex-col overflow-auto lg:overflow-hidden dark:bg-gray-900 dark:text-gray-200 dark:text-white">
         <Navbar></Navbar>
         <div className="lg:flex-1 lg:overflow-auto grid grid-rows-[auto_auto_auto] grid-cols-1 lg:grid-cols-[auto_min-content] lg:grid-rows-[auto_auto] lg:gap-x-4 px-2 lg:mx-4">
-          <ErrorBoundary FallbackComponent={Error}>
+          <ErrorBoundary FallbackComponent={Error} onReset={_ => setProps(defaultProps)}>
             <React.Suspense fallback={
               <div className="lg:row-span-2 flex items-center justify-center">
                 <Loading />
