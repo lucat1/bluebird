@@ -110,6 +110,11 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		if time.Since(startTime).Hours()/24 > nOfDaysAllowed && endTime.After(maxTime) {
 			startTime = maxTime
 		}
+		if time.Now().Sub(endTime).Seconds() < 10 {
+			endTime = time.Now()
+			endTime.Add(time.Second * time.Duration(-10))
+		}
+		endTime.Add(time.Second * time.Duration(-10))
 
 		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
 		tweets, err = handler1(query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
@@ -143,7 +148,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func sentimentAnalysis(w http.ResponseWriter, r *http.Request) {
+func sentimentHandler(w http.ResponseWriter, r *http.Request) {
 	tweetID := r.URL.Query().Get("id")
 	sentiments := request.Sentiments{}
 	if tweetID != "" {
@@ -155,20 +160,25 @@ func sentimentAnalysis(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
-		sentiments, err = request.SentimentsFromTweet(tweet)
-		if err != nil {
-			sendError(w, http.StatusInternalServerError, APIError{
-				Message: "Could not estimate sentiments",
-				Error:   err,
-			})
-			return
-		}
-		if err = cache.InsertTweets([]request.Tweet{tweet}); err != nil {
-			sendError(w, http.StatusInternalServerError, APIError{
-				Message: "Could not store gathered tweets in cache",
-				Error:   err,
-			})
-			return
+		if tweet.Sentiments != nil {
+			sentiments = *tweet.Sentiments
+		} else {
+			sentiments, err = request.SentimentsFromTweet(tweet)
+			if err != nil {
+				sendError(w, http.StatusInternalServerError, APIError{
+					Message: "Could not estimate sentiments",
+					Error:   err,
+				})
+				return
+			}
+			tweet.Sentiments = &sentiments
+			if err = cache.InsertTweets([]request.Tweet{tweet}); err != nil {
+				sendError(w, http.StatusInternalServerError, APIError{
+					Message: "Could not store gathered tweets in cache",
+					Error:   err,
+				})
+				return
+			}
 		}
 	}
 	sendJSON(w, 200, SentimentResponse{
@@ -181,7 +191,7 @@ func RunServer(host string) error {
 
 	mux.Use(cors)
 	mux.HandleFunc("/api/search", searchHandler)
-	mux.HandleFunc("/api/sentiment", sentimentAnalysis)
+	mux.HandleFunc("/api/sentiment", sentimentHandler)
 	mux.Handle("/assets/*path", http.FileServer(http.Dir("dist")))
 	mux.HandleFunc("/*path", serveIndex)
 

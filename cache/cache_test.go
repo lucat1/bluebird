@@ -50,7 +50,7 @@ func TestInsertTweets(t *testing.T) {
 	assert.Nil(t, err, "Expected to find the newly inserted tweet")
 	assert.EqualValues(t, tweet, testTweets[0], "Unexpected different tweets")
 	assert.Nil(t, InsertTweets(testTweets[1:]), "Expected InsertTweets not to error with a lenghty input")
-	for i := 1; i < len(testTweets); i++ {
+	for i := range testTweets {
 		tweet, err := TweetByID(testTweets[i].ID)
 		assert.Nil(t, err, "Expected to find the newly inserted tweet (num %d)", i)
 		assert.EqualValues(t, tweet, testTweets[i], "Unexpected different tweets (num %d)", i)

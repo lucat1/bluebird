@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-import { Tweet, Sentiment } from '../types';
+import { Tweet, SentimentLabel } from '../types';
 
 interface TweetCakeProps {
   tweets: Tweet[]
@@ -10,10 +10,10 @@ interface TweetCakeProps {
 const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
   //to edit with dataset in input
   const dataset = [
-    { name: Sentiment.Anger, value: 4, color: '#0c4a6e' },
-    { name: Sentiment.Sadness, value: 4, color: '#a16207' },
-    { name: Sentiment.Fear, value: 4, color: '#6A2135' },
-    { name: Sentiment.Joy, value: 4, color: '#047857' }
+    { name: SentimentLabel.Anger, value: 4, color: '#0c4a6e' },
+    { name: SentimentLabel.Sadness, value: 4, color: '#a16207' },
+    { name: SentimentLabel.Fear, value: 4, color: '#6A2135' },
+    { name: SentimentLabel.Joy, value: 4, color: '#047857' }
   ]
 
   return (

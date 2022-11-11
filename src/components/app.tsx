@@ -8,10 +8,10 @@ import Loading from "./loading";
 import Navbar from "./navbar";
 import Search, { searchTypes } from "../search";
 import TweetFetcher from "./tweet-fetcher";
+import TweetCloud from "./tweet-cloud";
 import TweetList from "./tweet-list";
 import TweetBars from "./tweet-bars";
 import TweetCake from "./tweet-cake";
-import TweetCloud from "./term-cloud";
 
 import type { TweetProps } from "./tweet-fetcher";
 

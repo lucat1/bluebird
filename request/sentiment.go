@@ -5,12 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"net/url"
 )
 
 var (
-	sentimentURL *url.URL
+	sentimentURL        *url.URL
+	availableSentiments = [4]SentimentType{SentimentAnger, SentimentSadness, SentimentFear, SentimentJoy}
 )
 
 func SetSentimentURL(u string) (err error) {
@@ -51,8 +53,20 @@ func SentimentsFromTweets(tweets []Tweet) (sentiments map[string]Sentiments, err
 	return sentiments, json.Unmarshal(body, &sentiments)
 }
 
+func randomSentiment() [4]float32 {
+	one := rand.Float32() * .35
+	two := rand.Float32() * .35
+	three := rand.Float32() * .30
+	return [4]float32{one, two, three, 1 - one - two - three}
+}
+
 func SentimentsFromTweet(tweet Tweet) (sentiments Sentiments, err error) {
 	if sentimentURL == nil {
+		rand := randomSentiment()
+		for i := range sentiments {
+			sentiments[i].Score = rand[i]
+			sentiments[i].Label = availableSentiments[i]
+		}
 		return
 	}
 	u := &url.URL{

@@ -8,14 +8,14 @@ import (
 )
 
 type Tweet struct {
-	ID         string     `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Text       string     `json:"text"`
-	UserID     string     `json:"-"`
-	User       User       `json:"user"`
-	GeoID      *string    `json:"-"`
-	Geo        *Geo       `json:"geo"`
-	CreatedAt  time.Time  `json:"created_at" sql:"type:timestamp with time zone"`
-	Sentiments Sentiments `json:"sentiments"`
+	ID         string      `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text       string      `json:"text"`
+	UserID     string      `json:"-"`
+	User       User        `json:"user"`
+	GeoID      *string     `json:"-"`
+	Geo        *Geo        `json:"geo"`
+	CreatedAt  time.Time   `json:"created_at" sql:"type:timestamp with time zone"`
+	Sentiments *Sentiments `json:"sentiments"`
 }
 
 type Geo struct {
@@ -37,7 +37,10 @@ func (sla Coordinates) Value() (driver.Value, error) {
 }
 
 func (sla *Sentiments) Scan(src interface{}) error {
-	return json.Unmarshal([]byte(src.(string)), sla)
+	fmt.Println(src)
+	err := json.Unmarshal([]byte(src.(string)), sla)
+	fmt.Println(sla)
+	return err
 }
 
 func (sla Sentiments) Value() (driver.Value, error) {
@@ -178,13 +181,14 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		}
 
 		tweets = append(tweets, Tweet{
-			ID:        t.ID,
-			Text:      t.Text,
-			UserID:    t.AuthorID,
-			User:      users[t.AuthorID],
-			CreatedAt: t.CreatedAt,
-			GeoID:     geoID,
-			Geo:       geo,
+			ID:         t.ID,
+			Text:       t.Text,
+			UserID:     t.AuthorID,
+			User:       users[t.AuthorID],
+			CreatedAt:  t.CreatedAt,
+			GeoID:      geoID,
+			Geo:        geo,
+			Sentiments: nil,
 		})
 	}
 	return tweets, nil
@@ -192,11 +196,6 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 
 func (res *userResponse) User() User {
 	return User{ID: res.Data.ID, Name: res.Data.Name, Username: res.Data.Username, ProfileImage: res.Data.ProfileImageURL}
-}
-
-type Sentiment struct {
-	Label string  `json:"label"`
-	Score float64 `json:"score"`
 }
 
 type SentimentType string
@@ -207,6 +206,11 @@ const (
 	SentimentFear                  = "fear"
 	SentimentJoy                   = "joy"
 )
+
+type Sentiment struct {
+	Label SentimentType `json:"label"`
+	Score float32       `json:"score"`
+}
 
 type sentimentResponse struct {
 	Sentiments Sentiments `json:"sentiment"`
