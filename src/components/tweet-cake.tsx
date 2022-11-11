@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PieChart } from 'react-minimal-pie-chart';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 import { Tweet, Sentiment } from '../types';
 
@@ -10,45 +10,33 @@ interface TweetCakeProps {
 const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
   //to edit with dataset in input
   const dataset = [
-    { title: Sentiment.Anger, value: 4, color: '#0c4a6e' },
-    { title: Sentiment.Sadness, value: 4, color: '#a16207' },
-    { title: Sentiment.Fear, value: 4, color: '#6A2135' },
-    { title: Sentiment.Joy, value: 4, color: '#047857' }
+    { name: Sentiment.Anger, value: 4, color: '#0c4a6e' },
+    { name: Sentiment.Sadness, value: 4, color: '#a16207' },
+    { name: Sentiment.Fear, value: 4, color: '#6A2135' },
+    { name: Sentiment.Joy, value: 4, color: '#047857' }
   ]
-  const [selected, setSelected] = React.useState<number | undefined>(undefined);
-  const [hovered, setHovered] = React.useState<number | undefined>(undefined);
-  const data = dataset.map((entry, i) => {
-    if (hovered === i) {
-      return {
-        ...entry,
-        color: '#0ea5e9',
-      };
-    }
-    return entry;
-  });
 
-  const lineWidth = 60;
   return (
-    <PieChart
-      data={data}
-      radius={48}
-      lineWidth={lineWidth}
-      segmentsStyle={{ transition: 'stroke .3s', cursor: 'pointer' }}
-      segmentsShift={(index) => (index === selected ? 2 : 0.5)}
-      center={[50, 50]}
-      animate
-      label={({ dataEntry }) => dataEntry.title + ' ' + Math.round(dataEntry.percentage) + '%'}
-      labelPosition={100 - lineWidth / 2}
-      labelStyle={{
-        fontSize: 3,
-        fill: '#fff',
-        opacity: 0.75,
-        pointerEvents: 'none',
-      }}
-      onClick={(_, index) => setSelected(index === selected ? undefined : index)}
-      onMouseOver={(_, index) => setHovered(index)}
-      onMouseOut={() => setHovered(undefined)}
-    />
+    <div className="w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart width={400} height={400}>
+          <Pie
+            dataKey="value"
+            isAnimationActive={true}
+            data={dataset}
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            fill="#ffffff"
+            label
+          >
+            {dataset.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 

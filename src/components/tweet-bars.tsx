@@ -82,7 +82,7 @@ const TweetBars: React.FC<TweetBarsProps> = ({ tweets }) => {
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="value" fill="#0284c7" />
+          <Bar isAnimationActive={true} dataKey="value" fill="#0284c7" />
         </BarChart>
 
       </ResponsiveContainer>

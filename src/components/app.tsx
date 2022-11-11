@@ -11,7 +11,7 @@ import TweetFetcher from "./tweet-fetcher";
 import TweetList from "./tweet-list";
 import TweetBars from "./tweet-bars";
 import TweetCake from "./tweet-cake";
-import TweetCloud from "./tweet-cloud";
+import TweetCloud from "./term-cloud";
 
 import type { TweetProps } from "./tweet-fetcher";
 
