@@ -76,15 +76,17 @@ const TweetBars: React.FC<TweetBarsProps> = ({ tweets }) => {
   }, [tweets])
 
   return (
-    <ResponsiveContainer width="80%" height="90%">
-      <BarChart height={100} data={data}>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Bar dataKey="value" fill="#0284c7" />
-      </BarChart>
+    <div className="w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart height={100} data={data}>
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" fill="#0284c7" />
+        </BarChart>
 
-    </ResponsiveContainer>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
