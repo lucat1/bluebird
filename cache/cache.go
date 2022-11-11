@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -51,7 +50,7 @@ func Close() error {
 
 func InsertTweets(tweets []request.Tweet) error {
 	return db.Clauses(clause.OnConflict{
-		UpdateAll: true,
+		DoNothing: true,
 	}).Create(&tweets).Error
 }
 
@@ -63,32 +62,6 @@ func TweetsCount() (n int64, _ error) {
 	return n, db.Model(&request.Tweet{}).Count(&n).Error
 }
 
-func mapTweet(tweet request.Tweet) request.Tweet {
-	if tweet.Sentiments != nil {
-		empty := false
-		for _, sentiment := range tweet.Sentiments {
-			if sentiment.Label == "" {
-				empty = true
-				break
-			}
-		}
-		if empty {
-			fmt.Println("clearing", tweet.Sentiments)
-			tweet.Sentiments = nil
-		}
-	} else {
-		fmt.Println("already clean")
-	}
-	return tweet
-}
-
-func mapTweets(tweets []request.Tweet) []request.Tweet {
-	for i := range tweets {
-		tweets[i] = mapTweet(tweets[i])
-	}
-	return tweets
-}
-
 func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
 	query := db.Limit(int(n)).Preload("User").Preload("Geo")
 	if startTime != "" && endTime != "" {
@@ -96,12 +69,12 @@ func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (r
 	} else {
 		err = query.Find(&res, "text LIKE ?", filter).Error
 	}
-	return mapTweets(res), err
+	return res, err
 }
 
 func TweetByID(id string) (res request.Tweet, err error) {
 	err = db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: id}).Error
-	return mapTweet(res), err
+	return res, err
 }
 
 func TweetsByUser(username string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
@@ -111,5 +84,5 @@ func TweetsByUser(username string, n uint, startTime string, endTime string) (re
 	} else {
 		err = query.Find(&res).Error
 	}
-	return mapTweets(res), err
+	return res, err
 }

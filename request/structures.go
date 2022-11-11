@@ -37,9 +37,7 @@ func (sla Coordinates) Value() (driver.Value, error) {
 }
 
 func (sla *Sentiments) Scan(src interface{}) error {
-	fmt.Println(src)
 	err := json.Unmarshal([]byte(src.(string)), sla)
-	fmt.Println(sla)
 	return err
 }
 
