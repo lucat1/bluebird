@@ -32,18 +32,18 @@ const TermCloud: React.FC<TermCouldProps> = ({ tweets }) => {
   const schemeCategory10ScaleOrdinal = scaleOrdinal(schemeCategory10);
 
   return (
-    <div className="bg-white dark:bg-gray-900 px-5 text-sm font-light">
+    <div className="bg-white dark:bg-gray-900 px-5 text-sm font-light overflow-hidden [&>*]:h-full [&>*]:flex [&>*]:justify-center [&>*>*]:h-full">
       <WordCloud
         data={words}
-        font="Times"
-        fontStyle="italic"
+        width={600}
+        height={340}
         fontWeight="bold"
         fontSize={(word) => Math.log2(word.value) * 50}
         spiral="rectangular"
         rotate={(word) => word.value % 360}
         padding={5}
         random={Math.random}
-        fill={(d, i) => schemeCategory10ScaleOrdinal(i)}
+        fill={(d: any, i: any) => schemeCategory10ScaleOrdinal(i)}
         onWordClick={(event, d) => {
           console.log(`onWordClick: ${d.text}`);
         }}

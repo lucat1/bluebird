@@ -17,7 +17,6 @@ const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
   ]
 
   return (
-    <div className="w-full h-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={400} height={400}>
           <Pie
@@ -36,7 +35,6 @@ const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-    </div>
   );
 }
 

@@ -29,9 +29,9 @@ const App: React.FC<React.PropsWithChildren<{}>> = () => {
 
   return (
     <OverlayContainer>
-      <main className="w-screen h-screen overflow-hidden lg:overflow-none flex flex-col dark:bg-gray-900 dark:text-gray-200 dark:text-white">
+      <main className="w-screen h-screen flex flex-col overflow-auto lg:overflow-hidden dark:bg-gray-900 dark:text-gray-200 dark:text-white">
         <Navbar></Navbar>
-        <div className="overflow-auto lg:overflow-hidden lg:flex-1 grid grid-rows-1 grid-cols-1 lg:grid-cols-[2fr_1fr] lg:grid-rows-[min-content_auto] lg:gap-x-4 mx-2 lg:mx-4">
+        <div className="lg:flex-1 lg:overflow-auto grid grid-rows-[auto_auto_auto] grid-cols-1 lg:grid-cols-[auto_min-content] lg:grid-rows-[auto_auto] lg:gap-x-4 px-2 lg:mx-4">
           <ErrorBoundary FallbackComponent={Error}>
             <React.Suspense fallback={
               <div className="lg:row-span-2 flex items-center justify-center">
@@ -40,8 +40,8 @@ const App: React.FC<React.PropsWithChildren<{}>> = () => {
             }>
               {props.query != "" && <TweetFetcher {...props} render={tweets => (
                 <>
-                  <div className="row-start-2 lg:row-span-2 lg:row-start-1 grid grid-rows-1 grid-cols-1  lg:grid-row-[min-content_auto] auto-rows-fr">
-                    <div className="lg:row-start-1 lg:m-4 flex flex-col lg:flex-row">
+                  <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
+                    <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
                       <div className="flex items-center justify-center aspect-square p-8 lg:p-0">
                         <TweetCake tweets={tweets} />
                       </div>
@@ -49,7 +49,7 @@ const App: React.FC<React.PropsWithChildren<{}>> = () => {
                         <TweetBars tweets={tweets} />
                       </div>
                     </div>
-                    <div className="lg:row-start-2 flex items-center justify-center">
+                    <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
                       <TweetCloud tweets={tweets} />
                     </div>
                   </div>
@@ -62,7 +62,7 @@ const App: React.FC<React.PropsWithChildren<{}>> = () => {
           </ErrorBoundary>
           <div className={`flex items-center justify-center ${props.query == ''
             ? 'row-start-1 col-start-1 row-span-2 col-span-2'
-            : 'row-start-1 col-start-1 lg:col-start-2'
+            : 'row-start-1 col-start-1 lg:col-start-2 h-fit'
             }`}>
             <Search values={props} onSubmit={setProps} />
           </div>
