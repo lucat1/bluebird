@@ -12,6 +12,7 @@ import TweetCloud from "./tweet-cloud";
 import TweetList from "./tweet-list";
 import TweetBars from "./tweet-bars";
 import TweetCake from "./tweet-cake";
+import Legend from "./legend";
 
 const App: React.FC = () => {
   const { query, loading, reset } = useStore(s => ({ query: s.query, loading: s.loading, reset: s.reset }), shallow)

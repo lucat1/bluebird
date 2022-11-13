@@ -3,6 +3,7 @@ import { getLocalTimeZone } from '@internationalized/date';
 import format from 'tinydate'
 
 import useStore from '../store'
+import Legend from "./legend";
 
 const dateFormatter = format("{YYYY}/{MM}/{DD} {HH}:{mm}")
 
@@ -37,11 +38,9 @@ const TweetList: React.FC = () => {
             <span>{dateFormatter(tweet.date.toDate(getLocalTimeZone()))}</span>
           </div>
           {tweet.text}
-          {tweet.sentiments?.map((sentiment, i) => (
-            <React.Fragment key={i}>
-              <span>{sentiment.label}: {sentiment.score}</span>
-            </React.Fragment>
-          ))}
+          {tweet.sentiments && (
+            <Legend sentiments={tweet.sentiments || []} />
+          )}
         </div>
       ))}
     </>

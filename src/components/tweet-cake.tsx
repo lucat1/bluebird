@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 import useStore from '../store'
 import { Tweet, SentimentLabel, Sentiments } from '../types';
 
-const colorsByLabel = {
+export const colorsByLabel = {
   [SentimentLabel.Anger]: '#6A2135',
   [SentimentLabel.Sadness]: '#0c4a6e',
   [SentimentLabel.Fear]: '#047857',

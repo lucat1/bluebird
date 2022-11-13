@@ -19,9 +19,9 @@ const Search: React.FC = () => {
       <div className="flex flex-col items-center">
         <form
           onSubmit={handleSubmit(fetch)}
-          className="flex flex-col md:flex-row space-y-4 md:space-x-2 my-4 max-w-4xl dark:text-white"
+          className="flex flex-col items-center justify-center md:flex-row mb-4 max-w-4xl dark:text-white"
         >
-          <div className="flex items-center">
+          <div className="flex items-center mb-4 md:mb-0">
             <label
               htmlFor="type"
               className="sr-only block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
@@ -42,7 +42,7 @@ const Search: React.FC = () => {
             )}
           </div>
 
-          <div className="relative">
+          <div className="relative md:ml-4">
             <div className="flex absolute inset-y-0 left-0  items-center pl-3 pointer-events-none">
               <svg
                 aria-hidden="true"
