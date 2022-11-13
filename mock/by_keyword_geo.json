@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "text": "#vivalapam la pizza surgelata è molto buona",
+      "id": "1591844654613680128",
+      "author_id": "926734851025309696",
+      "created_at": "2022-11-13T17:25:15.000Z",
+      "edit_history_tweet_ids": ["1591844654613680128"],
+      "geo": { "place_id": "06671c677e777826" }
+    }
+  ],
+  "includes": {
+    "users": [
+      {
+        "public_metrics": {
+          "followers_count": 1,
+          "following_count": 39,
+          "tweet_count": 2,
+          "listed_count": 0
+        },
+        "username": "SpookyYonno",
+        "location": "Bologna, Emilia Romagna",
+        "created_at": "2017-11-04T08:56:21.000Z",
+        "id": "926734851025309696",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1499372338802008072/sD3WAfQ0_normal.jpg",
+        "description": "Man I love frogs",
+        "protected": false,
+        "verified": false,
+        "name": "Yonas Catalini"
+      }
+    ],
+    "places": [
+      {
+        "full_name": "Bologna, Emilia Romagna",
+        "geo": {
+          "type": "Feature",
+          "bbox": [11.2296117, 44.4211518, 11.4336997, 44.5563177],
+          "properties": {}
+        },
+        "id": "06671c677e777826"
+      }
+    ]
+  },
+  "meta": {
+    "newest_id": "1591844654613680128",
+    "oldest_id": "1591844654613680128",
+    "result_count": 1
+  }
+}
