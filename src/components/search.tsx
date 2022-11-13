@@ -1,25 +1,24 @@
 import * as React from "react";
-import { SubmitHandler, Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { now, getLocalTimeZone } from '@internationalized/date';
 
-import { TweetProps } from "./components/tweet-list";
-import DateRangePicker from './components/date-range-picker'
+import useStore, { Query, QueryType } from '../store'
+import DateRangePicker from './date-range-picker'
 
-export const searchTypes = ["keyword", "user"];
-
-const Search: React.FC<{ values: TweetProps, onSubmit: SubmitHandler<TweetProps> }> = ({ values, onSubmit }) => {
+const Search: React.FC = () => {
+  const { query, fetch } = useStore(s => ({ query: s.query, fetch: s.fetch }))
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<TweetProps>({ defaultValues: values });
+  } = useForm<Query>({ defaultValues: query });
 
   return (
     <>
       <div className="flex flex-col items-center">
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(fetch)}
           className="grid grid-cols-[auto_1fr] gap-4 my-4 max-w-4xl dark:text-white"
         >
           <div className="flex items-center">
@@ -34,7 +33,7 @@ const Search: React.FC<{ values: TweetProps, onSubmit: SubmitHandler<TweetProps>
               className="w-32 bg-gray-50 hover:border-gray-400  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               {...register("type", { required: true })}
             >
-              {searchTypes.map((type) => (
+              {Object.values(QueryType).map((type) => (
                 <option key={type}>{type}</option>
               ))}
             </select>

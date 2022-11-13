@@ -1,20 +1,25 @@
 import * as React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-import { Tweet, Sentiment } from '../types';
+import useStore from '../store'
+import { Tweet, SentimentLabel, Sentiments } from '../types';
 
-interface TweetCakeProps {
-  tweets: Tweet[]
+const colorsByLabel = {
+  [SentimentLabel.Anger]: '#0c4a6e',
+  [SentimentLabel.Sadness]: '#a16207',
+  [SentimentLabel.Fear]: '#6A2135',
+  [SentimentLabel.Joy]: '#047857'
 }
 
-const TweetCake: React.FC<TweetCakeProps> = ({ tweets }) => {
-  //to edit with dataset in input
-  const dataset = [
-    { name: Sentiment.Anger, value: 4, color: '#0c4a6e' },
-    { name: Sentiment.Sadness, value: 4, color: '#a16207' },
-    { name: Sentiment.Fear, value: 4, color: '#6A2135' },
-    { name: Sentiment.Joy, value: 4, color: '#047857' }
-  ]
+const TweetCake: React.FC = () => {
+  const sentimentss = useStore(s => s.tweets.map(t => t.sentiments).filter((s): s is Sentiments => !!s))
+  const byLabel: Map<SentimentLabel, number> = new Map()
+  for (const sentiments of sentimentss) {
+    for (const sentiment of sentiments) {
+      byLabel.set(sentiment.label, (byLabel.get(sentiment.label) || 0) + sentiment.score)
+    }
+  }
+  const dataset = Object.values(SentimentLabel).map(sentiment => ({ name: sentiment, value: Number((byLabel.get(sentiment) || 0).toFixed(2)), color: colorsByLabel[sentiment] }))
 
   return (
       <ResponsiveContainer width="100%" height="100%">

@@ -22,6 +22,13 @@ func main() {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
 	request.SetClient(client)
+
+	sentiment := os.Getenv("SENTIMENT_SERVER")
+	if sentiment == "" {
+		log.Println("Missing environment variable SENTIMENT_SERVER, the analysis will be random")
+	}
+	request.SetSentimentURL(sentiment)
+
 	if err = cache.Open("bluebird.db", logger.Warn); err != nil {
 		log.Fatalf("Could not open database: %v", err)
 	}

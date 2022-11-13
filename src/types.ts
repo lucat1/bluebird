@@ -1,16 +1,26 @@
 import { CalendarDateTime } from '@internationalized/date';
 
-
-export interface Search {
-  tweets: RawTweet[]
-  cached: number
+export interface SentimentSearch {
+  sentiments: Sentiments
 }
 
-export enum Sentiment {
+export enum SentimentLabel {
   Anger = 'anger',
   Sadness = 'sadness',
   Fear = 'fear',
   Joy = 'joy'
+}
+
+export interface Sentiment {
+  label: SentimentLabel
+  score: number
+}
+
+export type Sentiments = [Sentiment, Sentiment, Sentiment, Sentiment]
+
+export interface Search {
+  tweets: RawTweet[]
+  cached: number
 }
 
 export interface RawTweet {
@@ -19,7 +29,7 @@ export interface RawTweet {
   user: User
   created_at: string
   geo?: Geo
-  sentiment: Sentiment
+  sentiments?: Sentiments
 }
 
 export interface Tweet extends RawTweet {

@@ -18,7 +18,7 @@ func min[T constraints.Ordered](a, b T) T {
 }
 
 // url should never start with '/'
-func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error) {
+func requestRaw[T userResponse | tweetResponse | sentimentResponse](client *RequestClient, url *url.URL) (raw T, err error) {
 	res, err := client.HTTP.Get(client.URL.ResolveReference(url).String())
 	if err != nil {
 		return
@@ -36,7 +36,7 @@ func requestRaw[T userResponse | tweetResponse](url *url.URL) (raw T, err error)
 
 func requestUser(url *url.URL) (user User, err error) {
 	var raw userResponse
-	if raw, err = requestRaw[userResponse](url); err != nil {
+	if raw, err = requestRaw[userResponse](client, url); err != nil {
 		return User{}, err
 	}
 	user = raw.User()
@@ -50,7 +50,7 @@ func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {
 	var raw tweetResponse
 	var twts []Tweet
 	for uint(len(tweets)) < n {
-		if raw, err = requestRaw[tweetResponse](url); err != nil {
+		if raw, err = requestRaw[tweetResponse](client, url); err != nil {
 			return
 		}
 

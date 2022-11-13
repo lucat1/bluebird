@@ -50,7 +50,7 @@ func Close() error {
 
 func InsertTweets(tweets []request.Tweet) error {
 	return db.Clauses(clause.OnConflict{
-		UpdateAll: true,
+		DoNothing: true,
 	}).Create(&tweets).Error
 }
 
@@ -72,8 +72,9 @@ func TweetsByKeyword(filter string, n uint, startTime string, endTime string) (r
 	return res, err
 }
 
-func TweetByID(filter string) (res request.Tweet, _ error) {
-	return res, db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: filter}).Error
+func TweetByID(id string) (res request.Tweet, err error) {
+	err = db.Preload("User").Preload("Geo").First(&res, request.Tweet{ID: id}).Error
+	return res, err
 }
 
 func TweetsByUser(username string, n uint, startTime string, endTime string) (res []request.Tweet, err error) {
@@ -83,5 +84,5 @@ func TweetsByUser(username string, n uint, startTime string, endTime string) (re
 	} else {
 		err = query.Find(&res).Error
 	}
-	return
+	return res, err
 }

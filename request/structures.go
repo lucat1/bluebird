@@ -8,13 +8,14 @@ import (
 )
 
 type Tweet struct {
-	ID        string    `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Text      string    `json:"text"`
-	UserID    string    `json:"-"`
-	User      User      `json:"user"`
-	GeoID     *string   `json:"-"`
-	Geo       *Geo      `json:"geo"`
-	CreatedAt time.Time `json:"created_at" sql:"type:timestamp with time zone"`
+	ID         string      `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text       string      `json:"text"`
+	UserID     string      `json:"-"`
+	User       User        `json:"user"`
+	GeoID      *string     `json:"-"`
+	Geo        *Geo        `json:"geo"`
+	CreatedAt  time.Time   `json:"created_at" sql:"type:timestamp with time zone"`
+	Sentiments *Sentiments `json:"sentiments"`
 }
 
 type Geo struct {
@@ -24,12 +25,23 @@ type Geo struct {
 }
 
 type Coordinates []float64
+type Sentiments [4]Sentiment
 
 func (sla *Coordinates) Scan(src interface{}) error {
 	return json.Unmarshal([]byte(src.(string)), sla)
 }
 
 func (sla Coordinates) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
+}
+
+func (sla *Sentiments) Scan(src interface{}) error {
+	err := json.Unmarshal([]byte(src.(string)), sla)
+	return err
+}
+
+func (sla Sentiments) Value() (driver.Value, error) {
 	val, err := json.Marshal(sla)
 	return string(val), err
 }
@@ -167,13 +179,14 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		}
 
 		tweets = append(tweets, Tweet{
-			ID:        t.ID,
-			Text:      t.Text,
-			UserID:    t.AuthorID,
-			User:      users[t.AuthorID],
-			CreatedAt: t.CreatedAt,
-			GeoID:     geoID,
-			Geo:       geo,
+			ID:         t.ID,
+			Text:       t.Text,
+			UserID:     t.AuthorID,
+			User:       users[t.AuthorID],
+			CreatedAt:  t.CreatedAt,
+			GeoID:      geoID,
+			Geo:        geo,
+			Sentiments: nil,
 		})
 	}
 	return tweets, nil
@@ -181,4 +194,22 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 
 func (res *userResponse) User() User {
 	return User{ID: res.Data.ID, Name: res.Data.Name, Username: res.Data.Username, ProfileImage: res.Data.ProfileImageURL}
+}
+
+type SentimentType string
+
+const (
+	SentimentAnger   SentimentType = "anger"
+	SentimentSadness               = "sadness"
+	SentimentFear                  = "fear"
+	SentimentJoy                   = "joy"
+)
+
+type Sentiment struct {
+	Label SentimentType `json:"label"`
+	Score float32       `json:"score"`
+}
+
+type sentimentResponse struct {
+	Sentiments Sentiments `json:"sentiment"`
 }
