@@ -29,7 +29,7 @@ export interface RawTweet {
   user: User
   created_at: string
   geo?: Geo
-  sentiments: Sentiments
+  sentiments?: Sentiments
 }
 
 export interface Tweet extends RawTweet {

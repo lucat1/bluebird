@@ -4,6 +4,7 @@ import { Tooltip } from "react-leaflet";
 import { CalendarDateTime, isSameDay, getLocalTimeZone } from '@internationalized/date';
 import format from 'tinydate'
 
+import useStore from '../store'
 import type { Tweet } from "../types";
 
 interface Data {
@@ -34,15 +35,11 @@ const dayFormatter = format("{MM}/{DD}/{YYYY}"),
   hourFormatter = format("{HH}"),
   minutesFormatter = format("{HH}:{mm}")
 
-interface TweetBarsProps {
-  tweets: Tweet[];
-}
-
-const TweetBars: React.FC<TweetBarsProps> = ({ tweets }) => {
-  if (tweets.length == 0)
-    return null
+const TweetBars: React.FC = () => {
+  const tweets = useStore(s => s.tweets)
 
   const data = React.useMemo(() => {
+    if (tweets.length == 0) return null
     let [oldest, newest] = findBounds(tweets);
     const map: Map<string, [number, CalendarDateTime]> = new Map();
     let diff = TimeDifference.Day
@@ -74,6 +71,8 @@ const TweetBars: React.FC<TweetBarsProps> = ({ tweets }) => {
       value: map.get(name)![0], date: map.get(name)![1]
     }], []).sort((a, b) => a.date.compare(b.date));
   }, [tweets])
+
+  if (data == null) return null
 
   return (
     <div className="w-full h-full">
