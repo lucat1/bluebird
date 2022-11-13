@@ -71,7 +71,7 @@ const store = create<State & Actions>((set, get) => ({
       fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(({ sentiments }) =>
         set({
           ...get(),
-          tweets: get().tweets.map(tweet => tweet.id == tweet.id ? ({ ...tweet, sentiments }) : tweet)
+          tweets: get().tweets.map(t => t.id == tweet.id ? ({ ...t, sentiments }) : t)
         }))
     }
   },

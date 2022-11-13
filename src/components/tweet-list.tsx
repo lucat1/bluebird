@@ -37,13 +37,11 @@ const TweetList: React.FC = () => {
             <span>{dateFormatter(tweet.date.toDate(getLocalTimeZone()))}</span>
           </div>
           {tweet.text}
-          {tweet.sentiments ?
-            <span>{tweet.sentiments.map((sentiment, i) => (
-              <React.Fragment key={i}>
-                <a>{sentiment.label}</a>
-                <a>{sentiment.score}</a>
-              </React.Fragment>
-            ))}</span> : <h1>Loading</h1>}
+          {tweet.sentiments?.map((sentiment, i) => (
+            <React.Fragment key={i}>
+              <span>{sentiment.label}: {sentiment.score}</span>
+            </React.Fragment>
+          ))}
         </div>
       ))}
     </>

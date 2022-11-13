@@ -28,8 +28,8 @@ const App: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className="row-start-2 lg:row-span-2 lg:row-start-1 grid grid-rows-1 grid-cols-1  lg:grid-row-[min-content_auto] auto-rows-fr">
-                  <div className="lg:row-start-1 lg:m-4 flex flex-col lg:flex-row">
+                <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
+                  <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
                     <div className="flex items-center justify-center aspect-square p-8 lg:p-0">
                       <TweetCake />
                     </div>
@@ -37,7 +37,7 @@ const App: React.FC = () => {
                       <TweetBars />
                     </div>
                   </div>
-                  <div className="lg:row-start-2 flex items-center justify-center">
+                  <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
                     <TweetCloud />
                   </div>
                 </div>
@@ -51,10 +51,10 @@ const App: React.FC = () => {
             ? 'row-start-1 col-start-1 row-span-2 col-span-2'
             : 'row-start-1 col-start-1 lg:col-start-2 h-fit'
             }`}>
+
             <Search />
           </div>
         </div>
-
       </main>
     </OverlayContainer >
   );
