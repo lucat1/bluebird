@@ -44,3 +44,23 @@ func TestTweets(t *testing.T) {
 		assert.Equal(t, tweet.CreatedAt, tw.CreatedAt, "Expected User.CreatedAt to match")
 	}
 }
+
+func TestPlaces(t *testing.T){
+	places := byKeywordGeoResponse.Places()
+	assert.Equal(t, len(places), len(byKeywordGeoResponse.Includes.Places), "More places than expected")
+	
+	for _, pl := range byKeywordGeoResponse.Includes.Places {
+		place, has := places[pl.ID]
+		assert.True(t, has, "'has' not true as expected")
+
+		var loc Coordinates
+		if pl.Geo.Type == "Point" {
+			loc = Coordinates(pl.Geo.Coordinates)
+		}else {
+			loc = Coordinates(pl.Geo.BoundingBox)
+		}
+		assert.Equal(t, pl.ID, place.ID, "Place ID not as expected")
+		assert.Equal(t, pl.Geo.Type, place.Type, "Geo Type not as expected")
+		assert.Equal(t, loc, place.Coordinates,"Place coordinates not as expected")
+	}
+}

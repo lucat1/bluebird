@@ -14,6 +14,7 @@ var (
 	byUserResponse    tweetResponse
 	byUserClient      *RequestClient
   rawSentimentResponse sentimentResponse
+  byKeywordGeoResponse tweetResponse
 )
 
 func TestMain(m *testing.M) {
@@ -42,7 +43,8 @@ func TestMain(m *testing.M) {
   SetSentimentURL(sentimentServer.URL)
 	test.ReadJSON("../mock/by_keyword.json", &byKeywordResponse)
 	test.ReadJSON("../mock/by_user.json", &byUserResponse)
-  test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
+  	test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
+  	test.ReadJSON("../mock/by_keyword_geo.json", &byKeywordGeoResponse)
 	os.Exit(m.Run())
 }
 
