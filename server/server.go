@@ -111,10 +111,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			startTime = maxTime
 		}
 		if time.Now().Sub(endTime).Seconds() < 10 {
-			endTime = time.Now()
-			endTime.Add(time.Second * time.Duration(-10))
+			endTime = time.Now().Add(time.Second * time.Duration(-10))
 		}
-		endTime.Add(time.Second * time.Duration(-10))
 
 		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
 		tweets, err = handler1(query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
