@@ -14,7 +14,6 @@ import TweetBars from "./tweet-bars";
 import TweetCake from "./tweet-cake";
 
 import type { TweetProps } from "./tweet-fetcher";
-import { Sentiment, SentimentData, SentimentLabel, Sentiments } from "../types";
 
 const defaultProps = {
   type: searchTypes[0],
@@ -26,21 +25,8 @@ const defaultProps = {
     end: now(getLocalTimeZone())
   }
 }
-const defaultDataset = [
-  { name: SentimentLabel.Anger, value: 4, color: '#0c4a6e' },
-  { name: SentimentLabel.Sadness, value: 4, color: '#a16207' },
-  { name: SentimentLabel.Fear, value: 4, color: '#6A2135' },
-  { name: SentimentLabel.Joy, value: 4, color: '#047857' }
-]
-const defaultDataset2 = [
-  { name: SentimentLabel.Anger, value: 5, color: '#0c4a6e' },
-  { name: SentimentLabel.Sadness, value: 5, color: '#a16207' },
-  { name: SentimentLabel.Fear, value: 5, color: '#6A2135' },
-  { name: SentimentLabel.Joy, value: 5, color: '#047857' }
-]
 
 const App: React.FC<React.PropsWithChildren<{}>> = () => {
-
   const [props, setProps] = React.useState<TweetProps>(defaultProps);
 
   return (
@@ -97,16 +83,16 @@ const App: React.FC<React.PropsWithChildren<{}>> = () => {
                 }, [props.query])
 
                 return (
-                  <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
-                    <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
+                  <div className="row-start-2 lg:row-span-2 lg:row-start-1 grid grid-rows-1 grid-cols-1  lg:grid-row-[min-content_auto] auto-rows-fr">
+                    <div className="lg:row-start-1 lg:m-4 flex flex-col lg:flex-row">
                       <div className="flex items-center justify-center aspect-square p-8 lg:p-0">
-                        <TweetCake tweets={tweets} dataset={dataset} key={"tweetCake"} />
+                        <TweetCake tweets={tweets} />
                       </div>
                       <div className="flex items-center justify-center aspect-video p-8 lg:p-0">
                         <TweetBars tweets={tweets} />
                       </div>
                     </div>
-                    <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
+                    <div className="lg:row-start-2 flex items-center justify-center">
                       <TweetCloud tweets={tweets} />
                     </div>
                     <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">

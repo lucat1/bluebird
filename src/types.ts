@@ -11,11 +11,6 @@ export enum SentimentLabel {
   Joy = 'joy'
 }
 
-export interface SentimentData {
-  name: SentimentLabel
-  value: number
-  color: string
-}
 export interface Sentiment {
   label: SentimentLabel
   score: number
@@ -39,7 +34,6 @@ export interface RawTweet {
 
 export interface Tweet extends RawTweet {
   date: CalendarDateTime
-  sentimentsLoaded: Function
 }
 
 export interface Geo {
