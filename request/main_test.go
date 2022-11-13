@@ -13,6 +13,7 @@ var (
 	byKeywordClient   *RequestClient
 	byUserResponse    tweetResponse
 	byUserClient      *RequestClient
+  rawSentimentResponse sentimentResponse
 )
 
 func TestMain(m *testing.M) {
@@ -26,6 +27,10 @@ func TestMain(m *testing.M) {
 		"/users/270839361/tweets":      test.ReadFile("../mock/by_user.json"),
 	})
 	defer byUserServer.Close()
+	sentimentServer := test.CreateMultiServer(map[string][]byte{
+		"/predict": test.ReadFile("../mock/sentiment.json"),
+	})
+	defer sentimentServer.Close()
 	byKeywordClient, err = NewClient(byKeywordServer.URL, "")
 	if err != nil {
 		panic(err)
@@ -34,8 +39,10 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
+  SetSentimentURL(sentimentServer.URL)
 	test.ReadJSON("../mock/by_keyword.json", &byKeywordResponse)
 	test.ReadJSON("../mock/by_user.json", &byUserResponse)
+  test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
 	os.Exit(m.Run())
 }
 

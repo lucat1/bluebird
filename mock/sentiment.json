@@ -1,0 +1,8 @@
+{
+  "sentiments": [
+    { "label": "joy", "score": 0.99937063 },
+    { "label": "fear", "score": 0.00025619846 },
+    { "label": "sadness", "score": 0.00025385706 },
+    { "label": "anger", "score": 0.00011925818 }
+  ]
+}
