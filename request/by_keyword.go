@@ -3,6 +3,7 @@ package request
 func TweetsByKeyword(keyword string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		WithQuery(keyword).
+		Lang(RequestQueryLangIT).
 		AddStartTime(RequestTime(startTime)).
 		AddEndTime(RequestTime(endTime)).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).

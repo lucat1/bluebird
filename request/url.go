@@ -47,6 +47,12 @@ const (
 	RequestQueryPaginationToken              = "pagination_token"
 )
 
+type RequestQueryLang string
+
+const (
+	RequestQueryLangIT RequestQueryLang = "it"
+)
+
 type RequestURL struct {
 	base            string
 	query           string
@@ -72,6 +78,10 @@ func NewRequest(base string) RequestURL {
 
 func (req RequestURL) WithQuery(query string) RequestURL {
 	req.query = query
+	return req
+}
+func (req RequestURL) Lang(lang RequestQueryLang) RequestURL {
+	req.query += " lang:" + string(lang)
 	return req
 }
 

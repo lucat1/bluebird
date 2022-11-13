@@ -46,7 +46,7 @@ const getInitialState = (): State => ({
 const searchURL = ({ type, query, timeRange }: Query): string => {
   if (!type || !query) return `search`
 
-  let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=50`
+  let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=100`
   if (timeRange) {
     const start = timeRange.start.toDate(getLocalTimeZone()).toISOString()
     const end = timeRange.end.toDate(getLocalTimeZone()).toISOString()
