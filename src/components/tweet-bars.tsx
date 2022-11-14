@@ -31,7 +31,7 @@ enum TimeDifference {
   Minutes
 }
 
-const dayFormatter = format("{MM}/{DD}/{YYYY}"),
+const dayFormatter = format("{DD}/{MM}/{YYYY}"),
   hourFormatter = format("{HH}"),
   minutesFormatter = format("{HH}:{mm}")
 

@@ -5,7 +5,7 @@ import format from 'tinydate'
 import useStore from '../store'
 import Legend from "./legend";
 
-const dateFormatter = format("{YYYY}/{MM}/{DD} {HH}:{mm}")
+const dateFormatter = format("{DD}/{MM}/{YYYY} {HH}:{mm}")
 
 const TweetList: React.FC = () => {
   const tweets = useStore(s => s.tweets)
