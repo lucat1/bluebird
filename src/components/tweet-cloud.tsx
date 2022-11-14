@@ -14,13 +14,26 @@ interface Word {
 }
 
 const TweetCloud: React.FC = () => {
+  const blacklist = ["il", "la", "gli", "lo", "l'", "e", "ed", "a", "ad", "tra", "in", "con", "su", "per", "fra"]
   const texts = useStore(s => s.tweets.map(t => t.text), shallow)
   const words = React.useMemo(() => {
+    let check = false
     let obj: { [key: string]: number } = {};
     for (const text of texts) {
       const words = text.split(" ");
       for (const word of words) {
-        obj[word] = (obj[word] || 0) + 1;
+        for(const forbid of blacklist){
+          if(word == forbid.toUpperCase() || word == forbid || word == (forbid.charAt(0).toUpperCase() + forbid.slice(1).toLowerCase())){
+            check = true
+            break
+          }
+        }
+        if(!check){
+          obj[word] = (obj[word] || 0) + 1;
+        }
+        else{
+          check = false
+        }
       }
     }
 
