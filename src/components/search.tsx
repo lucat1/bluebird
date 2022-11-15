@@ -24,7 +24,7 @@ const Search: React.FC = () => {
       <div className="flex flex-col items-center">
         <form
           onSubmit={handleSubmit(fetch)}
-          className="flex flex-col items-center justify-center md:flex-row mb-4 max-w-4xl dark:text-white"
+          className="flex flex-col items-center justify-center md:flex-row mt-4 mb-4 max-w-4xl dark:text-white"
         >
           <div className="flex items-center mb-4 md:mb-0">
             <label
@@ -35,7 +35,7 @@ const Search: React.FC = () => {
             </label>
             <select
               id="type"
-              className="w-32 bg-gray-50 hover:border-gray-400 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="w-32 bg-gray-50  hover:border-gray-400 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               {...register("type", { required: true })}
             >
               {Object.values(QueryType).map((type) => (
