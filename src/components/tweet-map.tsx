@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Map } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
+import useStore from '../store'
 import type { Tweet } from "../types";
 
 const findBounds = (points: [number, number][]): [[number, number], [number, number]] => {
@@ -20,8 +22,9 @@ interface MappedTweet extends Tweet {
   coordinates: [number, number]
 }
 
-const TweetMap: React.FC<{ tweets?: Tweet[] }> = ({ tweets }) => {
-  const mappedTweets = React.useMemo(() => tweets?.filter(t => t.geo).map((t): MappedTweet => {
+const TweetMap: React.FC = () => {
+  const tweets = useStore(s => s.tweets)
+  const mappedTweets = React.useMemo(() => tweets.filter(t => t.geo).map((t): MappedTweet => {
     const geo = t.geo!
     return {
       ...t, coordinates:
@@ -29,15 +32,20 @@ const TweetMap: React.FC<{ tweets?: Tweet[] }> = ({ tweets }) => {
         geo.coordinates.length == 2 ? geo.coordinates[0] : (geo.coordinates[0] + geo.coordinates[2]) / 2]
     }
   }) || [], [tweets]);
+
   const [show, setShow] = React.useState(false);
   const map = React.useRef<Map>();
-  const [top, bottom] = findBounds(mappedTweets.map(t => t.coordinates))
-  const center: [number, number] = [(top[0] + bottom[0]) / 2, (top[1] + bottom[1]) / 2]
+  const center = React.useMemo((): [number, number] => {
+    const [top, bottom] = findBounds(mappedTweets.map(t => t.coordinates))
+    return [(top[0] + bottom[0]) / 2, (top[1] + bottom[1]) / 2]
+  }, [mappedTweets])
+
   React.useEffect(() => {
     if (!map.current)
       return
     (map.current as any).invalidateSize()
   }, [map, show])
+
   return (
     <div className="flex flex-col items-center justify-center">
       <button
