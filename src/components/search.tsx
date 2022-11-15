@@ -1,18 +1,23 @@
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { now, getLocalTimeZone } from '@internationalized/date';
+import shallow from "zustand/shallow";
 
 import useStore, { Query, QueryType } from '../store'
 import DateRangePicker from './date-range-picker'
 
 const Search: React.FC = () => {
-  const { query, fetch } = useStore(s => ({ query: s.query, fetch: s.fetch }))
+  const { query, fetch } = useStore(s => ({ query: s.query, fetch: s.fetch }), shallow)
   const {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Query>({ defaultValues: query });
+  React.useEffect(() => {
+    setValue('query', query.query)
+  }, [query, setValue])
 
   return (
     <>
