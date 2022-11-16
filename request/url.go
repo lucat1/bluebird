@@ -24,6 +24,7 @@ const (
 	RequestFieldVerified                     = "verified"
 	RequestFieldWithheld                     = "withheld"
 	RequestFieldFullName                     = "full_name"
+	RequestFieldConversationID               = "conversation_id"
 )
 
 type RequestExpansions string
@@ -38,6 +39,7 @@ type RequestQuery string
 
 const (
 	RequestQueryQuery           RequestQuery = "query"
+	RequestQueryTweetIDs                     = "ids"
 	RequestQueryTweetFields                  = "tweet.fields"
 	RequestQueryUserFields                   = "user.fields"
 	RequestQueryPlaceFields                  = "place.fields"
@@ -48,6 +50,7 @@ const (
 )
 
 type RequestQueryLang string
+type RequestQueryConversationID string
 
 const (
 	RequestQueryLangIT RequestQueryLang = "it"
@@ -56,6 +59,7 @@ const (
 type RequestURL struct {
 	base            string
 	query           string
+	ids             []string
 	tweetFields     []RequestField
 	userFields      []RequestField
 	placeFields     []RequestField
@@ -84,7 +88,14 @@ func (req RequestURL) Lang(lang RequestQueryLang) RequestURL {
 	req.query += " lang:" + string(lang)
 	return req
 }
-
+func (req RequestURL) ConversationID(conversationID RequestQueryConversationID) RequestURL {
+	req.query += " conversation_id:" + string(conversationID)
+	return req
+}
+func (req RequestURL) IDs(ids ...string) RequestURL {
+	req.ids = append(req.ids, ids...)
+	return req
+}
 func (req RequestURL) AddTweetFields(fields ...RequestField) RequestURL {
 	req.tweetFields = append(req.tweetFields, fields...)
 	return req
@@ -139,6 +150,7 @@ func buildURL(req RequestURL) (parsed *url.URL, err error) {
 	}
 	query := parsed.Query()
 	queryAdd(query, string(RequestQueryQuery), req.query)
+	queryAdd(query, string(RequestQueryTweetIDs), join(req.ids, ","))
 	queryAdd(query, string(RequestQueryTweetFields), join(req.tweetFields, ","))
 	queryAdd(query, string(RequestQueryUserFields), join(req.userFields, ","))
 	queryAdd(query, string(RequestQueryPlaceFields), join(req.placeFields, ","))

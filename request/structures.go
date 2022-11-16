@@ -8,14 +8,15 @@ import (
 )
 
 type Tweet struct {
-	ID         string      `json:"id" gorm:"primaryKey;uniqueIndex"`
-	Text       string      `json:"text"`
-	UserID     string      `json:"-"`
-	User       User        `json:"user"`
-	GeoID      *string     `json:"-"`
-	Geo        *Geo        `json:"geo"`
-	CreatedAt  time.Time   `json:"created_at" sql:"type:timestamp with time zone"`
-	Sentiments *Sentiments `json:"sentiments"`
+	ID             string      `json:"id" gorm:"primaryKey;uniqueIndex"`
+	Text           string      `json:"text"`
+	UserID         string      `json:"-"`
+	User           User        `json:"user"`
+	GeoID          *string     `json:"-"`
+	Geo            *Geo        `json:"geo"`
+	ConversationID string      `json:"conversation_id"`
+	CreatedAt      time.Time   `json:"created_at" sql:"type:timestamp with time zone"`
+	Sentiments     *Sentiments `json:"sentiments"`
 }
 
 type Geo struct {
@@ -94,6 +95,7 @@ type rawTweet struct {
 	Geo                 *struct {
 		PlaceID string `json:"place_id"`
 	}
+	ConversationID string `json:"conversation_id"`
 }
 
 type rawPlace struct {
@@ -179,14 +181,15 @@ func (res *tweetResponse) Tweets() ([]Tweet, error) {
 		}
 
 		tweets = append(tweets, Tweet{
-			ID:         t.ID,
-			Text:       t.Text,
-			UserID:     t.AuthorID,
-			User:       users[t.AuthorID],
-			CreatedAt:  t.CreatedAt,
-			GeoID:      geoID,
-			Geo:        geo,
-			Sentiments: nil,
+			ID:             t.ID,
+			Text:           t.Text,
+			UserID:         t.AuthorID,
+			User:           users[t.AuthorID],
+			CreatedAt:      t.CreatedAt,
+			GeoID:          geoID,
+			Geo:            geo,
+			ConversationID: t.ConversationID,
+			Sentiments:     nil,
 		})
 	}
 	return tweets, nil
