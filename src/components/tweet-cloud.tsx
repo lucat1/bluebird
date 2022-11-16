@@ -13,33 +13,25 @@ interface Word {
   value: number;
 }
 
+const blacklist = ["il", "la", "gli", "lo", "l'", "un", "una", "uno", "dei",
+  "delle", "dello", "di", "e", "ed", "a", "ad", "tra", "in", "con", "su",
+  "per", "fra", "è", "non", "ha", "si", "no", "al"
+]
+
 const TweetCloud: React.FC = () => {
-  const blacklist = ["il", "la", "gli", "lo", "l'", "un", "una", "uno", "dei", "delle", "dello", "di", "e", "ed", "a", "ad", "tra", "in", "con", "su", "per", "fra"]
   const texts = useStore(s => s.tweets.map(t => t.text), shallow)
   const words = React.useMemo(() => {
-    let check = false
     let obj: { [key: string]: number } = {};
     for (const text of texts) {
-      const words = text.split(" ");
+      const words = text.split(/,| /)
       for (const word of words) {
-        for(const forbid of blacklist){
-          if(word == forbid.toUpperCase() || word == forbid || word == (forbid.charAt(0).toUpperCase() + forbid.slice(1).toLowerCase()) || word.charAt(0) == "@"){
-            check = true
-            break
-          }
-        }
-        if(!check){
-          obj[word] = (obj[word] || 0) + 1;
-        }
-        else{
-          check = false
-        }
+        obj[word] = (obj[word] || 0) + 1;
       }
     }
 
     return Object.keys(obj)
       .map((text) => ({ text, value: obj[text] }))
-      .filter((word) => word.value > 1)
+      .filter((word) => word.value > 1 && !blacklist.includes(word.text.toLowerCase()) && !word.text.includes('#'))
       .sort((a, b) => (a.value > b.value ? 1 : a.value < b.value ? -1 : 0))
       .slice(0, 80) as Word[];
   }, [texts])
