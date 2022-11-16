@@ -22,6 +22,8 @@
     "cake-chart": "^0.2.3",
     "leaflet": "^1.9.2",
     "react": "17",
+    "react-chessboard": "^1.3.0",
+    "react-countdown": "^2.3.3",
     "react-d3-cloud": "^1.0.6",
     "react-datepicker": "^4.8.0",
     "react-dom": "17",

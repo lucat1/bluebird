@@ -48,3 +48,17 @@ export interface User {
   username: string
   profile_image: string
 }
+
+export enum ChessState {
+  IDLE = 'idle',
+  WAITING = 'waiting',
+  MOVING = 'moving',
+  LOST = 'lost'
+}
+
+export interface Chess {
+  state: ChessState
+  fen: string
+  turn: boolean
+  ends_at: string
+}

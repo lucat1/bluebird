@@ -3,8 +3,8 @@ interface Err {
   error: string
 }
 
-const f = async <T>(api: string): Promise<T> => {
-  const req = await fetch(`${import.meta.env.DEV ? 'http://localhost:8080' : ''}/api/${api}`)
+const f = async <T>(api: string, options?: RequestInit): Promise<T> => {
+  const req = await fetch(`${import.meta.env.DEV ? 'http://localhost:8080' : ''}/api/${api}`, options)
   let json = await req.json()
   if (req.status != 200) {
     json = json as Err
@@ -16,5 +16,13 @@ const f = async <T>(api: string): Promise<T> => {
   }
   return json as T
 }
+
+export const withJSON = (method: string, obj: Object): RequestInit => ({
+  method,
+  body: JSON.stringify(obj),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
 export default f
