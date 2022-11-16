@@ -7,6 +7,7 @@ import Error from '../components/error';
 import Navbar from "../components/navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchPage from "./search-page";
+import Ghigliottina from "./ghigliottina";
 
 const App: React.FC = () => {
   const reset = useStore(s => s.reset)
