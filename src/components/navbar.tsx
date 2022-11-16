@@ -1,7 +1,7 @@
 import * as React from "react";
 import shallow from "zustand/shallow";
 
-import useStore, { QueryType } from '../store'
+import useStore, { QueryType } from '../stores/store'
 
 const Navbar: React.FC = () => {
   const [open, setOpen] = React.useState(false)

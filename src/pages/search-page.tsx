@@ -1,7 +1,7 @@
 import * as React from "react";
 import shallow from 'zustand/shallow'
 
-import useStore from '../store'
+import useStore from '../stores/store'
 import Loading from "../components/loading";
 import Search from "../components/search";
 import TweetCloud from "../components/tweet-cloud";

@@ -2,7 +2,7 @@ import * as React from "react";
 import { getLocalTimeZone } from '@internationalized/date';
 import format from 'tinydate'
 
-import useStore from '../store'
+import useStore from '../stores/store'
 import Legend from "./legend";
 
 const dateFormatter = format("{DD}/{MM}/{YYYY} {HH}:{mm}")

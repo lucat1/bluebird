@@ -4,7 +4,7 @@ import { Tooltip } from "react-leaflet";
 import { CalendarDateTime, isSameDay, getLocalTimeZone } from '@internationalized/date';
 import format from 'tinydate'
 
-import useStore from '../store'
+import useStore from '../stores/store'
 import type { Tweet } from "../types";
 
 interface Data {

@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { now, getLocalTimeZone } from '@internationalized/date';
 import shallow from "zustand/shallow";
 
-import useStore, { Query, QueryType } from '../store'
+import useStore, { Query, QueryType } from '../stores/store'
 import DateRangePicker from './date-range-picker'
 
 const Search: React.FC = () => {

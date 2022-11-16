@@ -2,7 +2,7 @@ import * as React from "react";
 import { Map } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
-import useStore from '../store'
+import useStore from '../stores/store'
 import type { Tweet } from "../types";
 
 const findBounds = (points: [number, number][]): [[number, number], [number, number]] => {

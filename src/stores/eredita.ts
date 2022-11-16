@@ -2,8 +2,8 @@ import create from 'zustand'
 import type { DateRange } from "@react-types/datepicker";
 import { parseDateTime, now, getLocalTimeZone } from '@internationalized/date';
 
-import fetch from './fetch'
-import { Search, RawTweet, Tweet, SentimentSearch } from './types'
+import fetch from '../fetch'
+import { Search, RawTweet, Tweet, SentimentSearch } from '../types'
 
 export enum QueryType {
   Keyword = 'keyword',

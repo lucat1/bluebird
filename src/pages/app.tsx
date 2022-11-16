@@ -2,7 +2,7 @@ import * as React from "react";
 import { OverlayContainer } from "@react-aria/overlays";
 import { ErrorBoundary } from 'react-error-boundary'
 
-import useStore from '../store'
+import useStore from '../stores/store'
 import Error from '../components/error';
 import Navbar from "../components/navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";

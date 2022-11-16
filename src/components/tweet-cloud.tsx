@@ -5,7 +5,7 @@ import { scaleOrdinal } from 'd3-scale';
 // @ts-ignore
 import { schemeCategory10 } from 'd3-scale-chromatic';
 
-import useStore from '../store'
+import useStore from '../stores/store'
 
 interface Word {
   [key: string]: any;
