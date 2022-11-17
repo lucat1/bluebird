@@ -24,7 +24,7 @@ const Search: React.FC = () => {
       <div className="flex flex-col items-center">
         <form
           onSubmit={handleSubmit(fetch)}
-          className="flex flex-col items-center justify-center md:flex-row mt-4 mb-4 max-w-4xl dark:text-white"
+          className="flex flex-col items-center justify-center md:flex-row mt-4 mb-2 max-w-4xl dark:text-white"
         >
           <div className="flex items-center mb-4 md:mb-0">
             <label
@@ -87,8 +87,9 @@ const Search: React.FC = () => {
               </button>
             </div>
           </div>
-          {errors.query && <label className="text-red-500">A query is required</label>}
+          
         </form>
+        {errors.query && <label className="text-red-500 mt-2 mb-4">A query is required</label>}
 
         <div className="mb-4">
           <Controller
