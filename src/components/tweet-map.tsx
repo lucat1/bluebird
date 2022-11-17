@@ -33,7 +33,6 @@ const TweetMap: React.FC = () => {
     }
   }) || [], [tweets]);
 
-  const [show, setShow] = React.useState(false);
   const map = React.useRef<Map>();
   const center = React.useMemo((): [number, number] => {
     const [top, bottom] = findBounds(mappedTweets.map(t => t.coordinates))
@@ -44,17 +43,10 @@ const TweetMap: React.FC = () => {
     if (!map.current)
       return
     (map.current as any).invalidateSize()
-  }, [map, show])
+  }, [map])
 
   return (
-    <div className="flex flex-col items-center justify-center overflow-x-clip  ">
-      <button
-        onClick={_ => setShow(!show)}
-        className="mb-4 w-64 text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
-      >
-        Show map
-      </button>
-      <div className={`flex justify-center bg-white dark:bg-gray-900 ${show ? '' : 'hidden'}`}>
+      <div className="flex justify-center bg-white dark:bg-gray-900 pb-4">
         <MapContainer
           className="shadow-lg rounded-md border border-gray-300 dark:border-gray-600 "
           style={{ width: "80vw", height: "70vh" }}
@@ -79,7 +71,6 @@ const TweetMap: React.FC = () => {
           )}
         </MapContainer>
       </div>
-    </div>
   );
 };
 
