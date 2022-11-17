@@ -47,7 +47,7 @@ const TweetMap: React.FC = () => {
   }, [map, show])
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center overflow-x-clip  ">
       <button
         onClick={_ => setShow(!show)}
         className="mb-4 w-64 text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
@@ -56,7 +56,7 @@ const TweetMap: React.FC = () => {
       </button>
       <div className={`flex justify-center bg-white dark:bg-gray-900 ${show ? '' : 'hidden'}`}>
         <MapContainer
-          className="shadow-lg rounded-md border border-gray-300 dark:border-gray-600"
+          className="shadow-lg rounded-md border border-gray-300 dark:border-gray-600 "
           style={{ width: "80vw", height: "70vh" }}
           center={center}
           zoom={3}
