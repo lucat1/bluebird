@@ -4,6 +4,7 @@ func TweetsByConversationID(conversationID string, n uint, startTime string, end
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		ConversationID(RequestQueryConversationID(conversationID)).
 		Lang(RequestQueryLangIT).
+		SortOrder(RequestSortOrderRecency).
 		AddStartTime(RequestTime(startTime)).
 		AddEndTime(RequestTime(endTime)).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
