@@ -61,4 +61,5 @@ export interface Chess {
   fen: string
   turn: boolean
   ends_at: string
+  code: string
 }

@@ -11,6 +11,7 @@ export interface State {
   fen: string // FEN board representation
   turn: boolean
   end: CalendarDateTime | null
+  code: string
 }
 
 export interface Actions {
@@ -24,7 +25,8 @@ const initialState: State = {
   timeout: null,
   fen: '',
   turn: false,
-  end: null
+  end: null,
+  code:''
 }
 
 
@@ -57,7 +59,7 @@ const store = create<State & Actions>((set, get) => ({
     await get().fetch()
   },
   move: async (move: string) => {
-    await fetch<Chess>('chess/start', withJSON('POST', { move }))
+    await fetch<Chess>('chess/move', withJSON('POST', { move }))
     await get().fetch()
   }
 }))
