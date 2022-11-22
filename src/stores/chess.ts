@@ -31,9 +31,8 @@ const initialState: State = {
 const store = create<State & Actions>((set, get) => ({
   ...initialState,
   fetch: async () => {
-    set({ ...get(), state: ChessState.MOVING })
     const state = await fetch<Chess>('chess')
-    const end = parseDateTime(state.ends_at)
+    const end = parseDateTime(state.ends_at.slice(0, -1))
     set({ ...state, end })
 
     if (state.state == ChessState.WAITING && !state.turn) {
@@ -49,7 +48,12 @@ const store = create<State & Actions>((set, get) => ({
     }
   },
   play: async (turnDuration: TimeDuration) => {
-    await fetch<Chess>('chess/start', withJSON('POST', { duration: turnDuration }))
+    await fetch<Chess>('chess/start', withJSON('POST', {
+      duration: (turnDuration.milliseconds || 0) +
+        ((turnDuration.seconds || 0) * 1000) +
+        ((turnDuration.minutes || 0) * 1000 * 60) +
+        ((turnDuration.hours || 0) * 1000 * 60 * 24)
+    }))
     await get().fetch()
   },
   move: async (move: string) => {

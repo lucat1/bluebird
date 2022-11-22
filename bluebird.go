@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"git.hjkl.gq/team14/team14/cache"
+	"git.hjkl.gq/team14/team14/chess"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
 	"gorm.io/gorm/logger"
@@ -41,5 +42,9 @@ func main() {
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)
 	}
+	if chess.Resume() == nil {
+		log.Printf("Resumed match state: %v", chess.GetMatch())
+	}
+
 	log.Println("bye")
 }

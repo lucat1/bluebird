@@ -1,7 +1,6 @@
 package request
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"

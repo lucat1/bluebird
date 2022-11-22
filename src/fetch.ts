@@ -14,6 +14,7 @@ const f = async <T>(api: string, options?: RequestInit): Promise<T> => {
     console.groupEnd()
     throw new Error(json.message)
   }
+
   return json as T
 }
 
