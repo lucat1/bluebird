@@ -3,8 +3,6 @@ package request
 func TweetByTweetID(tweetID string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets").
 		IDs(tweetID).
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt, RequestFieldConversationID).
 		AddUserFields(
 			RequestFieldWithheld,
