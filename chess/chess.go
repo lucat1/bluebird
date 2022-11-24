@@ -3,13 +3,15 @@ package chess
 import (
 	"encoding/json"
 	"errors"
-	"git.hjkl.gq/team14/team14/request"
-	"github.com/notnil/chess"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"strings"
+	"sync/atomic"
 	"time"
+
+	"git.hjkl.gq/team14/team14/request"
+	"github.com/notnil/chess"
 )
 
 const (
@@ -24,26 +26,34 @@ type Match struct {
 	Duration time.Duration
 	EndsAt   time.Time
 	game     *chess.Game
-	timeout  chan bool
 	tweetID  string
+	Tweets   []request.Tweet
+
+	timeout chan bool
+	waiting atomic.Bool
 }
 
-func delay(fn func()) {
-	if match.timeout != nil {
-		match.timeout <- true
+func (m *Match) delay() {
+	if m.waiting.Load() {
+		m.timeout <- true
 	}
-	match.timeout = make(chan bool)
+	m.timeout = make(chan bool)
 
-	select {
-	case <-time.After(match.Duration):
-		fn()
+	go func() {
+		m.waiting.Store(true)
+		select {
+		case <-time.After(match.Duration):
+			m.waiting.Store(false)
+			m.onTurnEnd()
 
-	case <-match.timeout:
-		log.Println("Timeout cancled")
-	}
+		case <-match.timeout:
+			m.waiting.Store(false)
+			log.Println("Timeout cancled")
+		}
+	}()
 }
 
-func (m *Match) checkMoves() (moves map[string]uint, err error) {
+func (m *Match) getMoves() (moves map[string]uint, err error) {
 	tweets, err := request.Replies(m.tweetID, 100, "", "")
 	if err != nil {
 		return
@@ -58,6 +68,29 @@ func (m *Match) checkMoves() (moves map[string]uint, err error) {
 	return
 }
 
+func (m *Match) onTurnEnd() {
+	if m.game.Position().Turn() == playerColor {
+		// TODO: forfeit
+	} else {
+		moves, err := m.getMoves()
+		if err != nil {
+			log.Printf("Could not get tweets replies: %v", err)
+			return
+		}
+		var (
+			mostRated  string
+			mostValued uint
+		)
+		for move, val := range moves {
+			if val > mostValued {
+				mostRated = move
+				mostValued = val
+			}
+		}
+		m.game.MoveStr(mostRated)
+	}
+}
+
 func (m *Match) Move(move string) error {
 	if match.game.Position().Turn() != playerColor {
 		return errors.New("Cannot move in the opponent's turn")
@@ -67,15 +100,16 @@ func (m *Match) Move(move string) error {
 	}
 
 	m.EndsAt = time.Now().UTC().Add(m.Duration)
-	m.timeout <- true
+	m.delay()
 	return nil
 }
 
 type SerializedMatch struct {
-	Code     string        `json:"code"`
-	Duration time.Duration `json:"duration"`
-	EndsAt   time.Time     `json:"ends_at"`
-	Game     string        `json:"game"`
+	Code     string          `json:"code"`
+	Duration time.Duration   `json:"duration"`
+	EndsAt   time.Time       `json:"ends_at"`
+	Game     string          `json:"game"`
+	Tweets   []request.Tweet `json:"tweets"`
 }
 
 func (m Match) Serialized() SerializedMatch {
@@ -84,6 +118,7 @@ func (m Match) Serialized() SerializedMatch {
 		Duration: m.Duration,
 		EndsAt:   m.EndsAt,
 		Game:     m.game.FEN(),
+		Tweets:   m.Tweets,
 	}
 }
 
@@ -128,11 +163,17 @@ func code(n int) string {
 }
 
 func NewMatch(duration time.Duration) Match {
-	return Match{
+	m := Match{
 		Code:     code(6),
 		Duration: duration,
 		EndsAt:   time.Now().Add(duration).UTC(),
 
 		game: chess.NewGame(),
 	}
+	go func() {
+		<-m.timeout
+	}()
+
+	m.delay()
+	return m
 }

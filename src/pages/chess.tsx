@@ -31,7 +31,7 @@ const Chess: React.FC = () => {
       {!code && (
         <div className='flex flex-1 items-center justify-center '>
           <button
-            onClick={_ => { play({ minutes: 5 }); setAuthorized(true) }}
+            onClick={_ => { play({ seconds: 30 }); setAuthorized(true) }}
             type="submit"
             className="text-white text-center hover:bg-sky-700  bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
           >
