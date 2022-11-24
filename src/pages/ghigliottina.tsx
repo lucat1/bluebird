@@ -7,7 +7,6 @@ import Search from "../components/search";
 import TweetCloud from "../components/tweet-cloud";
 import TweetList from "../components/tweet-list";
 import TweetBars from "../components/tweet-bars";
-import TweetCake from "../components/tweet-cake";
 import Classification from "../components/classification";
 
 const Ghigliottina: React.FC = () => {
@@ -43,7 +42,6 @@ const Ghigliottina: React.FC = () => {
             ? 'row-start-1 col-start-1 row-span-2 col-span-2'
             : 'row-start-1 col-start-1 lg:col-start-2 h-fit'
             }`}>
-
             <Search />
           </div>
         </div>
