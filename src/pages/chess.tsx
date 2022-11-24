@@ -11,7 +11,7 @@ import MoveList from '../components/move-list'
 const Chess: React.FC = () => {
   const { fetch, turn, play, end, code } = useChess(s => s)
   const [authorized, setAuthorized] = useState(false)
-  const [getRef, { width }] = useElementSize()
+  const [getRef, { width, height }] = useElementSize()
 
   const {
     handleSubmit,
@@ -24,7 +24,7 @@ const Chess: React.FC = () => {
   }, [])
 
   return (
-    <div className='flex flex-1 flex-col md:flex-row'>
+    <div className='flex flex-1 flex-col md:flex-row p-5'>
       {!code && (
         <div className='flex flex-1 items-center justify-center '>
           <button
@@ -69,15 +69,13 @@ const Chess: React.FC = () => {
         </div>
       )}
       {code && /* outcome */  authorized && (
-        <>
-          <div className="flex flex-1 flex-col p-9">
-            <div ref={getRef}>
-              <Chessboard
-                boardWidth={width}
-                arePiecesDraggable={turn == 'w'}
-                position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-              />
-            </div>
+        <div className='flex flex-1'>
+          <div ref={getRef} className='flex flex-1 '>
+            <Chessboard
+              boardWidth={Math.min(width, height - 10)}
+              arePiecesDraggable={turn == 'w'}
+              position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+            />
             <div>
               {turn ? (
                 <p>It's your turn: move a piece</p>) : (<>
@@ -86,7 +84,7 @@ const Chess: React.FC = () => {
                 </>)}
             </div>
           </div>
-          <div className='flex max-w-5xl'>
+          <div className='flex '>
             <div className='w-full'>
               <MoveList tweets={[{
                 user: {
@@ -103,7 +101,7 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
