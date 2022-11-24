@@ -3,12 +3,13 @@ package chess
 import (
 	"encoding/json"
 	"errors"
+	"git.hjkl.gq/team14/team14/request"
+	"github.com/notnil/chess"
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"strings"
 	"time"
-
-	"github.com/notnil/chess"
 )
 
 const (
@@ -40,6 +41,21 @@ func delay(fn func()) {
 	case <-match.timeout:
 		log.Println("Timeout cancled")
 	}
+}
+
+func (m *Match) checkMoves() (moves map[string]uint, err error) {
+	tweets, err := request.Replies(m.tweetID, 100, "", "")
+	if err != nil {
+		return
+	}
+	for _, tweet := range tweets {
+		clone := match.game.Clone()
+		first := strings.Split(tweet.Text, " ")[0]
+		if err = clone.MoveStr(first); err != nil {
+			moves[first]++
+		}
+	}
+	return
 }
 
 func (m *Match) Move(move string) error {
