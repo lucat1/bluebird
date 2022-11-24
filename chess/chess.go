@@ -6,13 +6,8 @@ import (
 	"log"
 	"math/rand"
 	"time"
-)
 
-type Player string
-
-const (
-	PlayerMaster Player = "master"
-	PlayerOthers        = "others"
+	"github.com/notnil/chess"
 )
 
 type Match struct {
@@ -20,9 +15,24 @@ type Match struct {
 	Duration time.Duration `json:"duration"`
 	EndsAt   time.Time     `json:"ends_at"`
 
-	// TODO: replace with the proper go chess handling library
-	State string `json:"state"`
-	Turn  Player `json:"turn"`
+	Game *chess.Game `json:"game"`
+}
+
+type SerializedMatch struct {
+	Code     string        `json:"code"`
+	Duration time.Duration `json:"duration"`
+	EndsAt   time.Time     `json:"ends_at"`
+
+	Game string `json:"game"`
+}
+
+func (m Match) Serialized() SerializedMatch {
+	return SerializedMatch{
+		Code:     m.Code,
+		Duration: m.Duration,
+		EndsAt:   m.EndsAt,
+		Game:     m.Game.FEN(),
+	}
 }
 
 const stateFile = "chess.json"
@@ -36,11 +46,16 @@ func Store() (err error) {
 }
 
 func Resume() (err error) {
+	var m Match
 	buf, err := ioutil.ReadFile(stateFile)
 	if err != nil {
 		return
 	}
-	return json.Unmarshal(buf, match)
+	if err = json.Unmarshal(buf, &m); err != nil {
+		return err
+	}
+	match = &m
+	return
 }
 
 func SetMatch(m *Match) {
@@ -70,7 +85,6 @@ func NewMatch(duration time.Duration) Match {
 		Duration: duration,
 		EndsAt:   time.Now().UTC().Add(duration),
 
-		Turn:  PlayerMaster,
-		State: "moving",
+		Game: chess.NewGame(),
 	}
 }

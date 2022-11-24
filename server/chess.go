@@ -42,12 +42,12 @@ func startMatch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		match := chess.NewMatch(time.Duration(dur.Duration))
+		match := chess.NewMatch(time.Second * time.Duration(dur.Duration))
 		chess.SetMatch(&match)
 	}
 	sendJSON(w, http.StatusOK, nil)
 }
 
 func getMatch(w http.ResponseWriter, r *http.Request) {
-	sendJSON(w, http.StatusOK, chess.GetMatch())
+	sendJSON(w, http.StatusOK, chess.GetMatch().Serialized())
 }

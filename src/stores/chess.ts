@@ -1,17 +1,23 @@
 import create from 'zustand'
 import { parseDateTime } from '@internationalized/date';
 import type { TimeDuration, CalendarDateTime } from '@internationalized/date'
+import { Chess, Color } from 'chess.js'
 
 import fetch, { withJSON } from '../fetch'
-import { Chess, ChessState } from '../types'
+import type { Chess as RequestChess } from '../types'
 
 export interface State {
-  state: ChessState
+  code: string | null
   timeout: number | null
-  fen: string // FEN board representation
-  turn: boolean
   end: CalendarDateTime | null
-  code: string
+
+  gameover: boolean
+  game: string | null
+  turn: Color | null
+}
+
+export enum Player {
+  WHITE, BLACK
 }
 
 export interface Actions {
@@ -21,23 +27,26 @@ export interface Actions {
 }
 
 const initialState: State = {
-  state: ChessState.IDLE,
+  code: '',
   timeout: null,
-  fen: '',
-  turn: false,
   end: null,
-  code:''
+
+  gameover: false,
+  game: null,
+  turn: null,
 }
 
 
 const store = create<State & Actions>((set, get) => ({
   ...initialState,
   fetch: async () => {
-    const state = await fetch<Chess>('chess')
+    const state = await fetch<RequestChess>('chess')
     const end = parseDateTime(state.ends_at.slice(0, -1))
-    set({ ...state, end })
+    const chessboard = new Chess(state.game)
+    set({ ...state, end, gameover: chessboard.isGameOver(), turn: chessboard.turn() })
 
-    if (state.state == ChessState.WAITING && !state.turn) {
+    if (!get().gameover) {
+      console.trace('started timeout')
       if (get().timeout != null)
         clearTimeout(get().timeout!)
 

@@ -6,14 +6,13 @@ import { useForm } from 'react-hook-form'
 import { useElementSize } from 'usehooks-ts'
 import { parseDateTime } from '@internationalized/date'
 import useChess from '../stores/chess'
-import { ChessState } from '../types'
 import MoveList from '../components/move-list'
 
 const Chess: React.FC = () => {
-  const { state, fetch, turn, play, end, code } = useChess(s => s)
+  const { fetch, turn, play, end, code } = useChess(s => s)
   const [authorized, setAuthorized] = useState(false)
   const [getRef, { width }] = useElementSize()
-  console.log(state)
+
   const {
     handleSubmit,
     //formState: { errors },
@@ -24,11 +23,9 @@ const Chess: React.FC = () => {
     fetch();
   }, [])
 
-
   return (
     <div className='flex flex-1 flex-col md:flex-row'>
-
-      {state == ChessState.IDLE && (
+      {!code && (
         <div className='flex flex-1 items-center justify-center '>
           <button
             onClick={_ => { play({ minutes: 1 }); setAuthorized(true) }}
@@ -39,7 +36,7 @@ const Chess: React.FC = () => {
           </button>
         </div>
       )}
-      {state != ChessState.IDLE && !authorized && (
+      {code && !authorized && (
         <div className='flex flex-1 items-center justify-center '>
           <form onClick={handleSubmit(_ => setAuthorized(true))} className='flex'>
             <div>
@@ -71,13 +68,13 @@ const Chess: React.FC = () => {
           </form>
         </div>
       )}
-      {state != ChessState.IDLE && state != ChessState.LOST && authorized && (
+      {code && /* outcome */  authorized && (
         <>
           <div className="flex flex-1 flex-col p-9">
             <div ref={getRef}>
               <Chessboard
                 boardWidth={width}
-                arePiecesDraggable={turn}
+                arePiecesDraggable={turn == 'w'}
                 position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
               />
             </div>

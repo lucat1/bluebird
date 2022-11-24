@@ -8,10 +8,16 @@ import (
 	"git.hjkl.gq/team14/team14/chess"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
+	"github.com/jasonlvhit/gocron"
 	"gorm.io/gorm/logger"
 )
 
 const ADDR = ":8080"
+
+func scheduler() {
+	<-gocron.Start()
+	log.Fatal("WARN The scheduler exited")
+}
 
 func main() {
 	bearer := os.Getenv("TWITTER_BEARER")
@@ -39,11 +45,14 @@ func main() {
 	}
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
+	err = chess.Resume()
+	if err == nil {
+		log.Printf("Resumed match state: %v", chess.GetMatch())
+	}
+	defer chess.Store()
+	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)
-	}
-	if chess.Resume() == nil {
-		log.Printf("Resumed match state: %v", chess.GetMatch())
 	}
 
 	log.Println("bye")
