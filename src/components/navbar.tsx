@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from 'react-router-dom'
 import shallow from "zustand/shallow";
 
 import useStore, { QueryType } from '../stores/store'
@@ -171,11 +172,13 @@ const Navbar: React.FC = () => {
             <a onClick={search('#ghigliottina')} className="cursor-pointer block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Eredità</a>
           </li>
           <li>
-            <a className="cursor-not-allowed disabled block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Reazione a Catena</a>
+            <a className="cursor-not-allowed block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Reazione a catena</a>
           </li>
           <li>
-            <a className="cursor-not-allowed block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Scacchi</a>
-          </li>
+            <Link to='/scacchi' className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+              Scacchi
+            </Link>
+            </li>
         </ul>
 
       </div>

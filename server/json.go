@@ -6,8 +6,8 @@ import (
 )
 
 func sendJSON(w http.ResponseWriter, code int, data interface{}) {
-	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
 	buf, err := json.Marshal(data)
 	if err != nil {
 		sendError(w, 500, APIError{

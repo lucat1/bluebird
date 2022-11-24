@@ -48,3 +48,10 @@ export interface User {
   username: string
   profile_image: string
 }
+
+export interface Chess {
+  code: string
+  duration: string
+  ends_at: string
+  game: string
+}

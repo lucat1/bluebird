@@ -1,15 +1,10 @@
 package request
 
-func TweetsByUser(username string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
-	url, err := buildURL(NewRequest("users/by/username/" + username))
-	if err != nil {
-		return
-	}
-	user, err := requestUser(url)
-	if err != nil {
-		return
-	}
-	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
+func TweetsByConversationID(conversationID string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
+	url, err := buildURL(NewRequest("tweets/search/recent").
+		ConversationID(RequestQueryConversationID(conversationID)).
+		Lang(RequestQueryLangIT).
+		SortOrder(RequestSortOrderRecency).
 		AddStartTime(RequestTime(startTime)).
 		AddEndTime(RequestTime(endTime)).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
@@ -28,7 +23,13 @@ func TweetsByUser(username string, n uint, startTime string, endTime string) (tw
 			RequestFieldEntities,
 			RequestFieldDescription,
 			RequestFieldCreatedAt,
-		).AddExpansions(RequestExpansionAuthorID),
+		).
+		AddPlaceFields(
+			RequestFieldID,
+			RequestFieldGeo,
+			RequestFieldFullName,
+		).
+		AddExpansions(RequestExpansionAuthorID, RequestExpansionGeoPlaceID),
 	)
 	if err != nil {
 		return

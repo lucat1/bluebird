@@ -64,8 +64,8 @@ const store = create<State & Actions>((set, get) => ({
   clearTweets: () => set({ ...get(), tweets: [] }),
   fetch: async (query: Query) => {
     set({ ...get(), loading: true, query, tweets: [] })
-    const req = await fetch<Search>(searchURL(query))
-    const tweets = req.tweets.map(convert)
+    const res = await fetch<Search>(searchURL(query))
+    const tweets = res.tweets.map(convert)
     set({ ...get(), loading: false, tweets })
     for (const tweet of tweets) {
       fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(({ sentiments }) =>
