@@ -1,6 +1,7 @@
 package chess
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -12,6 +13,7 @@ import (
 
 	"git.hjkl.gq/team14/team14/request"
 	"github.com/notnil/chess"
+	"github.com/notnil/chess/image"
 )
 
 const (
@@ -30,24 +32,28 @@ type Match struct {
 	Tweets   []request.Tweet
 
 	timeout chan bool
-	waiting atomic.Bool
+	ticking atomic.Bool
+
+	fetching      atomic.Bool
+	fetched       chan bool
+	awaitingFetch atomic.Int32
 }
 
 func (m *Match) delay() {
-	if m.waiting.Load() {
+	if m.ticking.Load() {
 		m.timeout <- true
 	}
 	m.timeout = make(chan bool)
 
 	go func() {
-		m.waiting.Store(true)
+		m.ticking.Store(true)
 		select {
 		case <-time.After(match.Duration):
-			m.waiting.Store(false)
+			m.ticking.Store(false)
 			m.onTurnEnd()
 
 		case <-match.timeout:
-			m.waiting.Store(false)
+			m.ticking.Store(false)
 			log.Println("Timeout cancled")
 		}
 	}()
@@ -72,6 +78,7 @@ func (m *Match) onTurnEnd() {
 	if m.game.Position().Turn() == playerColor {
 		// TODO: forfeit
 	} else {
+		m.fetching.Store(true)
 		moves, err := m.getMoves()
 		if err != nil {
 			log.Printf("Could not get tweets replies: %v", err)
@@ -88,6 +95,8 @@ func (m *Match) onTurnEnd() {
 			}
 		}
 		m.game.MoveStr(mostRated)
+		m.fetched <- true
+		m.fetching.Store(false)
 	}
 }
 
@@ -102,6 +111,15 @@ func (m *Match) Move(move string) error {
 	m.EndsAt = time.Now().UTC().Add(m.Duration)
 	m.delay()
 	return nil
+}
+
+func (m *Match) Image() (buf []byte, err error) {
+	dest := bytes.NewBuffer(buf)
+	if err = image.SVG(dest, m.game.Position().Board()); err != nil {
+		return
+	}
+
+	return dest.Bytes(), nil
 }
 
 type SerializedMatch struct {
@@ -149,6 +167,12 @@ func SetMatch(m *Match) {
 }
 
 func GetMatch() *Match {
+	if match != nil {
+		if match.fetching.Load() {
+			match.awaitingFetch.Add(1)
+			<-match.fetched
+		}
+	}
 	return match
 }
 
