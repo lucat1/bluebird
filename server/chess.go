@@ -42,12 +42,63 @@ func startMatch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		match := chess.NewMatch(time.Second * time.Duration(dur.Duration))
+		match := chess.NewMatch(time.Millisecond * time.Duration(dur.Duration))
 		chess.SetMatch(&match)
 	}
 	sendJSON(w, http.StatusOK, nil)
 }
 
+type MoveRequest struct {
+	Move string `json:"move"`
+}
+
+func move(w http.ResponseWriter, r *http.Request) {
+	if chess.GetMatch() == nil {
+		msg := "A match hasn't been started yet"
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: msg,
+			Error:   errors.New(msg),
+		})
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		var mv MoveRequest
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			sendError(w, http.StatusBadRequest, APIError{
+				Message: "Could not read request body",
+				Error:   err,
+			})
+			return
+		}
+		if err = json.Unmarshal(body, &mv); err != nil {
+			sendError(w, http.StatusBadRequest, APIError{
+				Message: "Could parse request body",
+				Error:   err,
+			})
+			return
+		}
+
+		if err := chess.GetMatch().Move(mv.Move); err != nil {
+			sendError(w, http.StatusBadRequest, APIError{
+				Message: "Could not move",
+				Error:   err,
+			})
+			return
+		}
+		chess.Store()
+		sendJSON(w, http.StatusOK, chess.GetMatch().Serialized())
+		return
+	}
+	sendJSON(w, http.StatusOK, nil)
+}
+
 func getMatch(w http.ResponseWriter, r *http.Request) {
-	sendJSON(w, http.StatusOK, chess.GetMatch().Serialized())
+	match := chess.GetMatch()
+	if match != nil {
+		sendJSON(w, http.StatusOK, match.Serialized())
+	} else {
+		sendJSON(w, http.StatusOK, nil)
+	}
 }

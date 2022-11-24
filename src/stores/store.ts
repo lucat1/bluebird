@@ -1,6 +1,6 @@
 import create from 'zustand'
 import type { DateRange } from "@react-types/datepicker";
-import { parseDateTime, now, getLocalTimeZone } from '@internationalized/date';
+import { parseDateTime, now } from '@internationalized/date';
 
 import fetch from '../fetch'
 import { Search, RawTweet, Tweet, SentimentSearch } from '../types'
@@ -33,10 +33,10 @@ const getInitialState = (): State => ({
     type: QueryType.Keyword,
     query: '',
     timeRange: {
-      start: now(getLocalTimeZone()).subtract({
+      start: now('utc').subtract({
         days: 7
       }),
-      end: now(getLocalTimeZone())
+      end: now('utc')
     }
   },
   loading: true,
@@ -48,8 +48,8 @@ const searchURL = ({ type, query, timeRange }: Query): string => {
 
   let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=100`
   if (timeRange) {
-    const start = timeRange.start.toDate(getLocalTimeZone()).toISOString()
-    const end = timeRange.end.toDate(getLocalTimeZone()).toISOString()
+    const start = timeRange.start.toDate('utc').toISOString()
+    const end = timeRange.end.toDate('utc').toISOString()
     base += `&startTime=${start}&endTime=${end}`
   }
   return base

@@ -2,6 +2,7 @@ package chess
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -10,20 +11,39 @@ import (
 	"github.com/notnil/chess"
 )
 
-type Match struct {
-	Code     string        `json:"code"`
-	Duration time.Duration `json:"duration"`
-	EndsAt   time.Time     `json:"ends_at"`
+const (
+	playerColor = chess.White
+	stateFile   = "chess.json"
+)
 
-	Game *chess.Game `json:"game"`
+var match *Match = nil
+
+type Match struct {
+	Code     string
+	Duration time.Duration
+	EndsAt   time.Time
+	game     *chess.Game
+	timeout  chan bool
+}
+
+func (m *Match) Move(move string) error {
+	if match.game.Position().Turn() != playerColor {
+		return errors.New("Cannot move in the opponent's turn")
+	}
+	if err := match.game.MoveStr(move); err != nil {
+		return err
+	}
+
+	m.EndsAt = time.Now().UTC().Add(m.Duration)
+	// m.timeout <- true
+	return nil
 }
 
 type SerializedMatch struct {
 	Code     string        `json:"code"`
 	Duration time.Duration `json:"duration"`
 	EndsAt   time.Time     `json:"ends_at"`
-
-	Game string `json:"game"`
+	Game     string        `json:"game"`
 }
 
 func (m Match) Serialized() SerializedMatch {
@@ -31,13 +51,9 @@ func (m Match) Serialized() SerializedMatch {
 		Code:     m.Code,
 		Duration: m.Duration,
 		EndsAt:   m.EndsAt,
-		Game:     m.Game.FEN(),
+		Game:     m.game.FEN(),
 	}
 }
-
-const stateFile = "chess.json"
-
-var match *Match = nil
 
 func Store() (err error) {
 	buf, err := json.Marshal(match)
@@ -83,8 +99,8 @@ func NewMatch(duration time.Duration) Match {
 	return Match{
 		Code:     code(6),
 		Duration: duration,
-		EndsAt:   time.Now().UTC().Add(duration),
+		EndsAt:   time.Now().Add(duration).UTC(),
 
-		Game: chess.NewGame(),
+		game: chess.NewGame(),
 	}
 }

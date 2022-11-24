@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"git.hjkl.gq/team14/team14/cache"
 	"git.hjkl.gq/team14/team14/chess"
@@ -20,6 +22,7 @@ func scheduler() {
 }
 
 func main() {
+	rand.Seed(time.Now().Unix())
 	bearer := os.Getenv("TWITTER_BEARER")
 	if bearer == "" {
 		log.Fatalln("Missing environment variable TWITTER_BEARER")

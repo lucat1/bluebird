@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import Countdown from 'react-countdown'
-import { getLocalTimeZone } from '@internationalized/date'
 import { useForm } from 'react-hook-form'
 import { useElementSize } from 'usehooks-ts'
 import { parseDateTime } from '@internationalized/date'
+import { Color, PAWN } from 'chess.js'
+
 import useChess from '../stores/chess'
 import MoveList from '../components/move-list'
 
+const myTurn: Color = 'w'
+
 const Chess: React.FC = () => {
-  const { fetch, turn, play, end, code } = useChess(s => s)
+  const { fetch, check, move, end, turn, play, code, game } = useChess(s => s)
   const [authorized, setAuthorized] = useState(false)
   const [getRef, { width, height }] = useElementSize()
 
@@ -28,7 +31,7 @@ const Chess: React.FC = () => {
       {!code && (
         <div className='flex flex-1 items-center justify-center '>
           <button
-            onClick={_ => { play({ minutes: 1 }); setAuthorized(true) }}
+            onClick={_ => { play({ minutes: 5 }); setAuthorized(true) }}
             type="submit"
             className="text-white text-center hover:bg-sky-700  bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
           >
@@ -69,18 +72,30 @@ const Chess: React.FC = () => {
         </div>
       )}
       {code && /* outcome */  authorized && (
-        <div className='flex flex-1'>
-          <div ref={getRef} className='flex flex-1 '>
-            <Chessboard
-              boardWidth={Math.min(width, height - 10)}
-              arePiecesDraggable={turn == 'w'}
-              position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-            />
+        <>
+          <div className='flex flex-1 flex-col p-8'>
+            <div ref={getRef} className='flex flex-1 '>
+              <Chessboard
+                boardWidth={Math.min(width, height - 10)}
+                arePiecesDraggable={turn == myTurn}
+                position={game!}
+                isDraggablePiece={({ piece }) => (piece.charAt(0) as Color) == myTurn}
+                onPieceDrop={(_, dest, piece) => {
+                  let pn = piece.charAt(1),
+                    mv = (pn.toLowerCase() != PAWN ? pn : '') + dest
+                  if (!check(mv))
+                    return false
+
+                  move(mv)
+                  return true
+                }}
+              />
+            </div>
             <div>
-              {turn ? (
+              {turn == myTurn ? (
                 <p>It's your turn: move a piece</p>) : (<>
                   Opponent's turn, waiting
-                  <Countdown date={end!.toDate(getLocalTimeZone())} />
+                  <Countdown date={end!.toDate('UTC')} />
                 </>)}
             </div>
           </div>
@@ -101,9 +116,9 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-        </div>
+        </>
       )}
-    </div>
+    </div >
   )
 }
 
