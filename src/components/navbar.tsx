@@ -169,10 +169,9 @@ const Navbar: React.FC = () => {
       <div className={`${open ? '' : 'hidden'} w-full w-full md:block md:w-auto`}>
         <ul className="flex flex-col p-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-900 md:dark:bg-gray-900 dark:border-gray-600">
           <li>
-            <a onClick={search('#ghigliottina')} className="cursor-pointer block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Eredità</a>
-          </li>
-          <li>
-            <a className="cursor-not-allowed block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Reazione a catena</a>
+            <Link to='/ghigliottina' onClick={search('#ghigliottina')} className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+              Eredità
+            </Link>
           </li>
           <li>
             <Link to='/scacchi' className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">

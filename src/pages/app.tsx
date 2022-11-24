@@ -8,7 +8,7 @@ import Navbar from "../components/navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchPage from "./search-page";
 import Ghigliottina from "./ghigliottina";
-import Chess from './chess'
+import Chess from "./chess";
 
 const App: React.FC = () => {
   const reset = useStore(s => s.reset)
@@ -16,7 +16,7 @@ const App: React.FC = () => {
   return (
     <OverlayContainer>
           <BrowserRouter>
-      <main className="w-screen h-screen flex flex-col overflow-auto lg:overflow-hidden dark:bg-gray-900 dark:text-gray-200 dark:text-white">
+      <main className="w-screen h-screen flex flex-col overflow-auto lg:overflow-hidden dark:bg-gray-00 dark:text-gray-200 dark:text-white">
         <Navbar />
         <ErrorBoundary FallbackComponent={Error} onReset={reset}>
             <Routes>
