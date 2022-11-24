@@ -24,6 +24,22 @@ type Match struct {
 	EndsAt   time.Time
 	game     *chess.Game
 	timeout  chan bool
+	tweetID  string
+}
+
+func delay(fn func()) {
+	if match.timeout != nil {
+		match.timeout <- true
+	}
+	match.timeout = make(chan bool)
+
+	select {
+	case <-time.After(match.Duration):
+		fn()
+
+	case <-match.timeout:
+		log.Println("Timeout cancled")
+	}
 }
 
 func (m *Match) Move(move string) error {
@@ -35,7 +51,7 @@ func (m *Match) Move(move string) error {
 	}
 
 	m.EndsAt = time.Now().UTC().Add(m.Duration)
-	// m.timeout <- true
+	m.timeout <- true
 	return nil
 }
 

@@ -92,11 +92,8 @@ const Chess: React.FC = () => {
               />
             </div>
             <div>
-              {turn == myTurn ? (
-                <p>It's your turn: move a piece</p>) : (<>
-                  Opponent's turn, waiting
-                  <Countdown date={end!.toDate('UTC')} />
-                </>)}
+              <Countdown date={end!.toDate('UTC')} />
+              {turn == myTurn && (<p>It's your turn: move a piece</p>)}
             </div>
           </div>
           <div className='flex '>
