@@ -146,22 +146,26 @@ const Chess: React.FC = () => {
           <div className="flex flex-col mx-auto">
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
-                <White></White>
+                <White />
               </div>
-              <div className="flex flex-row p-1 m-1 self-center ">
-                <Countdown
-                  date={turn == myTurn ? end!.toDate("utc") : new Date()}
-                />
+              <div className="flex flex-row p-1 my-2 w-24">
+                {turn == myTurn ? (
+                  <Countdown date={end!.toDate("utc")} />
+                ) : (
+                  "Waiting"
+                )}
               </div>
             </div>
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
-                <Black></Black>
+                <Black />
               </div>
-              <div className="flex flex-row p-1 m-1 self-center ">
-                <Countdown
-                  date={turn != myTurn ? end!.toDate("utc") : new Date()}
-                />
+              <div className="flex flex-row p-1 my-2 w-24">
+                {turn != myTurn ? (
+                  <Countdown date={end!.toDate("utc")} />
+                ) : (
+                  "Waiting"
+                )}
               </div>
             </div>
             <div className="flex flex-row p-2 m-1 self-center">
