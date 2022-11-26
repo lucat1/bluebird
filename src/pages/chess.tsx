@@ -104,7 +104,7 @@ const Chess: React.FC = () => {
                 <input
                   id="code"
                   type="search"
-                  className="flex p-4 pl-10 hover:border-gray-400   text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
+                  className="flex p-4 pl-10 hover:border-gray-400 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
                   placeholder="Codice..."
                   {...register("code", {
                     validate: (value) => value == code,
@@ -112,7 +112,7 @@ const Chess: React.FC = () => {
                 />
                 <button
                   type="submit"
-                  className="text-white hover:bg-sky-700   bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+                  className="text-white hover:bg-sky-700 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
                 >
                   Invia
                 </button>
@@ -123,8 +123,8 @@ const Chess: React.FC = () => {
       )}
       {code && /* outcome */ authorized && (
         <>
-          <div className="flex flex-1">
-            <div ref={getRef} className="flex flex-1">
+          <div className="flex flex-1 lg:justify-center">
+            <div ref={getRef} className="flex flex-1 lg:flex-initial aspect-square ">
               <Chessboard
                 boardWidth={Math.min(width, height - 10)}
                 arePiecesDraggable={turn == myTurn}
@@ -143,8 +143,8 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col mx-auto">
-            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
+          <div className="flex flex-col lg:items-center">
+            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <White />
               </div>
@@ -156,7 +156,7 @@ const Chess: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
+            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <Black />
               </div>
@@ -172,7 +172,7 @@ const Chess: React.FC = () => {
               Grafico A barre
             </div>
           </div>
-          <div className="flex lg:flex-col">
+          <div className="flex lg:flex-col p-2">
             <div className="w-full">
               <MoveList
                 tweets={[
