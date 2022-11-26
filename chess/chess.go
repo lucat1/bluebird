@@ -24,12 +24,11 @@ const (
 var match *Match = nil
 
 type Match struct {
-	Code     string
-	Duration time.Duration
-	EndsAt   time.Time
-	game     *chess.Game
-	tweetID  string
-	Tweets   []request.Tweet
+	Code     string        `json:"code"`
+	Duration time.Duration `json:"duration"`
+	EndsAt   time.Time     `json:"ends_at"`
+	Game     *chess.Game   `json:"game"`
+	TweetID  string        `json:"tweet_id"`
 
 	timeout chan bool
 	ticking atomic.Bool
@@ -60,12 +59,12 @@ func (m *Match) delay() {
 }
 
 func (m *Match) getMoves() (moves map[string]uint, err error) {
-	tweets, err := request.Replies(m.tweetID, 100, "", "")
+	tweets, err := request.Replies(m.TweetID, 100, "", "")
 	if err != nil {
 		return
 	}
 	for _, tweet := range tweets {
-		clone := match.game.Clone()
+		clone := match.Game.Clone()
 		first := strings.Split(tweet.Text, " ")[0]
 		if err = clone.MoveStr(first); err != nil {
 			moves[first]++
@@ -75,7 +74,7 @@ func (m *Match) getMoves() (moves map[string]uint, err error) {
 }
 
 func (m *Match) onTurnEnd() {
-	if m.game.Position().Turn() == playerColor {
+	if m.Game.Position().Turn() == playerColor {
 		// TODO: forfeit
 	} else {
 		m.fetching.Store(true)
@@ -94,17 +93,17 @@ func (m *Match) onTurnEnd() {
 				mostValued = val
 			}
 		}
-		m.game.MoveStr(mostRated)
+		m.Game.MoveStr(mostRated)
 		m.fetched <- true
 		m.fetching.Store(false)
 	}
 }
 
 func (m *Match) Move(move string) error {
-	if match.game.Position().Turn() != playerColor {
+	if match.Game.Position().Turn() != playerColor {
 		return errors.New("Cannot move in the opponent's turn")
 	}
-	if err := match.game.MoveStr(move); err != nil {
+	if err := match.Game.MoveStr(move); err != nil {
 		return err
 	}
 
@@ -115,7 +114,7 @@ func (m *Match) Move(move string) error {
 
 func (m *Match) Image() (buf []byte, err error) {
 	dest := bytes.NewBuffer(buf)
-	if err = image.SVG(dest, m.game.Position().Board()); err != nil {
+	if err = image.SVG(dest, m.Game.Position().Board()); err != nil {
 		return
 	}
 
@@ -123,11 +122,10 @@ func (m *Match) Image() (buf []byte, err error) {
 }
 
 type SerializedMatch struct {
-	Code     string          `json:"code"`
-	Duration time.Duration   `json:"duration"`
-	EndsAt   time.Time       `json:"ends_at"`
-	Game     string          `json:"game"`
-	Tweets   []request.Tweet `json:"tweets"`
+	Code     string        `json:"code"`
+	Duration time.Duration `json:"duration"`
+	EndsAt   time.Time     `json:"ends_at"`
+	Game     string        `json:"game"`
 }
 
 func (m Match) Serialized() SerializedMatch {
@@ -135,8 +133,7 @@ func (m Match) Serialized() SerializedMatch {
 		Code:     m.Code,
 		Duration: m.Duration,
 		EndsAt:   m.EndsAt,
-		Game:     m.game.FEN(),
-		Tweets:   m.Tweets,
+		Game:     m.Game.FEN(),
 	}
 }
 
@@ -192,7 +189,7 @@ func NewMatch(duration time.Duration) Match {
 		Duration: duration,
 		EndsAt:   time.Now().Add(duration).UTC(),
 
-		game: chess.NewGame(),
+		Game: chess.NewGame(),
 	}
 	go func() {
 		<-m.timeout
