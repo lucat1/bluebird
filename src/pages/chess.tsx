@@ -52,7 +52,7 @@ const Chess: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col md:flex-row p-5 mx-auto">
+    <div className="flex flex-1 flex-col md:flex-row p-5">
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
           <form
@@ -88,7 +88,7 @@ const Chess: React.FC = () => {
         </div>
       )}
       {code && !authorized && (
-        <div className="flex flex-1 items-center justify-center ">
+        <div className="flex flex-1 items-center justify-center">
           <form
             onClick={handleSubmit((_) => setAuthorized(true))}
             className="flex"
@@ -122,48 +122,47 @@ const Chess: React.FC = () => {
         </div>
       )}
       {code && /* outcome */ authorized && (
-        <div className="flex lg:flex-row flex-col justify-center ">
-          <div ref={getRef} className="flex flex-1 aspect-square">
-            <Chessboard
-              boardWidth={Math.min(width, height - 10)}
-              arePiecesDraggable={turn == myTurn}
-              position={game!}
-              isDraggablePiece={({ piece }) =>
-                (piece.charAt(0) as Color) == myTurn
-              }
-              onPieceDrop={(_, dest, piece) => {
-                let pn = piece.charAt(1),
-                  mv = (pn.toLowerCase() != PAWN ? pn : "") + dest;
-                if (!check(mv)) return false;
+        <>
+          <div className="flex flex-1">
+            <div ref={getRef} className="flex flex-1">
+              <Chessboard
+                boardWidth={Math.min(width, height - 10)}
+                arePiecesDraggable={turn == myTurn}
+                position={game!}
+                isDraggablePiece={({ piece }) =>
+                  (piece.charAt(0) as Color) == myTurn
+                }
+                onPieceDrop={(_, dest, piece) => {
+                  let pn = piece.charAt(1),
+                    mv = (pn.toLowerCase() != PAWN ? pn : "") + dest;
+                  if (!check(mv)) return false;
 
-                move(mv);
-                return true;
-              }}
-            />
+                  move(mv);
+                  return true;
+                }}
+              />
+            </div>
           </div>
           <div className="flex flex-col mx-auto">
-            <div className="flex flex-row self-center">
-              {turn ? (
-                <p className="text-center m-1">It's your turn: move a piece</p>
-              ) : (
-                <p>Opponent's turn, waiting</p>
-              )}
-              <Countdown date={end!.toDate(getLocalTimeZone())} />
-            </div>
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <White></White>
               </div>
               <div className="flex flex-row p-1 m-1 self-center ">
-                Timer 1
-                {/* <Countdown date={end!.toDate(getLocalTimeZone())} /> */}
+                <Countdown
+                  date={turn == myTurn ? end!.toDate("utc") : new Date()}
+                />
               </div>
             </div>
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-300 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <Black></Black>
               </div>
-              <div className="flex flex-row p-1 m-1 self-center ">Timer 2</div>
+              <div className="flex flex-row p-1 m-1 self-center ">
+                <Countdown
+                  date={turn != myTurn ? end!.toDate("utc") : new Date()}
+                />
+              </div>
             </div>
             <div className="flex flex-row p-2 m-1 self-center">
               Grafico A barre
@@ -189,7 +188,7 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
