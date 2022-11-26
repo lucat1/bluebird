@@ -53,6 +53,10 @@ func main() {
 		log.Printf("Resumed match state: %v", chess.GetMatch())
 	}
 	defer chess.Store()
+
+	image, _ := os.ReadFile("prova.jpg")
+	request.UploadMedia(image)
+
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)

@@ -102,3 +102,6 @@ func getMatch(w http.ResponseWriter, r *http.Request) {
 		sendJSON(w, http.StatusOK, nil)
 	}
 }
+
+func uploadBoard() {
+}
