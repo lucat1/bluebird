@@ -32,9 +32,19 @@ const White: React.FC = () => (
 );
 
 const Chess: React.FC = () => {
-  const { fetch, check, move, end, turn, play, code, game } = useChess(
-    (s) => s
-  );
+  const {
+    connect,
+    connecting,
+    loading,
+    error,
+    check,
+    move,
+    end,
+    turn,
+    play,
+    code,
+    game,
+  } = useChess((s) => s);
   const [authorized, setAuthorized] = useState(false);
   const [getRef, { width, height }] = useElementSize();
 
@@ -48,11 +58,17 @@ const Chess: React.FC = () => {
   });
 
   useEffect(() => {
-    fetch();
+    connect();
   }, []);
+
+  if (connecting) return "connecting";
+
+  if (error) return "error: " + error;
 
   return (
     <div className="flex flex-1 flex-col md:flex-row p-5">
+      {loading && "LOADING"}
+      {code && authorized && "YOUR CODE: " + code}
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
           <form
@@ -124,7 +140,10 @@ const Chess: React.FC = () => {
       {code && /* outcome */ authorized && (
         <>
           <div className="flex flex-1 lg:justify-center">
-            <div ref={getRef} className="flex flex-1 lg:flex-initial aspect-square ">
+            <div
+              ref={getRef}
+              className="flex flex-1 lg:flex-initial aspect-square "
+            >
               <Chessboard
                 boardWidth={Math.min(width, height - 10)}
                 arePiecesDraggable={turn == myTurn}
@@ -152,7 +171,7 @@ const Chess: React.FC = () => {
                 {turn == myTurn ? (
                   <Countdown date={end!.toDate("utc")} />
                 ) : (
-                  "Waiting"
+                  "00:00:00:00"
                 )}
               </div>
             </div>
@@ -164,7 +183,7 @@ const Chess: React.FC = () => {
                 {turn != myTurn ? (
                   <Countdown date={end!.toDate("utc")} />
                 ) : (
-                  "Waiting"
+                  "00:00:00:00"
                 )}
               </div>
             </div>
