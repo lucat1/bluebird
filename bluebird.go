@@ -27,7 +27,7 @@ func main() {
 	if bearer == "" {
 		log.Fatalln("Missing environment variable TWITTER_BEARER")
 	}
-	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
+	client, err := request.NewClient("https://api.twitter.com/2/", "https://upload.twitter.com/1.1/", bearer)
 	if err != nil {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
@@ -53,9 +53,6 @@ func main() {
 		log.Printf("Resumed match state: %v", chess.GetMatch())
 	}
 	defer chess.Store()
-
-	image, _ := os.ReadFile("prova.jpg")
-	request.UploadMedia(image)
 
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {

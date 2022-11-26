@@ -107,9 +107,35 @@ func (m *Match) Move(move string) error {
 		return err
 	}
 
+	m.PostGame()
 	m.EndsAt = time.Now().UTC().Add(m.Duration)
 	m.delay()
 	return nil
+}
+
+func (m *Match) PostGame() {
+	image, err := m.Image()
+	if err != nil {
+		log.Printf("WARN: Could not generate chessboard picture: %v", err)
+		return
+	}
+
+	media, err := request.UploadMedia(image)
+	if err != nil {
+		log.Printf("WARN: Could not upload image to twitter: %v", err)
+		return
+	}
+	tweet, err := request.Post(request.TweetRequest{
+		Text: "bla bla bla",
+		Media: request.TweetRequestMedia{
+			MediaIDs: []string{media.MediaID},
+		},
+	})
+	if err != nil {
+		log.Printf("WARN: Could not post a new tweet: %v", err)
+		return
+	}
+	m.TweetID = tweet.ID
 }
 
 func (m *Match) Image() (buf []byte, err error) {

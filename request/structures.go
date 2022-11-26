@@ -133,8 +133,25 @@ type tweetResponse struct {
 	Includes includesTweet
 }
 
-type mediaResponse struct {
+type MediaResponse struct {
 	MediaID string `json:"media_id"`
+}
+
+type TweetRequest struct {
+	Text  string            `json:"text"`
+	Media TweetRequestMedia `json:"media"`
+}
+
+type TweetRequestMedia struct {
+	MediaIDs []string `json:"media_ids"`
+}
+
+type rawTweetResponse struct {
+	Data TweetResponse `json:"data"`
+}
+
+type TweetResponse struct {
+	ID string `json:"id"`
 }
 
 func (res *tweetResponse) Users() map[string]User {

@@ -2,11 +2,10 @@ package request
 
 import (
 	"bytes"
-	"fmt"
 	"mime/multipart"
 )
 
-func UploadMedia(media []byte) (err error) {
+func UploadMedia(media []byte) (result MediaResponse, err error) {
 	myurl, err := buildURL(NewRequest("media/upload.json"))
 	if err != nil {
 		return
@@ -17,7 +16,6 @@ func UploadMedia(media []byte) (err error) {
 	part.Write(media)
 	w.Close()
 
-	requestPostRaw[mediaResponse](client, myurl, buf, "application/x-www-form-urlencoded")
-	fmt.Println("uploaded")
+	result, err = requestPostRaw[MediaResponse](client, myurl, buf, "application/x-www-form-urlencoded", true)
 	return
 }
