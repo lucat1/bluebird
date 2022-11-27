@@ -83,12 +83,14 @@ const Chess: React.FC = () => {
                 type="number"
                 placeholder="  hours"
                 className="w-1/5 mb-5 mr-2 text-black rounded-lg text-center"
+                min={0}
                 {...register("hours", {})}
               />
               <input
                 type="number"
                 placeholder="  minutes"
                 className="w-1/5 mb-5 text-black rounded-lg text-center"
+                min={0}
                 {...register("minutes", {})}
               />
             </div>
