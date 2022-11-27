@@ -111,7 +111,7 @@ const store = create<State & Actions>((set, get) => ({
           (turnDuration.milliseconds || 0) +
           (turnDuration.seconds || 0) * 1000 +
           (turnDuration.minutes || 0) * 1000 * 60 +
-          (turnDuration.hours || 0) * 1000 * 60 * 24
+          (turnDuration.hours || 0) * 1000 * 60 * 60
         ).toString(),
       } as OutgoingMessage)
     );
