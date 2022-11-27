@@ -32,10 +32,6 @@ type Match struct {
 
 	timeout chan bool
 	ticking atomic.Bool
-
-	fetching      atomic.Bool
-	fetched       chan bool
-	awaitingFetch atomic.Int32
 }
 
 func (m *Match) delay() {
@@ -77,7 +73,6 @@ func (m *Match) onTurnEnd() {
 	if m.Game.Position().Turn() == playerColor {
 		// TODO: forfeit
 	} else {
-		m.fetching.Store(true)
 		moves, err := m.getMoves()
 		if err != nil {
 			log.Printf("Could not get tweets replies: %v", err)
@@ -94,8 +89,6 @@ func (m *Match) onTurnEnd() {
 			}
 		}
 		m.Game.MoveStr(mostRated)
-		m.fetched <- true
-		m.fetching.Store(false)
 	}
 }
 
@@ -190,12 +183,6 @@ func SetMatch(m *Match) {
 }
 
 func GetMatch() *Match {
-	if match != nil {
-		if match.fetching.Load() {
-			match.awaitingFetch.Add(1)
-			<-match.fetched
-		}
-	}
 	return match
 }
 
