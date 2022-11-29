@@ -35,15 +35,8 @@ func requestRaw[T userResponse | tweetResponse | sentimentResponse](client *Requ
 }
 
 // url should never start with '/'
-func requestPostRaw[T MediaResponse | rawTweetResponse](client *RequestClient, url *url.URL, bodyReq io.Reader, contentType string, oldVer bool) (raw T, err error) {
-	var strURL string
-	if oldVer {
-		strURL = client.URL.ResolveReference(url).String()
-	} else {
-		strURL = client.UploadURL.ResolveReference(url).String()
-	}
-
-	res, err := http.Post(strURL, contentType, bodyReq)
+func requestPostRaw[T MediaResponse | rawTweetResponse](client *RequestClient, url *url.URL, bodyReq io.Reader, contentType string) (raw T, err error) {
+	res, err := http.Post(client.URL.ResolveReference(url).String(), contentType, bodyReq)
 	if err != nil {
 		return
 	}

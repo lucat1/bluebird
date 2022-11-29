@@ -53,6 +53,7 @@ func main() {
 		log.Printf("Resumed match state: %v", chess.GetMatch())
 	}
 	defer chess.Store()
+	chess.GetMatch().PostGame()
 
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {

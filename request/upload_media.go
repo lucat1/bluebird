@@ -16,6 +16,6 @@ func UploadMedia(media []byte) (result MediaResponse, err error) {
 	part.Write(media)
 	w.Close()
 
-	result, err = requestPostRaw[MediaResponse](client, myurl, buf, "application/x-www-form-urlencoded", true)
+	result, err = requestPostRaw[MediaResponse](client, myurl, buf, "application/x-www-form-urlencoded")
 	return
 }

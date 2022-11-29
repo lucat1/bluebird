@@ -8,7 +8,7 @@ import (
 )
 
 type GhigliottinaResponse struct {
-	Word   string `json:"word"`
+	Word   string             `json:"word"`
 	Podium GhigliottinaPodium `json:"podium"`
 }
 
@@ -19,7 +19,7 @@ type GhigliottinaPodium struct {
 }
 
 type GhigliottinaWinner struct {
-	Username string `json:"username"`
+	Username string    `json:"username"`
 	Time     time.Time `json:"time"`
 }
 
@@ -28,6 +28,7 @@ var reg = "La #parola della #ghigliottina de #leredita di oggi è:(.*?)\n"
 var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 
 func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, err error) {
+	fmt.Println("eccomi")
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
 		return
@@ -67,7 +68,7 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 	if len(tweetsReplies) <= 0 {
 		return res, errors.New("No tweet replies were found")
 	}
-	
+
 	winTweet := (tweetsReplies[len(tweetsReplies)-1])
 	w, _ := regexp.Compile(winnersReg)
 	winnersRaw := w.FindStringSubmatch(winTweet.Text)
