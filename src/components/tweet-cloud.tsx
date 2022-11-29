@@ -13,9 +13,37 @@ interface Word {
   value: number;
 }
 
-const blacklist = ["il", "la", "gli", "lo", "l'", "un", "una", "uno", "dei",
-  "delle", "dello", "di", "e", "ed", "a", "ad", "tra", "in", "con", "su",
-  "per", "fra", "è", "non", "ha", "si", "no", "al"
+const blacklist = ["il",
+"la",
+"gli",
+"lo",
+"l'",
+"un",
+"una",
+"uno",
+"dei",
+"della",
+"delle",
+"dello",
+"di",
+"e",
+"ed",
+"a",
+"ad",
+"tra",
+"in",
+"con",
+"su",
+"per",
+"fra",
+"è",
+"non",
+"ha",
+"si",
+"no",
+"al",
+"ma",
+"che"
 ]
 
 const TweetCloud: React.FC = () => {
@@ -31,7 +59,8 @@ const TweetCloud: React.FC = () => {
 
     return Object.keys(obj)
       .map((text) => ({ text, value: obj[text] }))
-      .filter((word) => word.value > 1 && !blacklist.includes(word.text.toLowerCase()) && !word.text.includes('#'))
+      .filter((word) => word.value > 1 && !blacklist.includes(word.text.toLowerCase()) && !word.text.includes('#') &&
+      !(/^\d/.test(word.text)))
       .sort((a, b) => (a.value > b.value ? 1 : a.value < b.value ? -1 : 0))
       .slice(0, 80) as Word[];
   }, [texts])

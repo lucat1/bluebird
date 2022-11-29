@@ -23,6 +23,7 @@ const blacklist = [
   "una",
   "uno",
   "dei",
+  "della",
   "delle",
   "dello",
   "di",
@@ -42,6 +43,8 @@ const blacklist = [
   "si",
   "no",
   "al",
+  "ma",
+  "che"
 ];
 
 const TweetCloud: React.FC = () => {
@@ -61,7 +64,8 @@ const TweetCloud: React.FC = () => {
         (word) =>
           word.value > 1 &&
           !blacklist.includes(word.text.toLowerCase()) &&
-          !word.text.includes("#")
+          !word.text.includes("#") &&
+          !(/^\d/.test(word.text))
       )
       .sort((a, b) => (a.value > b.value ? 1 : a.value < b.value ? -1 : 0))
       .slice(0, 80) as Word[];
