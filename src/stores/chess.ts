@@ -59,6 +59,7 @@ const store = create<State & Actions>((set, get) => ({
   ...initialState,
   connect: async () => {
     set({ connecting: true });
+    await new Promise((res) => setTimeout(res, 1000))
     const connection = new WebSocket(
       `${import.meta.env.DEV ? "ws://localhost:8080" : ""}/api/chess`
     );

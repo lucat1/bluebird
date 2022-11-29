@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useElementSize } from "usehooks-ts";
 import { parseDateTime } from "@internationalized/date";
 import { Color, PAWN } from "chess.js";
+import Loading from "../components/loading";
 
 import useChess from "../stores/chess";
 import MoveList from "../components/move-list";
@@ -61,14 +62,34 @@ const Chess: React.FC = () => {
     connect();
   }, []);
 
-  if (connecting) return "connecting";
+  if (connecting) return (
+    <div className="flex flex-1">
+      <div className="flex flex-1 items-center justify-center">
+        <Loading />
+      </div>
+    </div >
+  );
 
-  if (error) return "error: " + error;
+  if (error) return (
+    <div className="flex flex-1">
+      <div className="flex flex-1 items-center justify-center ">
+        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div className="p-6 text-center">
+            <svg aria-hidden="true" className="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Errore: {error}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-1 flex-col md:flex-row p-5">
-      {loading && "LOADING"}
-      {code && authorized && "YOUR CODE: " + code}
+      {loading &&
+        <div className="absolute top-1/2 left-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 opacity-80 p-5 pb-4">
+          <Loading />
+        </div>
+      }
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
           <form
@@ -78,7 +99,7 @@ const Chess: React.FC = () => {
               setAuthorized(true);
             })}
           >
-            <div className="flex justify-center">
+            <div className="flex justify-center" >
               <input
                 type="number"
                 placeholder="  hours"
@@ -99,7 +120,7 @@ const Chess: React.FC = () => {
                 type="submit"
                 className="w-1/2 justify-center text-white text-center hover:bg-sky-700 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
               >
-                Start!
+                Inizio!
               </button>
             </div>
           </form>
@@ -116,7 +137,7 @@ const Chess: React.FC = () => {
                 htmlFor="code"
                 className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
               >
-                Insert game code:
+                Inserisci codice partita:
               </label>
               <div className="flex">
                 <input
@@ -141,14 +162,14 @@ const Chess: React.FC = () => {
       )}
       {code && /* outcome */ authorized && (
         <>
-          <div className="flex flex-1 lg:justify-center">
+          <div className="flex flex-1 xs:justify-center md:justify-left">
             <div
               ref={getRef}
               className="flex flex-1 lg:flex-initial aspect-square "
             >
               <Chessboard
                 boardWidth={Math.min(width, height - 10)}
-                arePiecesDraggable={turn == myTurn}
+                arePiecesDraggable={authorized && (turn == myTurn)}
                 position={game!}
                 isDraggablePiece={({ piece }) =>
                   (piece.charAt(0) as Color) == myTurn
