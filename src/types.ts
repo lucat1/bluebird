@@ -49,6 +49,22 @@ export interface User {
   profile_image: string
 }
 
+export interface Ghigliottina {
+  word: string
+  podium: GhigliottinaPodium
+}
+
+export interface GhigliottinaPodium {
+  first: GhigliottinaWinnder
+  second: GhigliottinaWinnder
+  third: GhigliottinaWinnder
+}
+
+export interface GhigliottinaWinnder {
+  username: string
+  time: string
+}
+
 export interface Chess {
   code: string
   duration: string

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import shallow from 'zustand/shallow';
 
-import useStore from '../stores/store'
+import useStore from '../stores/eredita'
 import { SentimentLabel, Sentiments } from '../types';
 
 export const colorsByLabel = {

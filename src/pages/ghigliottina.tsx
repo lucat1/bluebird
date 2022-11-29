@@ -7,11 +7,12 @@ import Search from "../components/g-search";
 import TweetCloud from "../components/g-tweet-cloud";
 import TweetList from "../components/g-tweet-list";
 import TweetBars from "../components/g-tweet-bars";
+import TweetCake from "../components/g-tweet-cake";
 import Classification from "../components/classification";
 
 const Ghigliottina: React.FC = () => {
-  const { query, loading, fetch } = useStore(
-    (s) => ({ fetch: s.fetch, query: s.query, loading: s.loading }),
+  const { query, loading, fetch, ghigliottina, loadingGhigliottina } = useStore(
+    (s) => ({ fetch: s.fetch, query: s.query, loading: s.loading, ghigliottina: s.ghigliottina, loadingGhigliottina: s.loadingGhigliottina }),
     shallow
   );
 
@@ -35,7 +36,7 @@ const Ghigliottina: React.FC = () => {
             <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
               <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
                 <div className="flex justify-center mt-3 ">
-                  <Classification />
+                  {loadingGhigliottina ? "loading" : ghigliottina != null ? <Classification /> : <TweetCake />}
                 </div>
                 <div className="flex items-center justify-center aspect-video p-8 lg:p-0">
                   <TweetBars />

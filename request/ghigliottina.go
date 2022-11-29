@@ -1,26 +1,26 @@
 package request
 
 import (
-	"fmt"
+	"errors"
 	"regexp"
 	"strings"
 	"time"
 )
 
 type GhigliottinaResponse struct {
-	Word   string
-	Podium GhigliottinaPodium
+	Word   string `json:"word"`
+	Podium GhigliottinaPodium `json:"podium"`
 }
 
 type GhigliottinaPodium struct {
-	First  GhigliottinaWinner
-	Second GhigliottinaWinner
-	Third  GhigliottinaWinner
+	First  GhigliottinaWinner `json:"first"`
+	Second GhigliottinaWinner `json:"second"`
+	Third  GhigliottinaWinner `json:"third"`
 }
 
 type GhigliottinaWinner struct {
-	Username string
-	Time     time.Time
+	Username string `json:"username"`
+	Time     time.Time `json:"time"`
 }
 
 var sub = "La #parola della #ghigliottina de #leredita di oggi è:"
@@ -53,40 +53,42 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 			}
 		}
 	}
-	if found {
-		match := r.FindStringSubmatch(tweet.Text)
-		res.Word = (strings.Trim(match[1], " "))
-
-		var tweetsReplies []Tweet
-		tweetsReplies, err = Replies(tweet.ID, 50, "", "")
-		if err != nil {
-			return
-		}
-		if len(tweetsReplies) > 0 {
-			winTweet := (tweetsReplies[len(tweetsReplies)-1])
-			w, _ := regexp.Compile(winnersReg)
-			winnersRaw := w.FindStringSubmatch(winTweet.Text)
-			if len(winnersRaw) < 7 {
-				return res, fmt.Errorf("Error while parsing winners data")
-			}
-			firstTime, err := time.Parse("15:04:05", winnersRaw[2])
-			if err != nil {
-				return res, err
-			}
-			secondTime, err := time.Parse("15:04:05", winnersRaw[4])
-			if err != nil {
-				return res, err
-			}
-			thirdTime, err := time.Parse("15:04:05", winnersRaw[6])
-			if err != nil {
-				return res, err
-			}
-			res.Podium.First = GhigliottinaWinner{Username: winnersRaw[1], Time: firstTime}
-			res.Podium.Second = GhigliottinaWinner{Username: winnersRaw[3], Time: secondTime}
-			res.Podium.Third = GhigliottinaWinner{Username: winnersRaw[5], Time: thirdTime}
-
-			return res, nil
-		}
+	if !found {
+		return res, errors.New("No tweets were found")
 	}
-	return res, fmt.Errorf("Something went wrong")
+	match := r.FindStringSubmatch(tweet.Text)
+	res.Word = (strings.Trim(match[1], " "))
+
+	var tweetsReplies []Tweet
+	tweetsReplies, err = Replies(tweet.ID, 50, "", "")
+	if err != nil {
+		return
+	}
+	if len(tweetsReplies) <= 0 {
+		return res, errors.New("No tweet replies were found")
+	}
+	
+	winTweet := (tweetsReplies[len(tweetsReplies)-1])
+	w, _ := regexp.Compile(winnersReg)
+	winnersRaw := w.FindStringSubmatch(winTweet.Text)
+	if len(winnersRaw) < 7 {
+		return res, errors.New("Error while parsing winners data")
+	}
+	firstTime, err := time.Parse("15:04:05", winnersRaw[2])
+	if err != nil {
+		return
+	}
+	secondTime, err := time.Parse("15:04:05", winnersRaw[4])
+	if err != nil {
+		return
+	}
+	thirdTime, err := time.Parse("15:04:05", winnersRaw[6])
+	if err != nil {
+		return
+	}
+	res.Podium.First = GhigliottinaWinner{Username: winnersRaw[1], Time: firstTime}
+	res.Podium.Second = GhigliottinaWinner{Username: winnersRaw[3], Time: secondTime}
+	res.Podium.Third = GhigliottinaWinner{Username: winnersRaw[5], Time: thirdTime}
+
+	return
 }

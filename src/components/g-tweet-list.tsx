@@ -16,7 +16,10 @@ let right = 0,
 
 const TweetList: React.FC = () => {
   const tweets = useStore((s) => s.tweets);
-
+  const { ghigliottina } = useStore(s => ({ ghigliottina: s.ghigliottina, loadingGhigliottina: s.loadingGhigliottina }))
+  let correctWord = /.*/g
+  if(ghigliottina)
+    correctWord = new RegExp(ghigliottina.word)
   return (
     <>
       <div className="flex justify-center mb-4">
@@ -29,12 +32,11 @@ const TweetList: React.FC = () => {
         </span>
       </div>
       {tweets.map((tweet) => {
-        const isRightWord = /ciao/.test(tweet.text.toLowerCase());
+        const isRightWord = correctWord.test(tweet.text.toUpperCase());
         isRightWord &&
         correctDate == dayFormatter(tweet.date.toDate(getLocalTimeZone()))
           ? ++right
           : ++wrong;
-        console.log(right, wrong);
         return (
           <div
             key={tweet.id}
