@@ -34,11 +34,11 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 	}
 	start, err := time.Parse(time.RFC3339, startTime)
 	if err != nil {
-		return
+		start = time.Now()
 	}
 	end, err := time.Parse(time.RFC3339, endTime)
 	if err != nil {
-		return
+		end = time.Now().Add(1)
 	}
 	r, _ := regexp.Compile(reg)
 	var tweet Tweet
