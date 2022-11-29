@@ -74,8 +74,8 @@ func sendMatch() {
 
 func onOpen(conn *websocket.Conn) {
 	connectionsLock.Lock()
-	log.Printf("Closed chess connection: %d", len(connections))
 	connections = append(connections, conn)
+	log.Printf("Opened a chess connection. Now at: %d", len(connections))
 	connectionsLock.Unlock()
 }
 
@@ -94,7 +94,7 @@ func onClose(conn *websocket.Conn) {
 	if i != -1 {
 		connections = remove(connections, i)
 	}
-	log.Printf("Closed chess connection: %d", i)
+	log.Printf("Closed a chess connection. Now at: %d", i)
 	connectionsLock.Unlock()
 	conn.Close()
 }

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"io"
 	"io/ioutil"
 	"log"
@@ -21,7 +23,9 @@ import (
 	"git.hjkl.gq/team14/team14/request"
 	"github.com/dghubble/oauth1"
 	"github.com/notnil/chess"
-	"github.com/notnil/chess/image"
+	chessimage "github.com/notnil/chess/image"
+	"github.com/srwiley/oksvg"
+	"github.com/srwiley/rasterx"
 )
 
 const (
@@ -492,13 +496,26 @@ func (m *Match) PostGame() {
 	// m.TweetID = tweet.ID
 }
 
+const (
+	imageWidth  = 1024
+	imageHeight = 1024
+)
+
 func (m *Match) Image() (buf []byte, err error) {
-	dest := bytes.NewBuffer(buf)
-	if err = image.SVG(dest, m.Game.Position().Board()); err != nil {
+	in, out := bytes.NewBuffer(buf), new(bytes.Buffer)
+	if err = chessimage.SVG(in, m.Game.Position().Board()); err != nil {
 		return
 	}
+	icon, _ := oksvg.ReadIconStream(in)
+	icon.SetTarget(0, 0, float64(imageWidth), float64(imageHeight))
+	rgba := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+	icon.Draw(rasterx.NewDasher(imageWidth, imageHeight, rasterx.NewScannerGV(imageWidth, imageHeight, rgba, rgba.Bounds())), 1)
 
-	return dest.Bytes(), nil
+	err = jpeg.Encode(out, rgba, nil)
+	if err != nil {
+		return
+	}
+	return out.Bytes(), nil
 }
 
 func (m *Match) ASCII() string {
@@ -571,9 +588,6 @@ func NewMatch(duration time.Duration) Match {
 
 		Game: chess.NewGame(),
 	}
-	go func() {
-		<-m.timeout
-	}()
 
 	m.delay()
 	return m
