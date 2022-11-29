@@ -13,7 +13,8 @@ interface Word {
   value: number;
 }
 
-const blacklist = ["il",
+const blacklist = ["il",".","o","e","...","se","tu","io","noi","lui","i","del","le","alle",
+";",":","/","da","alla","?","!",
 "la",
 "gli",
 "lo",

@@ -6,12 +6,6 @@ import useStore from '../stores/store'
 import Legend from "./legend";
 
 const dateFormatter = format("{DD}/{MM}/{YYYY} {HH}:{mm}")
-const dayFormatter = format("{DD}/{MM}/{YYYY}")
-
-//const correctWord = /cane/ig
-const correctDate = "14/11/2022"
-//cout number of wrong and right tweets 
-let right=0, wrong=0
 
 const TweetList: React.FC = () => {
   const tweets = useStore(s => s.tweets)
@@ -21,12 +15,8 @@ const TweetList: React.FC = () => {
       <div className="flex justify-center mb-4">
         <span className="dark:text-white">Found <span className="text-sky-800 dark:text-sky-600">{tweets.length || 0}</span> tweet{tweets.length > 1 && 's'}</span>
       </div>
-      {tweets.map(tweet => {
-        const isRightWord = /ciao/.test(tweet.text.toLowerCase())
-        isRightWord && (correctDate == dayFormatter(tweet.date.toDate(getLocalTimeZone()))) ? ++right : ++wrong
-        console.log(right,wrong)
-        return (          
-        <div key={tweet.id} className={`${(isRightWord && (correctDate == dayFormatter(tweet.date.toDate(getLocalTimeZone())))) ? "border border-green-600"  : "border border-red-600"} dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900`}>
+      {tweets.map(tweet => (
+        <div key={tweet.id} className="dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900 border dark:border-gray-600">
           <div className="flex items-center justify-between mb-4">
             <a
               className="flex space-x-4"
@@ -52,7 +42,7 @@ const TweetList: React.FC = () => {
             <Legend sentiments={tweet.sentiments || []} />
           )}
         </div>
-      )})}
+      ))}
     </>
   );
 }
