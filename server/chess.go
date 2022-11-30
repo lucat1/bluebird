@@ -153,7 +153,7 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			match := chess.NewMatch(time.Millisecond * time.Duration(ms))
-			if err = chess.SetMatch(&match); err != nil {
+			if err = chess.SetMatch(match); err != nil {
 				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
 					Message: "Could not store match",
 					Error:   err,

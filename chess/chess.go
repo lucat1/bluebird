@@ -204,7 +204,7 @@ type SerializedMatch struct {
 	Game     string        `json:"game"`
 }
 
-func (m Match) Serialized() SerializedMatch {
+func (m *Match) Serialized() SerializedMatch {
 	return SerializedMatch{
 		Code:     m.Code,
 		Duration: m.Duration,
@@ -213,7 +213,7 @@ func (m Match) Serialized() SerializedMatch {
 	}
 }
 
-func (m Match) Update() {
+func (m *Match) Update() {
 	<-m.updates
 }
 
@@ -258,7 +258,7 @@ func code(n int) string {
 	return string(b)
 }
 
-func NewMatch(duration time.Duration) Match {
+func NewMatch(duration time.Duration) *Match {
 	m := Match{
 		Code:     code(6),
 		Duration: duration,
@@ -269,5 +269,5 @@ func NewMatch(duration time.Duration) Match {
 	m.updates = make(chan bool)
 
 	m.delay()
-	return m
+	return &m
 }
