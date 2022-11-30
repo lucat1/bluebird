@@ -89,6 +89,7 @@ const store = create<State & Actions>((set, get) => ({
           gameover: board.isGameOver(),
           turn: board.turn(),
         });
+        console.log("match", get());
         break;
     }
   },
@@ -121,6 +122,7 @@ const store = create<State & Actions>((set, get) => ({
       .includes(move as any),
   move: (move: string) => {
     set({ ...get(), loading: true });
+    console.log("moving", move);
     get().connection?.send(
       JSON.stringify({
         type: ChessMessageType.Move,
