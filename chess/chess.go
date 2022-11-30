@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"image"
 	"image/png"
 	"io/ioutil"
@@ -69,11 +68,10 @@ func (m *Match) getMoves() (moves map[string]uint, err error) {
 	for _, tweet := range tweets {
 		clone := m.Game.Clone()
 		first := strings.Split(tweet.Text, " ")[1]
-		if err = clone.MoveStr(first); err == nil {
+		if err := clone.MoveStr(first); err == nil {
 			moves[first]++
 		}
 	}
-	fmt.Println(moves)
 	return
 }
 
@@ -90,13 +88,23 @@ func (m *Match) onTurnEnd() {
 			mostRated  string
 			mostValued uint
 		)
-		for move, val := range moves {
-			if val > mostValued {
-				mostRated = move
-				mostValued = val
+		if len(moves) != 0 {
+			for move, val := range moves {
+				if val > mostValued {
+					mostRated = move
+					mostValued = val
+				}
 			}
+		} else {
+			moves := m.Game.Moves()
+			// TODO: if no random moves are available, game lost
+			randMove := moves[rand.Intn(len(moves))]
+			mostRated = randMove.String()
+			log.Printf("No move given, playing random")
 		}
-		m.Move(mostRated)
+		if err := m.Move(mostRated); err != nil {
+			log.Printf("WARN: move %s failed:  %v", mostRated, err)
+		}
 	}
 }
 
@@ -148,7 +156,6 @@ func (m *Match) PostGame() {
 		log.Printf("WARN: Could not post a new tweet: %v", err)
 		return
 	}
-	fmt.Println(tweet.ID)
 	m.TweetID = tweet.ID
 }
 

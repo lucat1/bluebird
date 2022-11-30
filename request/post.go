@@ -337,7 +337,6 @@ func PostMedia(media []byte) (res MediaResponse, err error) {
 	part, err := mp.CreateFormFile("media", "prova")
 	_, err = io.Copy(part, bytes.NewReader(media))
 	if err != nil {
-		fmt.Println("Errore", err)
 		return
 	}
 	mp.Close()

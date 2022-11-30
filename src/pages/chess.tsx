@@ -4,7 +4,7 @@ import Countdown from "react-countdown";
 import { useForm } from "react-hook-form";
 import { useElementSize } from "usehooks-ts";
 import { parseDateTime } from "@internationalized/date";
-import { Color, PAWN } from "chess.js";
+import { Color } from "chess.js";
 import Loading from "../components/loading";
 
 import useChess from "../stores/chess";
@@ -38,7 +38,7 @@ const Chess: React.FC = () => {
     connecting,
     loading,
     error,
-    check,
+    algebraic,
     move,
     end,
     turn,
@@ -222,12 +222,11 @@ const Chess: React.FC = () => {
                 isDraggablePiece={({ piece }) =>
                   (piece.charAt(0) as Color) == myTurn
                 }
-                onPieceDrop={(_, dest, piece) => {
-                  let pn = piece.charAt(1),
-                    mv = (pn.toLowerCase() != PAWN ? pn : "") + dest;
-                  if (!check(mv)) return false;
+                onPieceDrop={(src, dest, piece) => {
+                  const mv = algebraic(src, dest, piece);
+                  if (mv == null) return false;
+                  else move(mv);
 
-                  move(mv);
                   return true;
                 }}
               />

@@ -1,7 +1,8 @@
 import create from "zustand";
 import { parseDateTime } from "@internationalized/date";
 import type { TimeDuration, CalendarDateTime } from "@internationalized/date";
-import { Chess, Color } from "chess.js";
+import { Pieces, Square } from "react-chessboard";
+import { Chess, Color, Move, PAWN, Piece } from "chess.js";
 
 import {
   IncomingMessage,
@@ -35,8 +36,8 @@ export interface Actions {
   fetch(): void;
   _handler(e: MessageEvent<any>): void;
   play(turnDuration: TimeDuration): void;
-  check(move: string): boolean;
-  move(move: string): void;
+  algebraic(from: Square, to: Square, piece: Pieces): string | null;
+  move(mv: string): void;
 }
 
 const initialState: State = {
@@ -51,6 +52,20 @@ const initialState: State = {
   game: null,
   board: null,
   turn: null,
+};
+
+const algebraic = (
+  board: Chess,
+  from: Square,
+  to: Square,
+  piece: Pieces
+): string[] => {
+  const capturing = board.get(to);
+  const p = piece.charAt(1);
+  const base = p.toLowerCase() != PAWN ? p : "";
+
+  if (!capturing) return [base + to];
+  else return [base + from.charAt(0) + "x" + to, base + "x" + to];
 };
 
 const store = create<State & Actions>((set, get) => ({
@@ -71,7 +86,6 @@ const store = create<State & Actions>((set, get) => ({
   },
   _handler: (e: MessageEvent<any>) => {
     const msg = JSON.parse(e.data) as IncomingMessage<any>;
-    console.log(msg);
     switch (msg.type) {
       case ChessMessageType.Match:
         const { data } = msg as IncomingMessage<ChessMatch>;
@@ -116,12 +130,19 @@ const store = create<State & Actions>((set, get) => ({
       } as OutgoingMessage)
     );
   },
-  check: (move: string) =>
-    get()
-      .board!.moves()
-      .includes(move as any),
-  move: (move: string) => {
-    set({ ...get(), loading: true });
+  algebraic: (from, to, piece) => {
+    const { board } = get();
+    if (!board) return null;
+
+    const mvs = algebraic(board, from, to, piece);
+    const nb = new Chess(board.fen());
+    for (const mv of mvs) {
+      console.info("testing move", mv);
+      if (nb.move(mv) != null) return mv;
+    }
+    return null;
+  },
+  move: (move) => {
     console.log("moving", move);
     get().connection?.send(
       JSON.stringify({

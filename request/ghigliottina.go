@@ -28,7 +28,6 @@ var reg = "La #parola della #ghigliottina de #leredita di oggi è:(.*?)\n"
 var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 
 func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, err error) {
-	fmt.Println("eccomi")
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
 		return
