@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	byKeywordResponse tweetResponse
-	byKeywordClient   *RequestClient
-	byUserResponse    tweetResponse
-	byUserClient      *RequestClient
-  rawSentimentResponse sentimentResponse
-  byKeywordGeoResponse tweetResponse
+	byKeywordResponse    tweetResponse
+	byKeywordClient      *RequestClient
+	byUserResponse       tweetResponse
+	byUserClient         *RequestClient
+	rawSentimentResponse sentimentResponse
+	byKeywordGeoResponse tweetResponse
 )
 
 func TestMain(m *testing.M) {
@@ -32,19 +32,19 @@ func TestMain(m *testing.M) {
 		"/predict": test.ReadFile("../mock/sentiment.json"),
 	})
 	defer sentimentServer.Close()
-	byKeywordClient, err = NewClient(byKeywordServer.URL, "")
+	byKeywordClient, err = NewClient(byKeywordServer.URL, "", "")
 	if err != nil {
 		panic(err)
 	}
-	byUserClient, err = NewClient(byUserServer.URL, "")
+	byUserClient, err = NewClient(byUserServer.URL, "", "")
 	if err != nil {
 		panic(err)
 	}
-  SetSentimentURL(sentimentServer.URL)
+	SetSentimentURL(sentimentServer.URL)
 	test.ReadJSON("../mock/by_keyword.json", &byKeywordResponse)
 	test.ReadJSON("../mock/by_user.json", &byUserResponse)
-  	test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
-  	test.ReadJSON("../mock/by_keyword_geo.json", &byKeywordGeoResponse)
+	test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
+	test.ReadJSON("../mock/by_keyword_geo.json", &byKeywordGeoResponse)
 	os.Exit(m.Run())
 }
 
