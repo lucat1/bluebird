@@ -5,13 +5,17 @@ stages:
 
 golang-check:
   stage: test
-  image: golang:latest
+  image: golang:alpine
+  variables:
+    CGO_CFLAGS_ALLOW: ".*"
+    CGO_LDFLAGS_ALLOW: ".*"
   script:
+    - apk add --no-cache librsvg-dev cairo-dev pkgconfig gcc musl-dev
     - go vet $(go list ./...)
     - go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v -e test -e server)
   artifacts:
     paths:
-    - coverage.out
+      - coverage.out
     expire_in: 1 day
 
 docker-build:
@@ -31,7 +35,7 @@ docker-build:
 
 sonarqube-check:
   stage: rate
-  image: 
+  image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
   variables:
