@@ -1,11 +1,9 @@
 import create from "zustand";
 import { parseDateTime } from "@internationalized/date";
 import type { TimeDuration, CalendarDateTime } from "@internationalized/date";
-import { Chess, Color, Square } from "chess.js";
+import { Chess, Color } from "chess.js";
 
-import fetch, { withJSON } from "../fetch";
 import {
-  Chess as RequestChess,
   IncomingMessage,
   ChessMessageType,
   OutgoingMessage,
@@ -59,7 +57,7 @@ const store = create<State & Actions>((set, get) => ({
   ...initialState,
   connect: async () => {
     set({ connecting: true });
-    await new Promise((res) => setTimeout(res, 1000))
+    await new Promise((res) => setTimeout(res, 1000));
     const connection = new WebSocket(
       `${import.meta.env.DEV ? "ws://localhost:8080" : ""}/api/chess`
     );
