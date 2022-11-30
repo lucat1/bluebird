@@ -51,7 +51,8 @@ const Chess: React.FC = () => {
 
   const {
     handleSubmit,
-    //formState: { errors },
+    formState: { errors },
+    setError,
     register,
   } = useForm<{ code: string; hours: number; minutes: number }>({
     reValidateMode: "onSubmit",
@@ -62,58 +63,105 @@ const Chess: React.FC = () => {
     connect();
   }, []);
 
-  if (connecting) return (
-    <div className="flex flex-1">
-      <div className="flex flex-1 items-center justify-center">
-        <Loading />
+  if (connecting)
+    return (
+      <div className="flex flex-1">
+        <div className="flex flex-1 items-center justify-center">
+          <Loading />
+        </div>
       </div>
-    </div >
-  );
+    );
 
-  if (error) return (
-    <div className="flex flex-1">
-      <div className="flex flex-1 items-center justify-center ">
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-          <div className="p-6 text-center">
-            <svg aria-hidden="true" className="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Errore: {error}</h3>
+  if (error)
+    return (
+      <div className="flex flex-1">
+        <div className="flex flex-1 items-center justify-center ">
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div className="p-6 text-center">
+              <svg
+                aria-hidden="true"
+                className="mx-auto mb-4 w-14 h-14 text-gray-400 dark:text-gray-200"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                Errore: {error}
+              </h3>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="flex flex-1 flex-col md:flex-row p-5">
-      {loading &&
+      {loading && (
         <div className="absolute top-1/2 left-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 opacity-80 p-5 pb-4">
           <Loading />
         </div>
-      }
+      )}
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
           <form
             className="flex flex-col"
             onSubmit={handleSubmit((data) => {
-              play({ minutes: data.minutes, hours: data.hours });
-              setAuthorized(true);
+              if (data.minutes == 0 && data.hours == 0) {
+                setError("minutes", {
+                  message: "Il turno deve durare almeno 1 minuto",
+                });
+              } else {
+                play({ minutes: data.minutes, hours: data.hours });
+                setAuthorized(true);
+              }
             })}
           >
-            <div className="flex justify-center" >
-              <input
-                type="number"
-                placeholder="  hours"
-                className="w-1/5 mb-5 mr-2 text-black rounded-lg text-center"
-                min={0}
-                {...register("hours", {})}
-              />
-              <input
-                type="number"
-                placeholder="  minutes"
-                className="w-1/5 mb-5 text-black rounded-lg text-center"
-                min={0}
-                {...register("minutes", {})}
-              />
+            <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-row my-2">
+                <input
+                  type="number"
+                  placeholder="hours"
+                  className="mx-2 rounded-lg text-center text-black"
+                  defaultValue={0}
+                  max={100}
+                  min={0}
+                  {...register("hours", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                />
+                <input
+                  type="number"
+                  placeholder="minutes"
+                  className="mx-2 rounded-lg text-center text-black"
+                  defaultValue={0}
+                  max={59}
+                  min={0}
+                  {...register("minutes", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                />
+              </div>
+              {errors.minutes && (
+                <label htmlFor="hours">
+                  {errors.minutes.message ||
+                    "I minuti devono essere compresi tra 0 e 59"}
+                </label>
+              )}
+              {errors.hours && (
+                <label htmlFor="hours">
+                  Le ore devono essere comprese tra 0 e 100
+                </label>
+              )}
             </div>
             <div className="flex justify-center">
               <button
@@ -169,7 +217,7 @@ const Chess: React.FC = () => {
             >
               <Chessboard
                 boardWidth={Math.min(width, height - 10)}
-                arePiecesDraggable={authorized && (turn == myTurn)}
+                arePiecesDraggable={authorized && turn == myTurn}
                 position={game!}
                 isDraggablePiece={({ piece }) =>
                   (piece.charAt(0) as Color) == myTurn
