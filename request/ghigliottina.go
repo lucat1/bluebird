@@ -27,6 +27,8 @@ var sub = "La #parola della #ghigliottina de #leredita di oggi è:"
 var reg = "La #parola della #ghigliottina de #leredita di oggi è:(.*?)\n"
 var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 
+const timeFormat = "15:04:05"
+
 func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, err error) {
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
@@ -74,15 +76,15 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 	if len(winnersRaw) < 7 {
 		return res, errors.New("Error while parsing winners data")
 	}
-	firstTime, err := time.Parse("15:04:05", winnersRaw[2])
+	firstTime, err := time.Parse(timeFormat, winnersRaw[2])
 	if err != nil {
 		return
 	}
-	secondTime, err := time.Parse("15:04:05", winnersRaw[4])
+	secondTime, err := time.Parse(timeFormat, winnersRaw[4])
 	if err != nil {
 		return
 	}
-	thirdTime, err := time.Parse("15:04:05", winnersRaw[6])
+	thirdTime, err := time.Parse(timeFormat, winnersRaw[6])
 	if err != nil {
 		return
 	}
