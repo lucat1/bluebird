@@ -34,6 +34,23 @@ func requestRaw[T userResponse | tweetResponse | sentimentResponse](client *Requ
 	return raw, json.Unmarshal(body, &raw)
 }
 
+// url should never start with '/'
+func requestPostRaw[T MediaResponse | rawTweetResponse](client *RequestClient, url *url.URL, bodyReq io.Reader, contentType string) (raw T, err error) {
+	res, err := http.Post(client.URL.ResolveReference(url).String(), contentType, bodyReq)
+	if err != nil {
+		return
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	if res.StatusCode != http.StatusOK {
+		return raw, fmt.Errorf("Non 200 status code (was %d): %s", res.StatusCode, string(body))
+	}
+	return raw, json.Unmarshal(body, &raw)
+}
+
 func requestUser(url *url.URL) (user User, err error) {
 	var raw userResponse
 	if raw, err = requestRaw[userResponse](client, url); err != nil {

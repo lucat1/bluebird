@@ -6,8 +6,9 @@ import (
 )
 
 type RequestClient struct {
-	URL  *url.URL
-	HTTP *http.Client
+	URL       *url.URL
+	UploadURL *url.URL
+	HTTP      *http.Client
 }
 
 var client *RequestClient
@@ -22,14 +23,21 @@ func (t *transportWithHeader) RoundTrip(req *http.Request) (*http.Response, erro
 }
 
 // NewClient instantiates a new http.Client for use with a bearer token authentication
-func NewClient(URL string, token string) (client *RequestClient, err error) {
+func NewClient(URL string, UploadURL string, token string) (client *RequestClient, err error) {
 	url, err := url.Parse(URL)
 	if err != nil {
 		return
 	}
+
+	uploadURL, err := url.Parse(UploadURL)
+	if err != nil {
+		return
+	}
+
 	client = &RequestClient{
-		URL:  url,
-		HTTP: &http.Client{Transport: &transportWithHeader{bearer: token}},
+		URL:       url,
+		UploadURL: uploadURL,
+		HTTP:      &http.Client{Transport: &transportWithHeader{bearer: token}},
 	}
 	return
 }

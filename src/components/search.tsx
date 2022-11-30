@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { now, getLocalTimeZone } from '@internationalized/date';
+import { now } from '@internationalized/date';
 import shallow from "zustand/shallow";
 
 import useStore, { Query, QueryType } from '../stores/store'
@@ -98,7 +98,7 @@ const Search: React.FC = () => {
             rules={{
               validate: range => {
                 if (!range) return true;
-                return range.end.compare(now(getLocalTimeZone())) <= 0
+                return range.end.compare(now('utc')) <= 0
               }
             }}
             render={({ field: { onChange, value } }) => (

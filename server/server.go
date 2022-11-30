@@ -1,11 +1,10 @@
 package server
 
 import (
-	"log"
-	"net/http"
-
 	"git.hjkl.gq/team14/team14/request"
 	"github.com/kataras/muxie"
+	"log"
+	"net/http"
 )
 
 const (
@@ -38,8 +37,7 @@ func RunServer(host string) error {
 	mux.Use(cors)
 	mux.HandleFunc("/api/search", searchHandler)
 	mux.HandleFunc("/api/sentiment", sentimentHandler)
-	mux.HandleFunc("/api/chess/start", startMatch)
-	mux.HandleFunc("/api/chess", getMatch)
+	mux.HandleFunc("/api/chess", chessHandler)
 	mux.HandleFunc("/api/ghigliottina", getGhigliottina)
 	mux.Handle("/assets/*path", http.FileServer(http.Dir("dist")))
 	mux.HandleFunc("/*path", serveIndex)

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { Tooltip } from "react-leaflet";
-import { CalendarDateTime, isSameDay, getLocalTimeZone } from '@internationalized/date';
+import { CalendarDateTime, isSameDay } from '@internationalized/date';
 import format from 'tinydate'
 
 import useStore from '../stores/store'
@@ -53,13 +53,13 @@ const TweetBars: React.FC = () => {
       let key;
       switch (diff) {
         case TimeDifference.Day:
-          key = dayFormatter(element.date.toDate(getLocalTimeZone()))
+          key = dayFormatter(element.date.toDate('utc'))
           break;
         case TimeDifference.Hour:
-          key = hourFormatter(element.date.toDate(getLocalTimeZone()))
+          key = hourFormatter(element.date.toDate('utc'))
           break;
         case TimeDifference.Minutes:
-          key = minutesFormatter(element.date.toDate(getLocalTimeZone()))
+          key = minutesFormatter(element.date.toDate('utc'))
           break;
       }
       let val = (map.get(key) || [0])[0] + 1;

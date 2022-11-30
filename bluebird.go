@@ -2,13 +2,16 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"git.hjkl.gq/team14/team14/cache"
 	"git.hjkl.gq/team14/team14/chess"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
 	"github.com/jasonlvhit/gocron"
+	"github.com/joho/godotenv"
 	"gorm.io/gorm/logger"
 )
 
@@ -20,11 +23,16 @@ func scheduler() {
 }
 
 func main() {
+	if godotenv.Load() != nil {
+		log.Println("Missing environment variable")
+	}
+
+	rand.Seed(time.Now().Unix())
 	bearer := os.Getenv("TWITTER_BEARER")
 	if bearer == "" {
 		log.Fatalln("Missing environment variable TWITTER_BEARER")
 	}
-	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
+	client, err := request.NewClient("https://api.twitter.com/2/", "https://upload.twitter.com/1.1/", bearer)
 	if err != nil {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
@@ -50,6 +58,7 @@ func main() {
 		log.Printf("Resumed match state: %v", chess.GetMatch())
 	}
 	defer chess.Store()
+
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)

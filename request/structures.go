@@ -133,6 +133,27 @@ type tweetResponse struct {
 	Includes includesTweet
 }
 
+type MediaResponse struct {
+	MediaID string `json:"media_id_string"`
+}
+
+type TweetRequest struct {
+	Text  string            `json:"text"`
+	Media TweetRequestMedia `json:"media"`
+}
+
+type TweetRequestMedia struct {
+	MediaIDs []string `json:"media_ids"`
+}
+
+type rawTweetResponse struct {
+	Data TweetResponse `json:"data"`
+}
+
+type TweetResponse struct {
+	ID string `json:"id"`
+}
+
 func (res *tweetResponse) Users() map[string]User {
 	users := map[string]User{}
 	for _, u := range res.Includes.Users {
