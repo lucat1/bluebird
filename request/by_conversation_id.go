@@ -1,9 +1,10 @@
 package request
 
+import "fmt"
+
 func TweetsByConversationID(conversationID string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		ConversationID(RequestQueryConversationID(conversationID)).
-		Lang(RequestQueryLangIT).
 		SortOrder(RequestSortOrderRecency).
 		AddStartTime(RequestTime(startTime)).
 		AddEndTime(RequestTime(endTime)).
@@ -31,6 +32,7 @@ func TweetsByConversationID(conversationID string, n uint, startTime string, end
 		).
 		AddExpansions(RequestExpansionAuthorID, RequestExpansionGeoPlaceID),
 	)
+	fmt.Println(url)
 	if err != nil {
 		return
 	}

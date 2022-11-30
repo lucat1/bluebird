@@ -99,6 +99,13 @@ func onClose(conn *websocket.Conn) {
 	conn.Close()
 }
 
+func chessWatcher() {
+	for chess.GetMatch() != nil {
+		chess.GetMatch().Update()
+		sendMatch()
+	}
+}
+
 func chessHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w.(*muxie.Writer).ResponseWriter, r, nil)
 	if err != nil {
@@ -146,8 +153,15 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			match := chess.NewMatch(time.Millisecond * time.Duration(ms))
-			chess.SetMatch(&match)
-			chess.Store()
+			if err = chess.SetMatch(&match); err != nil {
+				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
+					Message: "Could not store match",
+					Error:   err,
+				})
+				break
+			}
+
+			go chessWatcher()
 			sendMatch()
 			break
 
@@ -161,16 +175,13 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 
-			if err := chess.GetMatch().Move(msg.Data); err != nil {
+			if err := chess.GetMatch().PlayerMove(msg.Data); err != nil {
 				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
 					Message: "Could not move",
 					Error:   err,
 				})
 				break
 			}
-
-			chess.Store()
-			sendMatch()
 			break
 		}
 	}

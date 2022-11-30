@@ -11,6 +11,7 @@ import (
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
 	"github.com/jasonlvhit/gocron"
+	"github.com/joho/godotenv"
 	"gorm.io/gorm/logger"
 )
 
@@ -22,6 +23,10 @@ func scheduler() {
 }
 
 func main() {
+	if godotenv.Load() != nil {
+		log.Println("Missing environment variable")
+	}
+
 	rand.Seed(time.Now().Unix())
 	bearer := os.Getenv("TWITTER_BEARER")
 	if bearer == "" {

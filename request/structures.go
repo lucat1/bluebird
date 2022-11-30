@@ -134,7 +134,7 @@ type tweetResponse struct {
 }
 
 type MediaResponse struct {
-	MediaID string `json:"media_id"`
+	MediaID string `json:"media_id_string"`
 }
 
 type TweetRequest struct {

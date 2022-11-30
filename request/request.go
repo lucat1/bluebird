@@ -45,7 +45,6 @@ func requestPostRaw[T MediaResponse | rawTweetResponse](client *RequestClient, u
 	if err != nil {
 		return
 	}
-	fmt.Println(string(body))
 	if res.StatusCode != http.StatusOK {
 		return raw, fmt.Errorf("Non 200 status code (was %d): %s", res.StatusCode, string(body))
 	}
