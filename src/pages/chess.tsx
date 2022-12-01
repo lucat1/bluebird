@@ -178,7 +178,7 @@ const Chess: React.FC = () => {
       )}
       {code && (
         <>
-          <div className="flex flex-1 xs:justify-center md:justify-left">
+          <div className="flex xs:justify-center md:justify-left">
             <div
               ref={getRef}
               className="flex flex-1 lg:flex-initial aspect-square "
@@ -200,7 +200,7 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col lg:items-center">
+          <div className="flex flex-1 flex-col lg:items-center">
             <form
               onClick={handleSubmit((_) => setAuthorized(true))}
               className="flex"
@@ -237,6 +237,7 @@ const Chess: React.FC = () => {
                 </div>
               </div>
             </form>
+          <div className="flex flex-1 flex-col lg:items-center">
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <White />
@@ -265,9 +266,9 @@ const Chess: React.FC = () => {
               Grafico A barre
             </div>
           </div>
-          <div className="flex lg:flex-col p-2">
-            <div className="w-full">
-              <button onClick={(_) => getTweets()}>fetch tweets</button>
+          <div className="flex flex-1 flex-col p-2">
+              <button className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800" 
+              onClick={(_) => getTweets()}>Fetch tweets</button>
               <MoveList tweets={tweets || []} />
             </div>
           </div>
