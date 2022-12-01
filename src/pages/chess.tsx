@@ -263,11 +263,10 @@ const Chess: React.FC = () => {
               Grafico A barre
             </div>
           </div>
-          <div className="flex lg:flex-col p-2">
-            <div className="w-full">
-              <button onClick={(_) => getTweets()}>fetch tweets</button>
+          <div className="flex flex-col p-2">
+              <button className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800" 
+              onClick={(_) => getTweets()}>Fetch tweets</button>
               <MoveList tweets={tweets || []} />
-            </div>
           </div>
         </>
       )}
