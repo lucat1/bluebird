@@ -113,9 +113,9 @@ const Chess: React.FC = () => {
       )}
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
-          <div className="row flex items-center mb-20"> 
-            <label className="text-sm font-medium text-gray-900 dark:text-white"> 
-            Benvenuto nella modalità scacchi! Seleziona il tempo che vuoi rendere disponibile per ogni mossa.</label>
+          <div className="row flex items-center mb-20">
+            <label className="text-sm font-medium text-gray-900 dark:text-white">
+              Benvenuto nella modalità scacchi! Seleziona il tempo che vuoi rendere disponibile per ogni mossa.</label>
           </div>
           <form
             className="flex flex-col"
@@ -132,17 +132,17 @@ const Chess: React.FC = () => {
           >
             <div className="w-full flex flex-col justify-center items-center">
               <div className="flex-row">
-              <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">Seleziona qui le ore</label>
-                  <input
-                    type="number"
-                    placeholder="Ore"
-                    className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
-                    max={100}
-                    min={0}
-                    {...register("hours", {
-                      required: true,
-                      valueAsNumber: true,
-                    })} />
+                <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">Seleziona qui le ore</label>
+                <input
+                  type="number"
+                  placeholder="Ore"
+                  className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
+                  max={100}
+                  min={0}
+                  {...register("hours", {
+                    required: true,
+                    valueAsNumber: true,
+                  })} />
 
                 <div className="flex-row">
                   <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">Seleziona qui i minuti</label>
@@ -206,9 +206,7 @@ const Chess: React.FC = () => {
             </div>
           </div>
           <div className="flex flex-1 flex-col lg:items-center">
-            <form
-              onClick={handleSubmit((_) => setAuthorized(true))}
-              className="flex"
+            <form onClick={handleSubmit((_) => setAuthorized(true))} className="flex"
             >
               <div>
                 <label
@@ -242,7 +240,6 @@ const Chess: React.FC = () => {
                 </div>
               </div>
             </form>
-          <div className="flex flex-1 flex-col lg:items-center">
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
               <div className="my-auto p-2">
                 <White />
@@ -272,10 +269,9 @@ const Chess: React.FC = () => {
             </div>
           </div>
           <div className="flex flex-1 flex-col p-2">
-              <button className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800" 
+            <button className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
               onClick={(_) => getTweets()}>Fetch tweets</button>
-              <MoveList tweets={tweets || []} />
-            </div>
+            <MoveList tweets={tweets || []} />
           </div>
         </>
       )}
