@@ -22,8 +22,9 @@ import (
 )
 
 const (
-	playerColor = chess.White
-	stateFile   = "chess.json"
+	playerColor       = chess.White
+	stateFile         = "chess.json"
+	ReplyPollInterval = 15 // seconds
 )
 
 var match *Match = nil
@@ -40,6 +41,7 @@ type Match struct {
 	ticking atomic.Bool
 
 	updates chan bool
+	quit    chan bool
 }
 
 func (m *Match) delay() {
@@ -54,9 +56,26 @@ func (m *Match) delay() {
 		case <-m.timeout:
 			m.ticking.Store(false)
 
-		case <-time.After(m.Duration):
+		case <-time.After(m.EndsAt.Sub(time.Now())):
 			m.ticking.Store(false)
 			m.onTurnEnd()
+		}
+	}()
+}
+
+func (m *Match) periodic() {
+	go func() {
+		for {
+			select {
+			case <-m.quit:
+				return
+
+			case <-time.After(time.Second * time.Duration(ReplyPollInterval)):
+				if err := m.FetchTweets(); err != nil {
+					log.Printf("Faield to fetch replies to tweet %s: %v", m.TweetID, err)
+				}
+				break
+			}
 		}
 	}()
 }
@@ -70,6 +89,7 @@ func moveFromText(text string) *string {
 }
 
 func (m *Match) FetchTweets() (err error) {
+	log.Println("Fetching chess replies")
 	twts, err := request.Replies(m.TweetID, math.MaxInt, "", "")
 	if err != nil {
 		return
@@ -263,25 +283,6 @@ func (m *Match) Update() {
 	<-m.updates
 }
 
-func Store() (err error) {
-	buf, err := json.Marshal(match)
-	err = ioutil.WriteFile(stateFile, buf, 0666)
-	return
-}
-
-func Resume() (err error) {
-	var m Match
-	buf, err := ioutil.ReadFile(stateFile)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(buf, &m); err != nil {
-		return err
-	}
-	match = &m
-	return
-}
-
 func SetMatch(m *Match) error {
 	match = m
 	if err := Store(); err != nil {
@@ -304,6 +305,18 @@ func code(n int) string {
 	return string(b)
 }
 
+func (m *Match) setup() {
+	m.updates = make(chan bool)
+	m.quit = make(chan bool)
+	m.delay()
+	m.periodic()
+}
+
+func (m *Match) close() {
+	m.quit <- true
+	// TODO
+}
+
 func NewMatch(duration time.Duration) *Match {
 	m := Match{
 		Code:     code(6),
@@ -312,8 +325,27 @@ func NewMatch(duration time.Duration) *Match {
 
 		Game: chess.NewGame(),
 	}
-	m.updates = make(chan bool)
 
-	m.delay()
+	m.setup()
 	return &m
+}
+
+func Store() (err error) {
+	buf, err := json.Marshal(match)
+	err = ioutil.WriteFile(stateFile, buf, 0666)
+	return
+}
+
+func Resume() (err error) {
+	var m Match
+	buf, err := ioutil.ReadFile(stateFile)
+	if err != nil {
+		return
+	}
+	if err = json.Unmarshal(buf, &m); err != nil {
+		return err
+	}
+	m.setup()
+	match = &m
+	return
 }

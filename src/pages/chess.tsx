@@ -147,7 +147,6 @@ const Chess: React.FC = () => {
                     valueAsNumber: true,
                   })}
                 />
-
                 <div className="flex-row">
                   <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
                     Seleziona qui i minuti
@@ -251,12 +250,20 @@ const Chess: React.FC = () => {
               <div className="my-auto p-2">
                 <White />
               </div>
-              <div className="flex flex-row p-1 my-2 w-fit">
-                {turn == myTurn ? (
-                  <Countdown date={end!.toDate("utc")} />
-                ) : (
-                  "00:00:00:00"
-                )}
+              <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
+                <div className="my-auto p-2">
+                  <Black />
+                </div>
+                <div className="flex flex-row p-1 my-2 w-fit">
+                  {turn != myTurn ? (
+                    <Countdown date={end!.toDate("utc")} />
+                  ) : (
+                    "00:00:00:00"
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-row p-2 m-1 self-center">
+                Grafico A barre
               </div>
             </div>
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
