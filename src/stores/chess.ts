@@ -4,6 +4,7 @@ import type { TimeDuration, CalendarDateTime } from "@internationalized/date";
 import { Pieces, Square } from "react-chessboard";
 import { Chess, Color, PAWN } from "chess.js";
 
+import { convert } from "./store";
 import {
   IncomingMessage,
   ChessMessageType,
@@ -104,6 +105,7 @@ const store = create<State & Actions>((set, get) => ({
           loading: false,
           end,
           board,
+          tweets: data.tweets?.map(convert),
           gameover: board.isGameOver(),
           turn: board.turn(),
         });

@@ -265,7 +265,9 @@ const Chess: React.FC = () => {
           </div>
           <div className="flex lg:flex-col p-2">
             <div className="w-full">
-              <button onClick={(_) => getTweets()}>fetch tweets</button>
+              <button disabled={turn == myTurn} onClick={(_) => getTweets()}>
+                fetch tweets
+              </button>
               <MoveList tweets={tweets || []} />
             </div>
           </div>

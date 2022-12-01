@@ -1,61 +1,66 @@
-import create from 'zustand'
+import create from "zustand";
 import type { DateRange } from "@react-types/datepicker";
-import { parseDateTime, now } from '@internationalized/date';
+import { parseDateTime, now } from "@internationalized/date";
 
-import fetch from '../fetch'
-import { Search, RawTweet, Tweet, SentimentSearch } from '../types'
+import fetch from "../fetch";
+import { Search, RawTweet, Tweet, SentimentSearch } from "../types";
 
 export enum QueryType {
-  Keyword = 'keyword',
-  User = 'user'
+  Keyword = "keyword",
+  User = "user",
 }
 
 export interface Query {
-  type: QueryType
-  query: string
-  timeRange: DateRange
+  type: QueryType;
+  query: string;
+  timeRange: DateRange;
 }
 
 export interface State {
-  query: Query
-  loading: boolean
-  tweets: Tweet[]
+  query: Query;
+  loading: boolean;
+  tweets: Tweet[];
 }
 
 export interface Actions {
-  reset(): void
-  clearTweets(): void
-  fetch(query: Query): Promise<void>
+  reset(): void;
+  clearTweets(): void;
+  fetch(query: Query): Promise<void>;
 }
 
 const getInitialState = (): State => ({
   query: {
     type: QueryType.Keyword,
-    query: '',
+    query: "",
     timeRange: {
-      start: now('utc').subtract({
-        days: 7
+      start: now("utc").subtract({
+        days: 7,
       }),
-      end: now('utc')
-    }
+      end: now("utc"),
+    },
   },
   loading: true,
-  tweets: []
-})
+  tweets: [],
+});
 
 const searchURL = ({ type, query, timeRange }: Query): string => {
-  if (!type || !query) return `search`
+  if (!type || !query) return `search`;
 
-  let base = `search?type=${type}&query=${encodeURIComponent(query)}&amount=100`
+  let base = `search?type=${type}&query=${encodeURIComponent(
+    query
+  )}&amount=100`;
   if (timeRange) {
-    const start = timeRange.start.toDate('utc').toISOString()
-    const end = timeRange.end.toDate('utc').toISOString()
-    base += `&startTime=${start}&endTime=${end}`
+    const start = timeRange.start.toDate("utc").toISOString();
+    const end = timeRange.end.toDate("utc").toISOString();
+    base += `&startTime=${start}&endTime=${end}`;
   }
-  return base
-}
+  return base;
+};
 
-const convert = (raw: RawTweet): Tweet => ({ ...raw, date: parseDateTime(raw.created_at.slice(0, -1)) })
+export const convert = (raw: RawTweet): Tweet => ({
+  ...raw,
+  date: parseDateTime(raw.created_at.slice(0, -1)),
+});
 
 const store = create<State & Actions>((set, get) => ({
   ...getInitialState(),
@@ -63,18 +68,22 @@ const store = create<State & Actions>((set, get) => ({
   reset: () => set(getInitialState()),
   clearTweets: () => set({ ...get(), tweets: [] }),
   fetch: async (query: Query) => {
-    set({ ...get(), loading: true, query, tweets: [] })
-    const res = await fetch<Search>(searchURL(query))
-    const tweets = res.tweets.map(convert)
-    set({ ...get(), loading: false, tweets })
+    set({ ...get(), loading: true, query, tweets: [] });
+    const res = await fetch<Search>(searchURL(query));
+    const tweets = res.tweets.map(convert);
+    set({ ...get(), loading: false, tweets });
     for (const tweet of tweets) {
-      fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(({ sentiments }) =>
-        set({
-          ...get(),
-          tweets: get().tweets.map(t => t.id == tweet.id ? ({ ...t, sentiments }) : t)
-        }))
+      fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(
+        ({ sentiments }) =>
+          set({
+            ...get(),
+            tweets: get().tweets.map((t) =>
+              t.id == tweet.id ? { ...t, sentiments } : t
+            ),
+          })
+      );
     }
   },
-}))
+}));
 
-export default store
+export default store;

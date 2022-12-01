@@ -3,13 +3,8 @@ import type { DateRange } from "@react-types/datepicker";
 import { parseDateTime, now } from "@internationalized/date";
 
 import fetch from "../fetch";
-import {
-  Search,
-  RawTweet,
-  Tweet,
-  SentimentSearch,
-  Ghigliottina,
-} from "../types";
+import { convert } from "./store";
+import { Search, Tweet, SentimentSearch, Ghigliottina } from "../types";
 
 export enum QueryType {
   Keyword = "keyword",
@@ -68,11 +63,6 @@ const searchURL = (url: string, { type, query, timeRange }: Query): string => {
   }
   return base;
 };
-
-const convert = (raw: RawTweet): Tweet => ({
-  ...raw,
-  date: parseDateTime(raw.created_at.slice(0, -1)),
-});
 
 const store = create<State & Actions>((set, get) => ({
   ...getInitialState(),
