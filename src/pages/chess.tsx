@@ -112,10 +112,9 @@ const Chess: React.FC = () => {
       )}
       {!code && (
         <div className="flex flex-1 items-center justify-center flex-col">
-          <div className="row flex items-center mb-20">
+          <div className="row flex items-center my-10">
             <label className="text-sm font-medium text-gray-900 dark:text-white">
-              Benvenuto nella modalità scacchi! Seleziona il tempo che vuoi
-              rendere disponibile per ogni mossa.
+              Per iniziare la partita seleziona la durata di ogni turno:
             </label>
           </div>
           <form
@@ -131,10 +130,10 @@ const Chess: React.FC = () => {
               }
             })}
           >
-            <div className="w-full flex flex-col justify-center items-center">
-              <div className="flex-row">
+            <div className="w-full flex flex-row justify-center items-center">
+              <div className="flex flex-col items-start mx-4">
                 <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
-                  Seleziona qui le ore
+                  Ore
                 </label>
                 <input
                   type="number"
@@ -142,40 +141,43 @@ const Chess: React.FC = () => {
                   className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
                   max={100}
                   min={0}
+                  defaultValue={0}
                   {...register("hours", {
                     required: true,
                     valueAsNumber: true,
                   })}
                 />
-                <div className="flex-row">
-                  <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
-                    Seleziona qui i minuti
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="Minuti"
-                    className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
-                    max={59}
-                    min={0}
-                    {...register("minutes", {
-                      required: true,
-                      valueAsNumber: true,
-                    })}
-                  />
-                </div>
               </div>
-              {errors.minutes && (
-                <label htmlFor="hours">
-                  {errors.minutes.message ||
-                    "I minuti devono essere compresi tra 0 e 59"}
+
+              <div className="flex flex-col items-start mx-4">
+                <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
+                  Minuti
                 </label>
-              )}
-              {errors.hours && (
-                <label htmlFor="hours">
-                  Le ore devono essere comprese tra 0 e 100
-                </label>
-              )}
+                <input
+                  type="number"
+                  placeholder="Minuti"
+                  className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
+                  max={59}
+                  min={0}
+                  defaultValue={1}
+                  {...register("minutes", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                />
+              </div>
             </div>
+            {errors.minutes && (
+              <label htmlFor="hours">
+                {errors.minutes.message ||
+                  "I minuti devono essere compresi tra 0 e 59"}
+              </label>
+            )}
+            {errors.hours && (
+              <label htmlFor="hours">
+                Le ore devono essere comprese tra 0 e 100
+              </label>
+            )}
             <div className="flex justify-center">
               <button
                 type="submit"
@@ -250,20 +252,12 @@ const Chess: React.FC = () => {
               <div className="my-auto p-2">
                 <White />
               </div>
-              <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
-                <div className="my-auto p-2">
-                  <Black />
-                </div>
-                <div className="flex flex-row p-1 my-2 w-fit">
-                  {turn != myTurn ? (
-                    <Countdown date={end!.toDate("utc")} />
-                  ) : (
-                    "00:00:00:00"
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-row p-2 m-1 self-center">
-                Grafico A barre
+              <div className="flex flex-row p-1 my-2 w-fit">
+                {turn == myTurn ? (
+                  <Countdown date={end!.toDate("utc")} />
+                ) : (
+                  "00:00:00:00"
+                )}
               </div>
             </div>
             <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
@@ -279,12 +273,13 @@ const Chess: React.FC = () => {
               </div>
             </div>
             <div className="flex flex-row p-2 m-1 self-center">
-              Grafico A barre
+              Grafico a barre
             </div>
           </div>
           <div className="flex flex-1 basis-1/4 flex-col p-2">
             <button
-              className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+              className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 disabled:hover:bg-slate-700 disabled:bg-slate-600 disabled:cursor-not-allowed"
+              disabled={turn == myTurn}
               onClick={(_) => getTweets()}
             >
               Fetch tweets
