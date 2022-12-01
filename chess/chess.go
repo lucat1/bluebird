@@ -9,6 +9,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
+	"math"
 	"math/rand"
 	"strings"
 	"sync/atomic"
@@ -69,7 +70,7 @@ func moveFromText(text string) *string {
 }
 
 func (m *Match) FetchTweets() (err error) {
-	twts, err := request.Replies(m.TweetID, 100, "", "")
+	twts, err := request.Replies(m.TweetID, math.MaxInt, "", "")
 	if err != nil {
 		return
 	}
@@ -96,7 +97,7 @@ func (m *Match) FetchTweets() (err error) {
 
 func (m *Match) getMoves() (moves map[string]uint, err error) {
 	moves = map[string]uint{}
-	tweets, err := request.Replies(m.TweetID, 100, "", "")
+	tweets, err := request.Replies(m.TweetID, math.MaxInt, "", "")
 	if err != nil {
 		return
 	}

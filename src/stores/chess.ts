@@ -36,6 +36,7 @@ export enum Player {
 
 export interface Actions {
   connect(): void;
+  disconnect(): void;
   fetch(): void;
   getTweets(): void;
   _handler(e: MessageEvent<any>): void;
@@ -77,17 +78,25 @@ const store = create<State & Actions>((set, get) => ({
   ...initialState,
   connect: async () => {
     set({ connecting: true });
-    await new Promise((res) => setTimeout(res, 1000));
-    const connection = new WebSocket(
-      `${import.meta.env.DEV ? "ws://localhost:8080" : ""}/api/chess`
-    );
-    set({ connecting: true, connection });
-    connection.onerror = (_) => set({ ...get(), error: "Connection failed" });
-    connection.onopen = (_) => {
-      set({ ...get(), connecting: false, error: null });
-      get().fetch();
-    };
-    connection.onmessage = (e) => get()._handler(e);
+    try {
+      const connection = new WebSocket(
+        `${import.meta.env.DEV ? "ws://localhost:8080" : ""}/api/chess`
+      );
+      set({ connecting: true, connection });
+      connection.onerror = (_) =>
+        set({ ...get(), error: "Errore di connessione" });
+      connection.onopen = (_) => {
+        set({ ...get(), connecting: false, error: null });
+        get().fetch();
+      };
+      connection.onmessage = (e) => get()._handler(e);
+    } catch (_) {
+      set({ ...get(), error: "Connection failed" });
+    }
+  },
+  disconnect: async () => {
+    get().connection?.close();
+    set(initialState);
   },
   _handler: (e: MessageEvent<any>) => {
     const msg = JSON.parse(e.data) as IncomingMessage<any>;
