@@ -183,6 +183,25 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			break
+
+		case ChessMessageTypeTweets:
+			if chess.GetMatch() == nil {
+				msg := "Cannot get tweets hasn't been started"
+				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
+					Message: msg,
+					Error:   errors.New(msg),
+				})
+				break
+			}
+
+			if err := chess.GetMatch().FetchTweets(); err != nil {
+				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
+					Message: "Could not fetch tweets",
+					Error:   err,
+				})
+				break
+			}
+			break
 		}
 	}
 }

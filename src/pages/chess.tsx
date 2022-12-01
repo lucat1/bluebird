@@ -37,6 +37,8 @@ const Chess: React.FC = () => {
     connect,
     connecting,
     loading,
+    getTweets,
+    tweets,
     error,
     algebraic,
     move,
@@ -142,7 +144,7 @@ const Chess: React.FC = () => {
                   type="number"
                   placeholder="minutes"
                   className="mx-2 rounded-lg text-center text-black"
-                  defaultValue={0}
+                  defaultValue={1}
                   max={59}
                   min={0}
                   {...register("minutes", {
@@ -263,22 +265,8 @@ const Chess: React.FC = () => {
           </div>
           <div className="flex lg:flex-col p-2">
             <div className="w-full">
-              <MoveList
-                tweets={[
-                  {
-                    user: {
-                      id: "Pino Daniele",
-                      name: "Pino Daniele",
-                      username: "Pino Daniele",
-                      profile_image: "chupa",
-                    },
-                    id: "subeme",
-                    created_at: Date.now().toString(),
-                    text: "Ciao carissimi",
-                    date: parseDateTime("2022-02-03T09:15"),
-                  },
-                ]}
-              />
+              <button onClick={(_) => getTweets()}>fetch tweets</button>
+              <MoveList tweets={tweets || []} />
             </div>
           </div>
         </>

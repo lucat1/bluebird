@@ -28,11 +28,12 @@ const (
 var match *Match = nil
 
 type Match struct {
-	Code     string        `json:"code"`
-	Duration time.Duration `json:"duration"`
-	EndsAt   time.Time     `json:"ends_at"`
-	Game     *chess.Game   `json:"game"`
-	TweetID  string        `json:"tweet_id"`
+	Code     string          `json:"code"`
+	Duration time.Duration   `json:"duration"`
+	EndsAt   time.Time       `json:"ends_at"`
+	Game     *chess.Game     `json:"game"`
+	TweetID  string          `json:"tweet_id"`
+	Tweets   []request.Tweet `json:"tweets"`
 
 	timeout chan bool
 	ticking atomic.Bool
@@ -59,6 +60,40 @@ func (m *Match) delay() {
 	}()
 }
 
+func moveFromText(text string) *string {
+	parts := strings.Split(text, " ")
+	if len(parts) < 2 {
+		return nil
+	}
+	return &parts[1]
+}
+
+func (m *Match) FetchTweets() (err error) {
+	twts, err := request.Replies(m.TweetID, 100, "", "")
+	if err != nil {
+		return
+	}
+	m.Tweets = []request.Tweet{}
+	for _, twt := range twts {
+		clone := m.Game.Clone()
+		first := moveFromText(twt.Text)
+		if first == nil {
+			continue
+		}
+		if err := clone.MoveStr(*first); err == nil {
+			tw := twt
+			first := moveFromText(twt.Text)
+			if first == nil {
+				continue
+			}
+			tw.Text = *first
+			m.Tweets = append(m.Tweets, tw)
+		}
+	}
+	m.sendUpdate()
+	return
+}
+
 func (m *Match) getMoves() (moves map[string]uint, err error) {
 	moves = map[string]uint{}
 	tweets, err := request.Replies(m.TweetID, 100, "", "")
@@ -67,9 +102,12 @@ func (m *Match) getMoves() (moves map[string]uint, err error) {
 	}
 	for _, tweet := range tweets {
 		clone := m.Game.Clone()
-		first := strings.Split(tweet.Text, " ")[1]
-		if err := clone.MoveStr(first); err == nil {
-			moves[first]++
+		first := moveFromText(tweet.Text)
+		if first == nil {
+			continue
+		}
+		if err := clone.MoveStr(*first); err == nil {
+			moves[*first]++
 		}
 	}
 	return
@@ -96,8 +134,8 @@ func (m *Match) onTurnEnd() {
 				}
 			}
 		} else {
-			moves := m.Game.Moves()
-			// TODO: if no random moves are available, game lost
+			moves := m.Game.ValidMoves()
+			// TODO: if no random moves are not available, the game is lost
 			randMove := moves[rand.Intn(len(moves))]
 			mostRated = randMove.String()
 			log.Printf("No move given, playing random")
@@ -114,9 +152,10 @@ func (m *Match) Move(move string) error {
 	}
 
 	log.Printf("Moving %s", move)
-	m.updates <- true
-	m.PostGame()
 	m.EndsAt = time.Now().UTC().Add(m.Duration)
+	m.sendUpdate()
+	m.Tweets = []request.Tweet{}
+	m.PostGame()
 	m.delay()
 	return Store()
 }
@@ -198,10 +237,11 @@ func (m *Match) ASCII() string {
 }
 
 type SerializedMatch struct {
-	Code     string        `json:"code"`
-	Duration time.Duration `json:"duration"`
-	EndsAt   time.Time     `json:"ends_at"`
-	Game     string        `json:"game"`
+	Code     string          `json:"code"`
+	Duration time.Duration   `json:"duration"`
+	EndsAt   time.Time       `json:"ends_at"`
+	Game     string          `json:"game"`
+	Tweets   []request.Tweet `json:"tweets"`
 }
 
 func (m *Match) Serialized() SerializedMatch {
@@ -210,7 +250,12 @@ func (m *Match) Serialized() SerializedMatch {
 		Duration: m.Duration,
 		EndsAt:   m.EndsAt,
 		Game:     m.Game.FEN(),
+		Tweets:   m.Tweets,
 	}
+}
+
+func (m *Match) sendUpdate() {
+	m.updates <- true
 }
 
 func (m *Match) Update() {

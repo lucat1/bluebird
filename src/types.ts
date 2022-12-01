@@ -87,4 +87,5 @@ export interface Match {
   duration: string;
   ends_at: string;
   game: string;
+  tweets: Tweet[] | null;
 }

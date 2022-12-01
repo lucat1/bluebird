@@ -2,13 +2,14 @@ import create from "zustand";
 import { parseDateTime } from "@internationalized/date";
 import type { TimeDuration, CalendarDateTime } from "@internationalized/date";
 import { Pieces, Square } from "react-chessboard";
-import { Chess, Color, Move, PAWN, Piece } from "chess.js";
+import { Chess, Color, PAWN } from "chess.js";
 
 import {
   IncomingMessage,
   ChessMessageType,
   OutgoingMessage,
   Match as ChessMatch,
+  Tweet,
 } from "../types";
 
 export interface State {
@@ -22,6 +23,7 @@ export interface State {
 
   gameover: boolean;
   game: string | null;
+  tweets: Tweet[] | null;
   board: Chess | null;
   turn: Color | null;
 }
@@ -34,6 +36,7 @@ export enum Player {
 export interface Actions {
   connect(): void;
   fetch(): void;
+  getTweets(): void;
   _handler(e: MessageEvent<any>): void;
   play(turnDuration: TimeDuration): void;
   algebraic(from: Square, to: Square, piece: Pieces): string | null;
@@ -50,6 +53,7 @@ const initialState: State = {
 
   gameover: false,
   game: null,
+  tweets: null,
   board: null,
   turn: null,
 };
@@ -112,6 +116,15 @@ const store = create<State & Actions>((set, get) => ({
     get().connection?.send(
       JSON.stringify({
         type: ChessMessageType.Match,
+        data: "",
+      } as OutgoingMessage)
+    );
+  },
+  getTweets: () => {
+    set({ ...get(), loading: true });
+    get().connection?.send(
+      JSON.stringify({
+        type: ChessMessageType.Tweets,
         data: "",
       } as OutgoingMessage)
     );
