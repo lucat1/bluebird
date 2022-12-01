@@ -239,7 +239,7 @@ const Chess: React.FC = () => {
               <div className="my-auto p-2">
                 <White />
               </div>
-              <div className="flex flex-row p-1 my-2 w-24">
+              <div className="flex flex-row p-1 my-2 w-fit">
                 {turn == myTurn ? (
                   <Countdown date={end!.toDate("utc")} />
                 ) : (
@@ -251,7 +251,7 @@ const Chess: React.FC = () => {
               <div className="my-auto p-2">
                 <Black />
               </div>
-              <div className="flex flex-row p-1 my-2 w-24">
+              <div className="flex flex-row p-1 my-2 w-fit">
                 {turn != myTurn ? (
                   <Countdown date={end!.toDate("utc")} />
                 ) : (
@@ -265,9 +265,7 @@ const Chess: React.FC = () => {
           </div>
           <div className="flex lg:flex-col p-2">
             <div className="w-full">
-              <button disabled={turn == myTurn} onClick={(_) => getTweets()}>
-                fetch tweets
-              </button>
+              <button onClick={(_) => getTweets()}>fetch tweets</button>
               <MoveList tweets={tweets || []} />
             </div>
           </div>
