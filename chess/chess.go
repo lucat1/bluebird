@@ -134,36 +134,53 @@ func (m *Match) getMoves() (moves map[string]uint, err error) {
 	return
 }
 
+func (m *Match) randomMove() *string {
+	log.Printf("No move given, playing random")
+	moves := m.Game.ValidMoves()
+	if len(moves) == 0 {
+		return nil
+	}
+	randMove := moves[rand.Intn(len(moves))]
+	rand := randMove.String()
+	return &rand
+}
+
 func (m *Match) onTurnEnd() {
+	var move string
 	if m.Game.Position().Turn() == playerColor {
-		// TODO: forfeit
+		mv := m.randomMove()
+		if mv == nil {
+			// TODO: handle lost by master
+			log.Println("TODO: handle lost by crowd")
+			return
+		}
+		move = *mv
 	} else {
 		moves, err := m.getMoves()
 		if err != nil {
 			log.Printf("Could not get tweets replies: %v", err)
 			return
 		}
-		var (
-			mostRated  string
-			mostValued uint
-		)
 		if len(moves) != 0 {
-			for move, val := range moves {
+			var mostValued uint
+			for mv, val := range moves {
 				if val > mostValued {
-					mostRated = move
+					move = mv
 					mostValued = val
 				}
 			}
 		} else {
-			moves := m.Game.ValidMoves()
-			// TODO: if no random moves are not available, the game is lost
-			randMove := moves[rand.Intn(len(moves))]
-			mostRated = randMove.String()
-			log.Printf("No move given, playing random")
+			mv := m.randomMove()
+			if mv == nil {
+				// TODO: handle lost by crowd
+				log.Println("TODO: handle lost by crowd")
+				return
+			}
+			move = *mv
 		}
-		if err := m.Move(mostRated); err != nil {
-			log.Printf("WARN: move %s failed:  %v", mostRated, err)
-		}
+	}
+	if err := m.Move(move); err != nil {
+		log.Printf("WARN: move %s failed:  %v", move, err)
 	}
 }
 
