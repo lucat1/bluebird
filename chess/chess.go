@@ -22,8 +22,9 @@ import (
 )
 
 const (
-	playerColor = chess.White
-	stateFile   = "chess.json"
+	playerColor       = chess.White
+	stateFile         = "chess.json"
+	ReplyPollInterval = 15 // seconds
 )
 
 var match *Match = nil
@@ -40,6 +41,7 @@ type Match struct {
 	ticking atomic.Bool
 
 	updates chan bool
+	quit    chan bool
 }
 
 func (m *Match) delay() {
@@ -54,9 +56,26 @@ func (m *Match) delay() {
 		case <-m.timeout:
 			m.ticking.Store(false)
 
-		case <-time.After(m.Duration):
+		case <-time.After(m.EndsAt.Sub(time.Now())):
 			m.ticking.Store(false)
 			m.onTurnEnd()
+		}
+	}()
+}
+
+func (m *Match) periodic() {
+	go func() {
+		for {
+			select {
+			case <-m.quit:
+				return
+
+			case <-time.After(time.Second * time.Duration(ReplyPollInterval)):
+				if err := m.FetchTweets(); err != nil {
+					log.Printf("Faield to fetch replies to tweet %s: %v", m.TweetID, err)
+				}
+				break
+			}
 		}
 	}()
 }
@@ -70,6 +89,7 @@ func moveFromText(text string) *string {
 }
 
 func (m *Match) FetchTweets() (err error) {
+	log.Println("Fetching chess replies")
 	twts, err := request.Replies(m.TweetID, math.MaxInt, "", "")
 	if err != nil {
 		return
@@ -114,36 +134,53 @@ func (m *Match) getMoves() (moves map[string]uint, err error) {
 	return
 }
 
+func (m *Match) randomMove() *string {
+	log.Printf("No move given, playing random")
+	moves := m.Game.ValidMoves()
+	if len(moves) == 0 {
+		return nil
+	}
+	randMove := moves[rand.Intn(len(moves))]
+	rand := randMove.String()
+	return &rand
+}
+
 func (m *Match) onTurnEnd() {
+	var move string
 	if m.Game.Position().Turn() == playerColor {
-		// TODO: forfeit
+		mv := m.randomMove()
+		if mv == nil {
+			// TODO: handle lost by master
+			log.Println("TODO: handle lost by crowd")
+			return
+		}
+		move = *mv
 	} else {
 		moves, err := m.getMoves()
 		if err != nil {
 			log.Printf("Could not get tweets replies: %v", err)
 			return
 		}
-		var (
-			mostRated  string
-			mostValued uint
-		)
 		if len(moves) != 0 {
-			for move, val := range moves {
+			var mostValued uint
+			for mv, val := range moves {
 				if val > mostValued {
-					mostRated = move
+					move = mv
 					mostValued = val
 				}
 			}
 		} else {
-			moves := m.Game.ValidMoves()
-			// TODO: if no random moves are not available, the game is lost
-			randMove := moves[rand.Intn(len(moves))]
-			mostRated = randMove.String()
-			log.Printf("No move given, playing random")
+			mv := m.randomMove()
+			if mv == nil {
+				// TODO: handle lost by crowd
+				log.Println("TODO: handle lost by crowd")
+				return
+			}
+			move = *mv
 		}
-		if err := m.Move(mostRated); err != nil {
-			log.Printf("WARN: move %s failed:  %v", mostRated, err)
-		}
+	}
+	if err := m.Move(move); err != nil {
+		log.Printf("WARN: move %s failed:  %v", move, err)
 	}
 }
 
@@ -263,25 +300,6 @@ func (m *Match) Update() {
 	<-m.updates
 }
 
-func Store() (err error) {
-	buf, err := json.Marshal(match)
-	err = ioutil.WriteFile(stateFile, buf, 0666)
-	return
-}
-
-func Resume() (err error) {
-	var m Match
-	buf, err := ioutil.ReadFile(stateFile)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(buf, &m); err != nil {
-		return err
-	}
-	match = &m
-	return
-}
-
 func SetMatch(m *Match) error {
 	match = m
 	if err := Store(); err != nil {
@@ -304,6 +322,18 @@ func code(n int) string {
 	return string(b)
 }
 
+func (m *Match) setup() {
+	m.updates = make(chan bool)
+	m.quit = make(chan bool)
+	m.delay()
+	m.periodic()
+}
+
+func (m *Match) close() {
+	m.quit <- true
+	// TODO
+}
+
 func NewMatch(duration time.Duration) *Match {
 	m := Match{
 		Code:     code(6),
@@ -312,8 +342,27 @@ func NewMatch(duration time.Duration) *Match {
 
 		Game: chess.NewGame(),
 	}
-	m.updates = make(chan bool)
 
-	m.delay()
+	m.setup()
 	return &m
+}
+
+func Store() (err error) {
+	buf, err := json.Marshal(match)
+	err = ioutil.WriteFile(stateFile, buf, 0666)
+	return
+}
+
+func Resume() (err error) {
+	var m Match
+	buf, err := ioutil.ReadFile(stateFile)
+	if err != nil {
+		return
+	}
+	if err = json.Unmarshal(buf, &m); err != nil {
+		return err
+	}
+	m.setup()
+	match = &m
+	return
 }

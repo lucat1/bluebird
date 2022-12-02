@@ -21,6 +21,7 @@ export interface State {
 
   code: string | null;
   end: CalendarDateTime | null;
+  timeout: NodeJS.Timer | null;
 
   gameover: boolean;
   game: string | null;
@@ -40,6 +41,7 @@ export interface Actions {
   fetch(): void;
   getTweets(): void;
   _handler(e: MessageEvent<any>): void;
+  _timeout(): void;
   play(turnDuration: TimeDuration): void;
   algebraic(from: Square, to: Square, piece: Pieces): string | null;
   move(mv: string): void;
@@ -50,6 +52,8 @@ const initialState: State = {
   connection: null,
   error: null,
   loading: true,
+  timeout: null,
+
   code: "",
   end: null,
 
@@ -109,6 +113,11 @@ const store = create<State & Actions>((set, get) => ({
         }
         const end = parseDateTime(data.ends_at.slice(0, -1));
         const board = new Chess(data.game);
+
+        // clear any previous timeout
+        const { timeout, _timeout } = get();
+        if (timeout) clearTimeout(timeout);
+
         set({
           ...data,
           loading: false,
@@ -117,10 +126,17 @@ const store = create<State & Actions>((set, get) => ({
           tweets: data.tweets?.map(convert),
           gameover: board.isGameOver(),
           turn: board.turn(),
+          timeout: setTimeout(
+            _timeout,
+            new Date(data.ends_at).getTime() - new Date().getTime()
+          ),
         });
         console.log("match", get());
         break;
     }
+  },
+  _timeout: () => {
+    set({ loading: true, timeout: null });
   },
   fetch: () => {
     set({ ...get(), loading: true });
@@ -167,13 +183,18 @@ const store = create<State & Actions>((set, get) => ({
     return null;
   },
   move: (move) => {
+    const { connection, game, ...other } = get();
+    if (!game) return;
     console.log("moving", move);
-    get().connection?.send(
+    connection?.send(
       JSON.stringify({
         type: ChessMessageType.Move,
         data: move,
       } as OutgoingMessage)
     );
+    const tmp = new Chess(game);
+    tmp.move(move);
+    set({ ...other, connection, game: tmp.fen(), loading: true });
   },
 }));
 
