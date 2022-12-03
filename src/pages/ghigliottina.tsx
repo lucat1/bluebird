@@ -37,16 +37,16 @@ const Ghigliottina: React.FC = () => {
           <>
             <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
               <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
-                {loadingGhigliottina ? (
-                  <div className="flex flex-1 items-center justify-center">
+                <div className="flex lg:basis-1/2 items-center justify-center">
+                  {loadingGhigliottina ? (
                     <Loading />
-                  </div>
-                ) : ghigliottina ? (
-                  <Classification />
-                ) : (
-                  <TweetCake />
-                )}
-                <div className="flex items-center justify-center aspect-video p-8 lg:p-0">
+                  ) : ghigliottina ? (
+                    <Classification />
+                  ) : (
+                    <TweetCake />
+                  )}
+                </div>
+                <div className="flex lg:basis-1/2 items-center justify-center aspect-video p-8 lg:p-0">
                   <TweetBars />
                 </div>
               </div>

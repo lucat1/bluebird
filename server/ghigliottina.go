@@ -1,21 +1,22 @@
 package server
 
 import (
-	"git.hjkl.gq/team14/team14/request"
 	"net/http"
 	"time"
+
+	"git.hjkl.gq/team14/team14/request"
 )
 
 func getGhigliottina(w http.ResponseWriter, r *http.Request) {
 	rawStartTime := r.URL.Query().Get("startTime")
 	rawEndTime := r.URL.Query().Get("endTime")
-	startTime, err := time.Parse(time.RFC3339, rawStartTime)
-	if err == nil {
-		startTime = time.Now()
-	}
 	endTime, err := time.Parse(time.RFC3339, rawEndTime)
 	if err == nil {
-		endTime = time.Now().Add(1)
+		endTime = time.Now().Add(time.Minute * time.Duration(-1))
+	}
+	startTime, err := time.Parse(time.RFC3339, rawStartTime)
+	if err == nil {
+		startTime = startTime.Add(time.Hour * time.Duration(-24))
 	}
 	res, err := request.Ghigliottina(&startTime, &endTime)
 	if err != nil {
