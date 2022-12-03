@@ -44,7 +44,7 @@ const blacklist = [
   "no",
   "al",
   "ma",
-  "che"
+  "che",
 ];
 
 const TweetCloud: React.FC = () => {
@@ -62,10 +62,9 @@ const TweetCloud: React.FC = () => {
       .map((text) => ({ text, value: obj[text] }))
       .filter(
         (word) =>
-          word.value > 1 &&
           !blacklist.includes(word.text.toLowerCase()) &&
           !word.text.includes("#") &&
-          !(/^\d/.test(word.text))
+          !/^\d/.test(word.text)
       )
       .sort((a, b) => (a.value > b.value ? 1 : a.value < b.value ? -1 : 0))
       .slice(0, 80) as Word[];

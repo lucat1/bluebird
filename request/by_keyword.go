@@ -1,11 +1,13 @@
 package request
 
-func TweetsByKeyword(keyword string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
+import "time"
+
+func TweetsByKeyword(keyword string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		WithQuery(keyword).
 		Lang(RequestQueryLangIT).
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
+		AddStartTime(startTime).
+		AddEndTime(endTime).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,

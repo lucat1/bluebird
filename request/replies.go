@@ -1,9 +1,12 @@
 package request
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
-func Replies(tweetID string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
-	t, err := TweetByTweetID(tweetID, 1, "", "")
+func Replies(tweetID string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
+	t, err := TweetByTweetID(tweetID, 1, nil, nil)
 	if err != nil {
 		return nil, err
 	}

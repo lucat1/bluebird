@@ -2,6 +2,7 @@ package request
 
 import (
 	"net/url"
+	"time"
 )
 
 type RequestSortOrder string
@@ -35,7 +36,6 @@ const (
 )
 
 type RequestExpansions string
-type RequestTime string
 
 const (
 	RequestExpansionAuthorID   RequestExpansions = "author_id"
@@ -73,8 +73,8 @@ type RequestURL struct {
 	userFields      []RequestField
 	placeFields     []RequestField
 	expansions      []RequestExpansions
-	startTime       RequestTime
-	endTime         RequestTime
+	startTime       *time.Time
+	endTime         *time.Time
 	paginationToken string
 }
 
@@ -133,12 +133,12 @@ func (req RequestURL) AddExpansions(expansions ...RequestExpansions) RequestURL 
 	return req
 }
 
-func (req RequestURL) AddStartTime(startTime RequestTime) RequestURL {
+func (req RequestURL) AddStartTime(startTime *time.Time) RequestURL {
 	req.startTime = startTime
 	return req
 }
 
-func (req RequestURL) AddEndTime(endTime RequestTime) RequestURL {
+func (req RequestURL) AddEndTime(endTime *time.Time) RequestURL {
 	req.endTime = endTime
 	return req
 }
@@ -173,8 +173,12 @@ func buildURL(req RequestURL) (parsed *url.URL, err error) {
 	queryAdd(query, string(RequestQueryUserFields), join(req.userFields, ","))
 	queryAdd(query, string(RequestQueryPlaceFields), join(req.placeFields, ","))
 	queryAdd(query, string(RequestQueryExpansions), join(req.expansions, ","))
-	queryAdd(query, string(RequestQueryStartTime), string(req.startTime))
-	queryAdd(query, string(RequestQueryEndTime), string(req.endTime))
+	if req.startTime != nil {
+		queryAdd(query, string(RequestQueryStartTime), req.startTime.Format(time.RFC3339))
+	}
+	if req.endTime != nil {
+		queryAdd(query, string(RequestQueryEndTime), req.endTime.Format(time.RFC3339))
+	}
 	queryAdd(query, string(RequestQueryPaginationToken), req.paginationToken)
 	parsed.RawQuery = query.Encode()
 	return

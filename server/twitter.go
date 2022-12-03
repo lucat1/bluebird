@@ -11,7 +11,7 @@ import (
 	"git.hjkl.gq/team14/team14/request"
 )
 
-type Fetcher func(string, uint, string, string) (tweets []request.Tweet, err error)
+type Fetcher func(string, uint, *time.Time, *time.Time) (tweets []request.Tweet, err error)
 
 var twitterHandlerMap = map[string]Fetcher{
 	"keyword": request.TweetsByKeyword,
@@ -78,6 +78,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
+		end, start := endTime, startTime
 		maxTime := time.Now().Add((time.Hour * (24*time.Duration(-nOfDaysAllowed) + 1)) + (time.Minute * time.Duration(59)))
 		// fixing the startTime is only worth if the user is acutally interested in
 		// the last N_OF_DAYS_ALLOWED days of activity
@@ -88,11 +89,12 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			endTime = time.Now().Add(time.Second * time.Duration(-10))
 		}
 
-		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
-		tweets, err = handler1(query, nOfAPITweets, startTime.Format(time.RFC3339), endTime.Format(time.RFC3339))
+		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime, endTime)
+		tweets, err = handler1(query, nOfAPITweets, &startTime, &endTime)
 		if err != nil {
 			log.Printf("Error while querying Twitter: %v", err)
 		}
+		log.Printf("> Found %d tweets from the API", len(tweets))
 		cached = uint(len(tweets))
 		if len(tweets) > 0 {
 			if err = cache.InsertTweets(tweets); err != nil {
@@ -104,7 +106,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		tweets, err = handler2(query, uint(amount), rawStartTime, rawEndTime)
+		tweets, err = handler2(query, uint(amount), &start, &end)
 		if err != nil {
 			sendError(w, http.StatusInternalServerError, APIError{
 				Message: "Could not fetch tweets from cache",
@@ -112,6 +114,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
+		log.Printf("> Found %d tweets from the cache", len(tweets))
 		cached = uint(len(tweets) - int(cached))
 	}
 	sendJSON(w, http.StatusOK, SearchResponse{

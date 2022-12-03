@@ -8,7 +8,7 @@ import (
 func TestByKeyword(t *testing.T) {
 	const l = 5
 	SetClient(byKeywordClient)
-	tweets, err := TweetsByKeyword("", l, "", "")
+	tweets, err := TweetsByKeyword("", l, nil, nil)
 	assert.Nil(t, err, "Expected TweetsByKeyword not to error")
 	assert.Equal(t, len(tweets), l, "Expected the amount of tweets to be as required")
 	twts, err := byKeywordResponse.Tweets()

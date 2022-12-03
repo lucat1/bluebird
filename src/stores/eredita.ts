@@ -1,6 +1,6 @@
 import create from "zustand";
 import type { DateRange } from "@react-types/datepicker";
-import { parseDateTime, now } from "@internationalized/date";
+import { now } from "@internationalized/date";
 
 import fetch from "../fetch";
 import { convert } from "./store";
@@ -35,12 +35,14 @@ export interface Actions {
 const getInitialState = (): State => ({
   query: {
     type: QueryType.Keyword,
-    query: "",
+    query: "#ghigliottina",
     timeRange: {
-      start: now("utc").subtract({
-        days: 2,
-      }),
-      end: now("utc").subtract({ days: 1 }),
+      start: now("utc")
+        .subtract({
+          days: 1,
+        })
+        .set({ hour: 18, minute: 0 }),
+      end: now("utc").subtract({ days: 1 }).set({ hour: 21, minute: 0 }),
     },
   },
   loading: true,
@@ -81,8 +83,9 @@ const store = create<State & Actions>((set, get) => ({
     const oneDayAndOneHour = 25 * 60 * 60 * 1000;
     if (diff <= oneDayAndOneHour) {
       set({ ...get(), loadingGhigliottina: true });
-      // const ghigliottina = await fetch<Ghigliottina>(searchURL("ghigliottina", query))
-      const ghigliottina = await fetch<Ghigliottina>("ghigliottina");
+      const ghigliottina = await fetch<Ghigliottina>(
+        searchURL("ghigliottina", query)
+      );
       set({ ...get(), loadingGhigliottina: false, ghigliottina });
     }
 

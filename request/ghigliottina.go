@@ -29,18 +29,10 @@ var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 
 const timeFormat = "15:04:05"
 
-func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, err error) {
+func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err error) {
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
 		return
-	}
-	start, err := time.Parse(time.RFC3339, startTime)
-	if err != nil {
-		start = time.Now()
-	}
-	end, err := time.Parse(time.RFC3339, endTime)
-	if err != nil {
-		end = time.Now().Add(1)
 	}
 	r, _ := regexp.Compile(reg)
 	var tweet Tweet
@@ -49,7 +41,7 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 		t := tweets[i]
 		if strings.Contains(t.Text, sub) {
 			match := r.FindStringSubmatch(t.Text)
-			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && start.Before(t.CreatedAt) && end.After(t.CreatedAt)) {
+			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt)) {
 				found = true
 				tweet = t
 			}
@@ -62,7 +54,7 @@ func Ghigliottina(startTime string, endTime string) (res GhigliottinaResponse, e
 	res.Word = (strings.Trim(match[1], " "))
 
 	var tweetsReplies []Tweet
-	tweetsReplies, err = Replies(tweet.ID, 50, "", "")
+	tweetsReplies, err = Replies(tweet.ID, 50, nil, nil)
 	if err != nil {
 		return
 	}

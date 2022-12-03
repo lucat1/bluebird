@@ -1,11 +1,13 @@
 package request
 
-func TweetsByConversationID(conversationID string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
+import "time"
+
+func TweetsByConversationID(conversationID string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		ConversationID(RequestQueryConversationID(conversationID)).
 		SortOrder(RequestSortOrderRecency).
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
+		AddStartTime(startTime).
+		AddEndTime(endTime).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,

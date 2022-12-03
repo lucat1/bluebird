@@ -10,16 +10,14 @@ func getGhigliottina(w http.ResponseWriter, r *http.Request) {
 	rawStartTime := r.URL.Query().Get("startTime")
 	rawEndTime := r.URL.Query().Get("endTime")
 	startTime, err := time.Parse(time.RFC3339, rawStartTime)
-	startTimeStr := ""
 	if err == nil {
-		startTimeStr = startTime.Format(time.RFC3339)
+		startTime = time.Now()
 	}
 	endTime, err := time.Parse(time.RFC3339, rawEndTime)
-	endTimeStr := ""
 	if err == nil {
-		endTimeStr = endTime.Format(time.RFC3339)
+		endTime = time.Now().Add(1)
 	}
-	res, err := request.Ghigliottina(startTimeStr, endTimeStr)
+	res, err := request.Ghigliottina(&startTime, &endTime)
 	if err != nil {
 		sendError(w, 500, APIError{
 			Message: "Could not process ghigliottina game",

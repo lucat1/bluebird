@@ -1,6 +1,8 @@
 package request
 
-func TweetsByUser(username string, n uint, startTime string, endTime string) (tweets []Tweet, err error) {
+import "time"
+
+func TweetsByUser(username string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("users/by/username/" + username))
 	if err != nil {
 		return
@@ -10,8 +12,8 @@ func TweetsByUser(username string, n uint, startTime string, endTime string) (tw
 		return
 	}
 	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
+		AddStartTime(startTime).
+		AddEndTime(endTime).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,

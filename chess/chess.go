@@ -90,7 +90,7 @@ func moveFromText(text string) *string {
 
 func (m *Match) FetchTweets() (err error) {
 	log.Println("Fetching chess replies")
-	twts, err := request.Replies(m.TweetID, math.MaxInt, "", "")
+	twts, err := request.Replies(m.TweetID, math.MaxInt, nil, nil)
 	if err != nil {
 		return
 	}
@@ -117,7 +117,7 @@ func (m *Match) FetchTweets() (err error) {
 
 func (m *Match) getMoves() (moves map[string]uint, err error) {
 	moves = map[string]uint{}
-	tweets, err := request.Replies(m.TweetID, math.MaxInt, "", "")
+	tweets, err := request.Replies(m.TweetID, math.MaxInt, nil, nil)
 	if err != nil {
 		return
 	}
