@@ -1,16 +1,25 @@
 import * as React from "react";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import shallow from "zustand/shallow";
 
-import useStore, { QueryType } from '../stores/store'
+import useStore, { QueryType } from "../stores/store";
 
 const Navbar: React.FC = () => {
-  const [open, setOpen] = React.useState(false)
-  const { query, fetch } = useStore(s => ({ query: s.query, fetch: s.fetch }), shallow)
-  const search = (hashtag: string): React.MouseEventHandler<HTMLAnchorElement> => e => {
-    e.preventDefault()
-    fetch({ type: QueryType.Keyword, query: hashtag, timeRange: query.timeRange })
-  }
+  const [open, setOpen] = React.useState(false);
+  const { query, fetch } = useStore(
+    (s) => ({ query: s.query, fetch: s.fetch }),
+    shallow
+  );
+  const search =
+    (hashtag: string): React.MouseEventHandler<HTMLAnchorElement> =>
+    (e) => {
+      e.preventDefault();
+      fetch({
+        type: QueryType.Keyword,
+        query: hashtag,
+        timeRange: query.timeRange,
+      });
+    };
 
   return (
     <nav className="flex flex-wrap justify-between bg-sky-800 border-gray-200 py-2 px-4 lg:px-8 dark:bg-gray-900">
@@ -161,28 +170,59 @@ const Navbar: React.FC = () => {
           </g>
         </svg>
       </Link>
-      <button onClick={_ => setOpen(!open)} className="inline-flex justify-center items-center ml-3 text-white rounded-lg md:hidden hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:text-gray-400 dark:hover:text-white dark:focus:ring-gray-500" aria-controls="mobile-menu-2" aria-expanded="false">
-        <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
-
+      <button
+        onClick={(_) => setOpen(!open)}
+        className="inline-flex justify-center items-center ml-3 text-white rounded-lg md:hidden hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:text-gray-400 dark:hover:text-white dark:focus:ring-gray-500"
+        aria-controls="mobile-menu-2"
+        aria-expanded="false"
+      >
+        <svg
+          className="w-6 h-6"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+            clipRule="evenodd"
+          ></path>
+        </svg>
       </button>
 
-      <div className={`${open ? '' : 'hidden'} w-full w-full md:block md:w-auto`}>
+      <div
+        className={`${open ? "" : "hidden"} w-full w-full md:block md:w-auto`}
+      >
         <ul className="flex flex-col p-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-900 md:dark:bg-gray-900 dark:border-gray-600">
           <li>
-            <Link to='/ghigliottina' className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            <Link
+              to="/"
+              className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+            >
+              Ricerca
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/ghigliottina"
+              className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+            >
               Eredità
             </Link>
           </li>
           <li>
-            <Link to='/scacchi' className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            <Link
+              to="/scacchi"
+              className="block py-2 pr-4 pl-3 text-gray-900 rounded md:text-white hover:bg-sky-700 hover:text-white md:hover:bg-transparent md:hover:text-orange-300 md:p-0 md:dark:hover:text-sky-600 dark:text-gray-400 dark:hover:bg-sky-600 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+            >
               Scacchi
             </Link>
-            </li>
+          </li>
         </ul>
-
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
