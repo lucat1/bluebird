@@ -11,6 +11,10 @@ export enum QueryType {
   User = "user",
 }
 
+export interface gTweet extends Tweet {
+  rightWord: boolean;
+}
+
 export interface Query {
   type: QueryType;
   query: string;
@@ -20,8 +24,7 @@ export interface Query {
 export interface State {
   query: Query;
   loading: boolean;
-  tweets: Tweet[];
-
+  tweets: gTweet[];
   loadingGhigliottina: boolean;
   ghigliottina: Ghigliottina | null;
 }
@@ -75,7 +78,8 @@ const store = create<State & Actions>((set, get) => ({
     set({ ...getInitialState(), query });
     const req = await fetch<Search>(searchURL("search", query));
     const tweets = req.tweets.map(convert);
-    set({ ...get(), loading: false, tweets });
+    const gTweets = tweets.map((t) => ({ ...t, rightWord: false }));
+    set({ ...get(), loading: false, tweets: gTweets });
 
     const diff =
       query.timeRange.end.toDate("utc").getTime() -
@@ -86,10 +90,20 @@ const store = create<State & Actions>((set, get) => ({
       const ghigliottina = await fetch<Ghigliottina>(
         searchURL("ghigliottina", query)
       );
-      set({ ...get(), loadingGhigliottina: false, ghigliottina });
+      const trueTweets = gTweets.map((t) => {
+        if (t.text.includes(ghigliottina.word))
+          return { ...t, rightWord: true };
+        else return { ...t, rightWord: false };
+      });
+      set({
+        ...get(),
+        loadingGhigliottina: false,
+        ghigliottina,
+        tweets: trueTweets,
+      });
     }
 
-    for (const tweet of tweets) {
+    for (const tweet of get().tweets) {
       fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(
         ({ sentiments }) =>
           set({

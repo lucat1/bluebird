@@ -6,9 +6,9 @@ import Loading from "../components/loading";
 import Search from "../components/g-search";
 import TweetCloud from "../components/g-tweet-cloud";
 import TweetList from "../components/g-tweet-list";
-import TweetBars from "../components/g-tweet-bars";
 import TweetCake from "../components/g-tweet-cake";
 import Classification from "../components/classification";
+import GhigliottinaBars from "../components/g-tweet-bars";
 
 const Ghigliottina: React.FC = () => {
   const { query, loading, fetch, ghigliottina, loadingGhigliottina } = useStore(
@@ -47,7 +47,7 @@ const Ghigliottina: React.FC = () => {
                   )}
                 </div>
                 <div className="flex lg:basis-1/2 items-center justify-center aspect-video p-8 lg:p-0">
-                  <TweetBars />
+                  <GhigliottinaBars />
                 </div>
               </div>
               <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
