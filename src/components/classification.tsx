@@ -17,6 +17,12 @@ const Classification: React.FC = () => {
   return (
     <div className="flex flex-col py-3">
       <div className="flex felx-row items-center justify-between mb-4 px-2 border-b-2 border-gray-500">
+        <div className="text-xl text-orange-500">Parola:</div>
+        <div className="flex space-x-4 px-2">
+          <div>{ghigliottina!.word}</div>
+        </div>
+      </div>
+      <div className="flex felx-row items-center justify-between mb-4 px-2 border-b-2 border-gray-500">
         <div className="text-xl text-orange-500">
           1<sup>st</sup>
         </div>
