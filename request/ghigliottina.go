@@ -66,7 +66,7 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	w, _ := regexp.Compile(winnersReg)
 	winnersRaw := w.FindStringSubmatch(winTweet.Text)
 	if len(winnersRaw) < 7 {
-		return res, errors.New("Error while parsing winners data")
+		return
 	}
 	firstTime, err := time.Parse(timeFormat, winnersRaw[2])
 	if err != nil {
