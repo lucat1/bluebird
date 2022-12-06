@@ -1,25 +1,21 @@
 import * as React from "react";
 import { getLocalTimeZone } from "@internationalized/date";
 import format from "tinydate";
-
+import { Show } from "../stores/eredita";
 import useStore from "../stores/eredita";
 import Legend from "./legend";
 
 const dateFormatter = format("{DD}/{MM}/{YYYY} {HH}:{mm}");
-const dayFormatter = format("{DD}/{MM}/{YYYY}");
-
-//const correctWord = /cane/ig
-const correctDate = "14/11/2022";
-//cout number of wrong and right tweets
-let right = 0,
-  wrong = 0;
 
 const TweetList: React.FC = () => {
-  const tweets = useStore((s) => s.tweets);
-  const { ghigliottina } = useStore(s => ({ ghigliottina: s.ghigliottina, loadingGhigliottina: s.loadingGhigliottina }))
-  let correctWord = /.*/g
-  if(ghigliottina)
-    correctWord = new RegExp(ghigliottina.word)
+  let { tweets, show } = useStore((s) => ({
+    tweets: s.tweets,
+    show: s.show,
+  }));
+  if (show != Show.All)
+    tweets = tweets.filter((t) =>
+      show == Show.Right ? t.rightWord : !t.rightWord
+    );
   return (
     <>
       <div className="flex justify-center mb-4">
@@ -32,17 +28,11 @@ const TweetList: React.FC = () => {
         </span>
       </div>
       {tweets.map((tweet) => {
-        const isRightWord = correctWord.test(tweet.text.toUpperCase());
-        isRightWord &&
-        correctDate == dayFormatter(tweet.date.toDate(getLocalTimeZone()))
-          ? ++right
-          : ++wrong;
         return (
           <div
             key={tweet.id}
             className={`${
-              isRightWord &&
-              correctDate == dayFormatter(tweet.date.toDate(getLocalTimeZone()))
+              tweet.rightWord
                 ? "border border-green-600"
                 : "border border-red-600"
             } dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900`}

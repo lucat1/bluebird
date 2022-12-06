@@ -11,6 +11,12 @@ export enum QueryType {
   User = "user",
 }
 
+export enum Show {
+  All,
+  Right,
+  Wrong,
+}
+
 export interface gTweet extends Tweet {
   rightWord: boolean;
 }
@@ -27,15 +33,18 @@ export interface State {
   tweets: gTweet[];
   loadingGhigliottina: boolean;
   ghigliottina: Ghigliottina | null;
+  show: Show;
 }
 
 export interface Actions {
   reset(): void;
   clearTweets(): void;
   fetch(query: Query): Promise<void>;
+  filter(choice: Show): void;
 }
 
 const getInitialState = (): State => ({
+  show: Show.All,
   query: {
     type: QueryType.Keyword,
     query: "#ghigliottina",
@@ -51,7 +60,7 @@ const getInitialState = (): State => ({
   loading: true,
   tweets: [],
 
-  loadingGhigliottina: false,
+  loadingGhigliottina: true,
   ghigliottina: null,
 });
 
@@ -74,6 +83,10 @@ const store = create<State & Actions>((set, get) => ({
 
   reset: () => set(getInitialState()),
   clearTweets: () => set({ ...get(), tweets: [] }),
+  filter: (choice: Show) => {
+    if (choice == get().show) set({ ...get(), show: Show.All });
+    else set({ ...get(), show: choice });
+  },
   fetch: async (query: Query) => {
     set({ ...getInitialState(), query });
     const req = await fetch<Search>(searchURL("search", query));
@@ -90,8 +103,9 @@ const store = create<State & Actions>((set, get) => ({
       const ghigliottina = await fetch<Ghigliottina>(
         searchURL("ghigliottina", query)
       );
+      console.log(ghigliottina.word);
       const trueTweets = gTweets.map((t) => {
-        if (t.text.includes(ghigliottina.word))
+        if (t.text.toUpperCase().includes(ghigliottina.word))
           return { ...t, rightWord: true };
         else return { ...t, rightWord: false };
       });

@@ -40,7 +40,7 @@ const Ghigliottina: React.FC = () => {
                 <div className="flex lg:basis-1/2 items-center justify-center">
                   {loadingGhigliottina ? (
                     <Loading />
-                  ) : ghigliottina ? (
+                  ) : ghigliottina!.podium.first.username ? (
                     <Classification />
                   ) : (
                     <TweetCake />
