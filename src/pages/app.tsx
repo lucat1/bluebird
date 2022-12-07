@@ -8,6 +8,7 @@ import Navbar from "../components/navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchPage from "./search-page";
 import Ghigliottina from "./ghigliottina";
+import Fantacitorio from "./fantacitorio"
 import Chess from "./chess";
 
 const App: React.FC = () => {
@@ -23,6 +24,7 @@ const App: React.FC = () => {
               <Route path="/" element={<SearchPage />} />
               <Route path="/ghigliottina" element={<Ghigliottina />} />
               <Route path="/scacchi" element={<Chess />} />
+              <Route path="/fantacitorio" element={<Fantacitorio />} />
             </Routes>
           </ErrorBoundary>
         </main>
