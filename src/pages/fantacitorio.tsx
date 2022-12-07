@@ -1,18 +1,18 @@
 import * as React from "react";
 import shallow from 'zustand/shallow'
 
-import useStore from '../stores/store'
+import useStore from '../stores/fantacitorio'
 import Loading from "../components/loading";
-import Search from "../components/search";
-import TweetCloud from "../components/tweet-cloud";
-import TweetList from "../components/tweet-list";
-import TweetBars from "../components/tweet-bars";
-import TweetCake from "../components/tweet-cake";
-import TweetMap from "../components/tweet-map";
+import Search from "../components/f-search";
+import TweetList from "../components/f-tweet-list";
+import Slideshow from "../components/f-slideshow";
 
 
 const Fantacitorio: React.FC = () => {
-  const { query, loading, fetch } = useStore(s => ({ query: s.query, loading: s.loading, fetch: s.fetch,}), shallow)
+  const { query, loading, fetch } = useStore(s => ( {
+    fetch: s.fetch,
+    query: s.query,
+    loading: s.loading,}), shallow)
 
   React.useEffect(() => {
     fetch(query);
@@ -27,21 +27,16 @@ const Fantacitorio: React.FC = () => {
             ) : (
               <>
                 <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
-                  <div className="lg:overflow-auto ">
-                    <div className="lg:p-4 flex flex-col xl:flex-row flex-initial xl:h-1/2 lg:overflow-none">
-                      <div className="flex items-center justify-center aspect-square p-8 lg:p-0">
-                        <TweetCake />
-                      </div>
-                      <div className="flex items-center justify-center aspect-video pr-2 p-8 lg:p-0 overflow-hidden">
-                        <TweetBars />
-                      </div>
+                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
+                    <div className="flex items-center justify-center">
+                      Best climbers ecc...
                     </div>
-                    <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-hidden">
-                      <TweetCloud />
+                    <div className="flex items-center justify-center aspect-video lg:p-2 overflow-auto">
+                      Classifica in base a tempo
                     </div>
-                    <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2  p-3">
-                      <TweetMap />
-                    </div>
+                  </div>
+                  <div className="p-2 flex items-center flex-col flex-initial xl:h-1/2 lg:overflow-none aspect-video">
+                    <Slideshow />
                   </div>
                 </div>
                 <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">
