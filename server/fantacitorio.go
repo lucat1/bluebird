@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"git.hjkl.gq/team14/team14/cache"
+	"git.hjkl.gq/team14/team14/ocr"
 	"git.hjkl.gq/team14/team14/request"
 )
 
@@ -21,7 +22,11 @@ type PoliticiansScoreboardResponse struct {
 }
 
 type TeamResponse struct {
-	Team request.Team `json:"team"`
+	Username   string   `json:"username"`
+	PictureURL string   `json:"picture_url"`
+	Name       string   `json:"name"`
+	Leader     string   `json:"leader"`
+	Members    []string `json:"members"`
 }
 
 type TeamsResponse struct {
@@ -96,7 +101,12 @@ func searchHandlerTeam(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJSON(w, http.StatusOK, TeamResponse{Team: team})
+		var teamInfo ocr.Team
+		if ocrEnable, err := strconv.ParseBool(r.URL.Query().Get("ocr")); err == nil && ocrEnable == true {
+			teamInfo, _ = ocr.GetTeamInfo(team.PictureURL)
+		}
+
+		sendJSON(w, http.StatusOK, TeamResponse{Username: team.Username, PictureURL: team.PictureURL, Name: teamInfo.Name, Leader: teamInfo.Leader, Members: teamInfo.Members})
 		return
 	}
 
