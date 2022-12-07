@@ -11,6 +11,16 @@ export enum QueryType {
   User = "user",
 }
 
+export enum Show {
+  All,
+  Right,
+  Wrong,
+}
+
+export interface gTweet extends Tweet {
+  rightWord: boolean;
+}
+
 export interface Query {
   type: QueryType;
   query: string;
@@ -20,19 +30,21 @@ export interface Query {
 export interface State {
   query: Query;
   loading: boolean;
-  tweets: Tweet[];
-
+  tweets: gTweet[];
   loadingGhigliottina: boolean;
   ghigliottina: Ghigliottina | null;
+  show: Show;
 }
 
 export interface Actions {
   reset(): void;
   clearTweets(): void;
   fetch(query: Query): Promise<void>;
+  filter(choice: Show): void;
 }
 
 const getInitialState = (): State => ({
+  show: Show.All,
   query: {
     type: QueryType.Keyword,
     query: "#ghigliottina",
@@ -48,7 +60,7 @@ const getInitialState = (): State => ({
   loading: true,
   tweets: [],
 
-  loadingGhigliottina: false,
+  loadingGhigliottina: true,
   ghigliottina: null,
 });
 
@@ -71,11 +83,16 @@ const store = create<State & Actions>((set, get) => ({
 
   reset: () => set(getInitialState()),
   clearTweets: () => set({ ...get(), tweets: [] }),
+  filter: (choice: Show) => {
+    if (choice == get().show) set({ ...get(), show: Show.All });
+    else set({ ...get(), show: choice });
+  },
   fetch: async (query: Query) => {
     set({ ...getInitialState(), query });
     const req = await fetch<Search>(searchURL("search", query));
     const tweets = req.tweets.map(convert);
-    set({ ...get(), loading: false, tweets });
+    const gTweets = tweets.map((t) => ({ ...t, rightWord: false }));
+    set({ ...get(), loading: false, tweets: gTweets });
 
     const diff =
       query.timeRange.end.toDate("utc").getTime() -
@@ -86,10 +103,21 @@ const store = create<State & Actions>((set, get) => ({
       const ghigliottina = await fetch<Ghigliottina>(
         searchURL("ghigliottina", query)
       );
-      set({ ...get(), loadingGhigliottina: false, ghigliottina });
+      console.log(ghigliottina.word);
+      const trueTweets = gTweets.map((t) => {
+        if (t.text.toUpperCase().includes(ghigliottina.word))
+          return { ...t, rightWord: true };
+        else return { ...t, rightWord: false };
+      });
+      set({
+        ...get(),
+        loadingGhigliottina: false,
+        ghigliottina,
+        tweets: trueTweets,
+      });
     }
 
-    for (const tweet of tweets) {
+    for (const tweet of get().tweets) {
       fetch<SentimentSearch>(`sentiment?id=${tweet.id}`).then(
         ({ sentiments }) =>
           set({

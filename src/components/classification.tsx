@@ -27,7 +27,9 @@ const Classification: React.FC = () => {
           1<sup>st</sup>
         </div>
         <div className="flex space-x-4 px-2">
-          <div>{ghigliottina!.podium.first.username}</div>
+          <div>
+            {ghigliottina!.podium.first.username || "Nessun vincitore!"}
+          </div>
         </div>
         <span>{dateFormatter(first)}</span>
       </div>
@@ -36,7 +38,7 @@ const Classification: React.FC = () => {
           2<sup>nd</sup>
         </div>
         <div className="flex space-x-4 px-2">
-          <div>{ghigliottina!.podium.second.username}</div>
+          <div>{ghigliottina!.podium.second.username || "Nessun Secondo!"}</div>
         </div>
         <span>{dateFormatter(second)}</span>
       </div>
@@ -45,7 +47,7 @@ const Classification: React.FC = () => {
           3<sup>rd</sup>
         </div>
         <div className="flex space-x-4 px-2">
-          <div>{ghigliottina!.podium.third.username}</div>
+          <div>{ghigliottina!.podium.third.username || "Nessun terzo!"}</div>
         </div>
         <span>{dateFormatter(third)}</span>
       </div>

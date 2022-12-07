@@ -2,6 +2,7 @@ package request
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 	"time"
@@ -24,7 +25,7 @@ type GhigliottinaWinner struct {
 }
 
 var sub = "La #parola della #ghigliottina de #leredita di oggi è:"
-var reg = "La #parola della #ghigliottina de #leredita di oggi è:(.*?)\n"
+var reg = "La #parola della #ghigliottina de #leredita di oggi è: (.*?)\n"
 var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 
 const timeFormat = "15:04:05"
@@ -41,7 +42,8 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 		t := tweets[i]
 		if strings.Contains(t.Text, sub) {
 			match := r.FindStringSubmatch(t.Text)
-			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt)) {
+			fmt.Println(match)
+			if len(match) > 0 && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt) {
 				found = true
 				tweet = t
 			}
@@ -66,7 +68,7 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	w, _ := regexp.Compile(winnersReg)
 	winnersRaw := w.FindStringSubmatch(winTweet.Text)
 	if len(winnersRaw) < 7 {
-		return res, errors.New("Error while parsing winners data")
+		return
 	}
 	firstTime, err := time.Parse(timeFormat, winnersRaw[2])
 	if err != nil {
