@@ -66,6 +66,14 @@ func main() {
 	fmt.Println(bb)
 	bb, err = cache.PoliticianBestAverage()
 	fmt.Println(bb)
+	teams, err := request.Teams()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		cache.InsertTeams(teams)
+		team, _ := cache.SearchTeamByUsername("_disagiulia_")
+		fmt.Println(team)
+	}
 
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {

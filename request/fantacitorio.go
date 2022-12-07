@@ -8,7 +8,9 @@ import (
 )
 
 const MAXPOLITICIANS = 761
-const fantacitorioUsername = "Fanta_citorio"
+const FANTAUSER = "Fanta_citorio"
+const TEAMSTARTTIME = "2022-10-27T22:00:20.602Z"
+const TEAMENDTIME = "2022-10-28T22:00:20.602Z"
 
 const regPunti1Txt = "([0-9O]*?) PUNTI - (.*?)$"
 const regPunti2Txt = "([0-9O]*?) PUNTI PER (.*?)$"
@@ -64,7 +66,7 @@ func PoliticiansScore(n uint, startTime string, endTime string) (politicians []P
 	fmt.Println(startTime, endTime)
 	regPunti, _ := regexp.Compile(regPuntiTxt)
 	regPuntiRev, _ := regexp.Compile(regPunti5Txt)
-	tweets, err := TweetsByUser(fantacitorioUsername, n, startTime, endTime)
+	tweets, err := TweetsByUser(FANTAUSER, n, startTime, endTime)
 	if err != nil {
 		return
 	}
@@ -108,6 +110,19 @@ func PoliticiansScore(n uint, startTime string, endTime string) (politicians []P
 					}
 				}
 			}
+		}
+	}
+	return
+}
+
+func Teams() (teams []Team, err error) {
+	tweets, err := TweetsByUser(FANTAUSER, 500, TEAMSTARTTIME, TEAMENDTIME)
+	if err != nil {
+		return
+	}
+	for _, t := range tweets {
+		if len(*t.Media) > 0 && len(*t.Mentions) > 0 {
+			teams = append(teams, Team{Username: (*t.Mentions)[0].Username, PictureURL: (*t.Media)[0].URL})
 		}
 	}
 	return

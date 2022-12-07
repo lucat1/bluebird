@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,6 +18,14 @@ type PoliticiansScoreboardResponse struct {
 	BestClimber     request.Politician   `json:"best_climber"`
 	BestAverage     request.Politician   `json:"best_average"`
 	BestSingleScore request.Politician   `json:"best_single_score"`
+}
+
+type TeamResponse struct {
+	Team request.Team `json:"team"`
+}
+
+type TeamsResponse struct {
+	Teams []request.Team `json:"teams"`
 }
 
 func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,4 +82,39 @@ func politiciansScoreboardHandler(w http.ResponseWriter, r *http.Request) {
 		BestAverage:     bestAverage,
 		BestSingleScore: bestSingleScore,
 	})
+}
+
+func searchHandlerTeam(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	if username != "" {
+		team, err := cache.SearchTeamByUsername(username)
+		if err != nil {
+			sendError(w, http.StatusBadRequest, APIError{
+				Message: "Team not found",
+				Error:   err,
+			})
+			return
+		}
+
+		sendJSON(w, http.StatusOK, TeamResponse{Team: team})
+		return
+	}
+
+	sendError(w, http.StatusBadRequest, APIError{
+		Message: "Username is mandatory",
+		Error:   fmt.Errorf(""),
+	})
+}
+
+func teamsHandler(w http.ResponseWriter, r *http.Request) {
+	teams, err := cache.TeamsAll()
+	if err != nil {
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: "Teams not found",
+			Error:   err,
+		})
+		return
+	}
+
+	sendJSON(w, http.StatusOK, TeamsResponse{Teams: teams})
 }

@@ -70,7 +70,6 @@ func requestTweets(url *url.URL, n uint) (tweets []Tweet, err error) {
 		if raw, err = requestRaw[tweetResponse](client, url); err != nil {
 			return
 		}
-
 		twts, err = raw.Tweets()
 		if err != nil {
 			return

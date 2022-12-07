@@ -12,25 +12,20 @@ func TweetsByUser(username string, n uint, startTime, endTime *time.Time) (tweet
 		return
 	}
 	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
-		AddStartTime(startTime).
-		AddEndTime(endTime).
-		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
+		AddStartTime(RequestTime(startTime)).
+		AddEndTime(RequestTime(endTime)).
+		MaxResults(n).
+		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt, RequestFieldEntities, RequestFieldAttachments).
 		AddUserFields(
 			RequestFieldWithheld,
-			RequestFieldVerified,
 			RequestFieldUsername,
 			RequestFieldURL,
-			RequestFieldPublicMetrics,
-			RequestFieldProtected,
 			RequestFieldProfileImageURL,
-			RequestFieldPinnedTweetID,
 			RequestFieldName,
 			RequestFieldLocation,
 			RequestFieldID,
-			RequestFieldEntities,
-			RequestFieldDescription,
 			RequestFieldCreatedAt,
-		).AddExpansions(RequestExpansionAuthorID),
+		).AddMediaFields(RequestFieldURL).AddExpansions(RequestExpansionAuthorID, RequestExpansionAttachmentsMediaKeys),
 	)
 	if err != nil {
 		return

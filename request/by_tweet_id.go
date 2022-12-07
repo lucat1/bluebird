@@ -5,6 +5,7 @@ import "time"
 func TweetByTweetID(tweetID string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets").
 		IDs(tweetID).
+		MaxResults(n).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt, RequestFieldConversationID).
 		AddUserFields(
 			RequestFieldWithheld,

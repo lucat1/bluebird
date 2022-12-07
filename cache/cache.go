@@ -38,7 +38,7 @@ func Open(path string, level logger.LogLevel) (err error) {
 	}); err != nil {
 		return
 	}
-	return db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{}, &request.Politician{})
+	return db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{}, &request.Politician{}, &request.Team{})
 }
 
 func Close() error {
@@ -140,4 +140,19 @@ func AddPointsPoliticians(politicians []request.Politician) (err error) {
 		}
 	}
 	return
+}
+
+func InsertTeams(teams []request.Team) (err error) {
+	return db.Clauses(clause.OnConflict{
+		DoNothing: true,
+	}).Create(&teams).Error
+}
+
+func TeamsAll() (res []request.Team, _ error) {
+	return res, db.Find(&res).Error
+}
+
+func SearchTeamByUsername(username string) (res request.Team, err error) {
+	err = db.First(&res, request.Team{Username: username}).Error
+	return res, err
 }

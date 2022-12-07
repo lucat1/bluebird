@@ -39,8 +39,10 @@ func RunServer(host string) error {
 	mux.HandleFunc("/api/sentiment", sentimentHandler)
 	mux.HandleFunc("/api/chess", chessHandler)
 	mux.HandleFunc("/api/ghigliottina", getGhigliottina)
-	mux.HandleFunc("/api/fantacitorio/scores", politiciansScoreHandler)
+	mux.HandleFunc("/api/fantacitorio/punteggi", politiciansScoreHandler)
 	mux.HandleFunc("/api/fantacitorio/classifica", politiciansScoreboardHandler)
+	mux.HandleFunc("/api/fantacitorio/cerca", searchHandlerTeam)
+	mux.HandleFunc("/api/fantacitorio/teams", teamsHandler)
 	mux.Handle("/assets/*path", http.FileServer(http.Dir("dist")))
 	mux.HandleFunc("/*path", serveIndex)
 
