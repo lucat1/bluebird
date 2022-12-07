@@ -22,7 +22,7 @@ const Slideshow: React.FC = () => {
           </div>
         </Carousel>
       </div>
-      <div className="flex flex-row border border-sky-500 p-1 justify-evenly">
+      <div className="flex flex-row border border-sky-500 p-1 justify-between">
       <input
               id="query"
               type="search"
