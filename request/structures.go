@@ -154,6 +154,22 @@ type TweetResponse struct {
 	ID string `json:"id"`
 }
 
+type Politician struct {
+	ID              uint64 `json:"id" gorm:"primaryKey;autoIncrement:true"`
+	Name            string
+	Surname         string
+	Points          int
+	NPosts          uint
+	Average         float64
+	BestSingleScore int
+	LastUpdated     time.Time
+}
+
+type Team struct {
+	Username   string
+	TeamPicURL string
+}
+
 func (res *tweetResponse) Users() map[string]User {
 	users := map[string]User{}
 	for _, u := range res.Includes.Users {

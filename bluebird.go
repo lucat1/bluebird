@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -52,6 +53,19 @@ func main() {
 	}
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
+
+	politicians, err := request.PoliticiansScore(2000, "2022-09-29T11:02:59.263Z", time.Now().Format(time.RFC3339))
+	cache.AddPointsPoliticians(politicians)
+	silvio, err := cache.PoliticianByNameSurname("matteo", "salvini")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(silvio)
+	}
+	bb, err := cache.PoliticianBestSingleScore()
+	fmt.Println(bb)
+	bb, err = cache.PoliticianBestAverage()
+	fmt.Println(bb)
 
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
