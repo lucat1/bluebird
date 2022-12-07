@@ -6,9 +6,8 @@ func TweetsByKeyword(keyword string, n uint, startTime, endTime *time.Time) (twe
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		WithQuery(keyword).
 		Lang(RequestQueryLangIT).
-		MaxResults(n).
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
+		AddStartTime(startTime).
+		AddEndTime(endTime).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,

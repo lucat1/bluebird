@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const MAXPOLITICIANS = 761
@@ -62,11 +63,12 @@ func removeEmptyStrings(s []string) []string {
 }
 
 // week by week , so 4/5 posts per day -> 30/40 posts per week
-func PoliticiansScore(n uint, startTime string, endTime string) (politicians []Politician, err error) {
-	fmt.Println(startTime, endTime)
+func PoliticiansScore(n uint, rawStartTime string, rawEndTime string) (politicians []Politician, err error) {
 	regPunti, _ := regexp.Compile(regPuntiTxt)
 	regPuntiRev, _ := regexp.Compile(regPunti5Txt)
-	tweets, err := TweetsByUser(FANTAUSER, n, startTime, endTime)
+	startTime, _ := time.Parse(time.RFC3339, rawStartTime)
+	endTime, _ := time.Parse(time.RFC3339, rawEndTime)
+	tweets, err := TweetsByUser(FANTAUSER, n, &startTime, &endTime)
 	if err != nil {
 		return
 	}
@@ -116,7 +118,10 @@ func PoliticiansScore(n uint, startTime string, endTime string) (politicians []P
 }
 
 func Teams() (teams []Team, err error) {
-	tweets, err := TweetsByUser(FANTAUSER, 500, TEAMSTARTTIME, TEAMENDTIME)
+	// cant go wrong
+	startTime, _ := time.Parse(time.RFC3339, TEAMSTARTTIME)
+	endTime, _ := time.Parse(time.RFC3339, TEAMENDTIME)
+	tweets, err := TweetsByUser(FANTAUSER, 500, &startTime, &endTime)
 	if err != nil {
 		return
 	}

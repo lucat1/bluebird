@@ -12,10 +12,10 @@ func TweetsByUser(username string, n uint, startTime, endTime *time.Time) (tweet
 		return
 	}
 	url, err = buildURL(NewRequest("users/"+user.ID+"/tweets").
-		AddStartTime(RequestTime(startTime)).
-		AddEndTime(RequestTime(endTime)).
 		MaxResults(n).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt, RequestFieldEntities, RequestFieldAttachments).
+		AddStartTime(startTime).
+		AddEndTime(endTime).
 		AddUserFields(
 			RequestFieldWithheld,
 			RequestFieldUsername,
