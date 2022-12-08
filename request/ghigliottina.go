@@ -2,7 +2,6 @@ package request
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strings"
 	"time"

@@ -9,17 +9,11 @@ import (
 	"git.hjkl.gq/team14/team14/cache"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
-	"github.com/jasonlvhit/gocron"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm/logger"
 )
 
 const ADDR = ":8080"
-
-func scheduler() {
-	<-gocron.Start()
-	log.Fatal("WARN The scheduler exited")
-}
 
 func main() {
 	if godotenv.Load() != nil {
@@ -64,7 +58,6 @@ func main() {
 		}
 	}()
 
-	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)
 	}

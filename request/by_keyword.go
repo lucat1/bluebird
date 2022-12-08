@@ -8,6 +8,7 @@ func TweetsByKeyword(keyword string, n uint, startTime, endTime *time.Time) (twe
 		Lang(RequestQueryLangIT).
 		AddStartTime(startTime).
 		AddEndTime(endTime).
+		MaxResults(n).
 		AddTweetFields(RequestFieldAuthorID, RequestFieldGeo, RequestFieldCreatedAt).
 		AddUserFields(
 			RequestFieldWithheld,
