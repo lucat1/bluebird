@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Chessboard } from "react-chessboard";
 import Countdown from "react-countdown";
-import { useForm } from "react-hook-form";
 import { useElementSize } from "usehooks-ts";
 import { Color } from "chess.js";
-import Loading from "../components/loading";
+import useWindowSize from "react-use/lib/useWindowSize";
+import Confetti from "react-confetti";
 
 import useChess from "../stores/chess";
 import MoveList from "../components/move-list";
+import Loading from "../components/loading";
+import ChessStart from "../components/chess-start";
 
 const myTurn: Color = "w";
 
@@ -40,25 +43,20 @@ const Chess: React.FC = () => {
     tweets,
     error,
     algebraic,
+    gameover,
     move,
     end,
     turn,
-    play,
     code,
     game,
   } = useChess((s) => s);
-  const [authorized, setAuthorized] = useState(false);
-  const [getRef, { width, height }] = useElementSize();
-
-  const {
-    handleSubmit,
-    formState: { errors },
-    setError,
-    register,
-  } = useForm<{ code: string; hours: number; minutes: number }>({
+  const { handleSubmit, register } = useForm<{ code: string }>({
     reValidateMode: "onSubmit",
     mode: "onSubmit",
   });
+  const [authorized, setAuthorized] = useState(false);
+  const [getRef, { width: chessWidth, height: chessHeight }] = useElementSize();
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     connect();
@@ -106,90 +104,25 @@ const Chess: React.FC = () => {
   return (
     <div className="flex flex-1 flex-col md:flex-row p-5">
       {loading && (
-        <div className="absolute top-1/2 left-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 opacity-80 p-5 pb-4">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-lg shadow dark:bg-gray-700 opacity-80 p-5">
           <Loading />
         </div>
       )}
-      {!code && (
-        <div className="flex flex-1 items-center justify-center flex-col">
-          <div className="row flex items-center my-10">
-            <label className="text-sm font-medium text-gray-900 dark:text-white">
-              Per iniziare la partita seleziona la durata di ogni turno:
-            </label>
+      {gameover != null && (
+        <>
+          <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 py-4 px-6">
+            {gameover == "p"
+              ? "Pareggio"
+              : `Scacco matto, vince il ${gameover == "w" ? "Bianco" : "Nero"}`}
+            ! La partita e' finita.
+            <ChessStart onAuthorize={() => setAuthorized(true)} />
           </div>
-          <form
-            className="flex flex-col"
-            onSubmit={handleSubmit((data) => {
-              if (data.minutes == 0 && data.hours == 0) {
-                setError("minutes", {
-                  message: "Il turno deve durare almeno 1 minuto",
-                });
-              } else {
-                play({ minutes: data.minutes, hours: data.hours });
-                setAuthorized(true);
-              }
-            })}
-          >
-            <div className="w-full flex flex-row justify-center items-center">
-              <div className="flex flex-col items-start mx-4">
-                <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
-                  Ore
-                </label>
-                <input
-                  type="number"
-                  placeholder="Ore"
-                  className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
-                  max={100}
-                  min={0}
-                  defaultValue={0}
-                  {...register("hours", {
-                    required: true,
-                    valueAsNumber: true,
-                  })}
-                />
-              </div>
-
-              <div className="flex flex-col items-start mx-4">
-                <label className="block mb-2 text-sm text-center font-medium text-gray-900 dark:text-white">
-                  Minuti
-                </label>
-                <input
-                  type="number"
-                  placeholder="Minuti"
-                  className="w-full mb-2 rounded-lg text-center dark:bg-gray-700"
-                  max={59}
-                  min={0}
-                  defaultValue={1}
-                  {...register("minutes", {
-                    required: true,
-                    valueAsNumber: true,
-                  })}
-                />
-              </div>
-            </div>
-            {errors.minutes && (
-              <label htmlFor="hours">
-                {errors.minutes.message ||
-                  "I minuti devono essere compresi tra 0 e 59"}
-              </label>
-            )}
-            {errors.hours && (
-              <label htmlFor="hours">
-                Le ore devono essere comprese tra 0 e 100
-              </label>
-            )}
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                className="w-full mt-5 justify-center text-white text-center hover:bg-sky-700 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
-              >
-                Inizia la partita!
-              </button>
-            </div>
-          </form>
-        </div>
+          <Confetti width={width} height={height} />
+        </>
       )}
-      {code && (
+      {!code ? (
+        <ChessStart onAuthorize={() => setAuthorized(true)} />
+      ) : (
         <>
           <div className="flex basis-2/4 xs:justify-center md:justify-left">
             <div
@@ -197,7 +130,7 @@ const Chess: React.FC = () => {
               className="flex flex-1 lg:flex-initial aspect-square "
             >
               <Chessboard
-                boardWidth={Math.min(width, height - 10)}
+                boardWidth={Math.min(chessWidth, chessHeight - 10)}
                 arePiecesDraggable={authorized && turn == myTurn}
                 position={game!}
                 isDraggablePiece={({ piece }) =>
@@ -213,69 +146,71 @@ const Chess: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex basis-1/4 flex-col lg:items-center">
-            <form
-              onClick={handleSubmit((_) => setAuthorized(true))}
-              className="flex justify-center"
-            >
-              <div>
-                <label
-                  htmlFor="code"
-                  className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
-                >
-                  {!authorized && "Inserisci codice partita per giocare:"}
-                  {authorized && "Puoi giocare! Codice partita:"}
-                </label>
-                <div className="flex">
-                  <input
-                    id="code"
-                    type="search"
-                    className="flex p-4 pl-10 hover:border-gray-400 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
-                    placeholder={authorized ? code! : "Codice..."}
-                    disabled={authorized}
-                    {...register("code", {
-                      validate: (value) => value == code,
-                    })}
-                  />
-                  {!authorized && (
-                    <button
-                      type="submit"
-                      className="text-white hover:bg-sky-700 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
-                    >
-                      Invia
-                    </button>
+          {!gameover && (
+            <div className="flex basis-1/4 flex-col lg:items-center">
+              <form
+                onClick={handleSubmit((_) => setAuthorized(true))}
+                className="flex justify-center"
+              >
+                <div>
+                  <label
+                    htmlFor="code"
+                    className="flex mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                  >
+                    {!authorized && "Inserisci codice partita per giocare:"}
+                    {authorized && "Puoi giocare! Codice partita:"}
+                  </label>
+                  <div className="flex">
+                    <input
+                      id="code"
+                      type="search"
+                      className="flex p-4 pl-10 hover:border-gray-400 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
+                      placeholder={authorized ? code! : "Codice..."}
+                      disabled={authorized}
+                      {...register("code", {
+                        validate: (value) => value == code,
+                      })}
+                    />
+                    {!authorized && (
+                      <button
+                        type="submit"
+                        className="text-white hover:bg-sky-700 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+                      >
+                        Invia
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </form>
+              <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
+                <div className="my-auto p-2">
+                  <White />
+                </div>
+                <div className="flex flex-row p-1 my-2 w-fit">
+                  {turn == myTurn ? (
+                    <Countdown date={end!.toDate("utc")} />
+                  ) : (
+                    "00:00:00:00"
                   )}
                 </div>
               </div>
-            </form>
-            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
-              <div className="my-auto p-2">
-                <White />
+              <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
+                <div className="my-auto p-2">
+                  <Black />
+                </div>
+                <div className="flex flex-row p-1 my-2 w-fit">
+                  {turn != myTurn ? (
+                    <Countdown date={end!.toDate("utc")} />
+                  ) : (
+                    "00:00:00:00"
+                  )}
+                </div>
               </div>
-              <div className="flex flex-row p-1 my-2 w-fit">
-                {turn == myTurn ? (
-                  <Countdown date={end!.toDate("utc")} />
-                ) : (
-                  "00:00:00:00"
-                )}
-              </div>
-            </div>
-            <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
-              <div className="my-auto p-2">
-                <Black />
-              </div>
-              <div className="flex flex-row p-1 my-2 w-fit">
-                {turn != myTurn ? (
-                  <Countdown date={end!.toDate("utc")} />
-                ) : (
-                  "00:00:00:00"
-                )}
+              <div className="flex flex-row p-2 m-1 self-center">
+                Grafico a barre
               </div>
             </div>
-            <div className="flex flex-row p-2 m-1 self-center">
-              Grafico a barre
-            </div>
-          </div>
+          )}
           <div className="flex flex-1 basis-1/4 flex-col p-2">
             <button
               className="text-white mx-auto hover:bg-sky-700 right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800 disabled:hover:bg-slate-700 disabled:bg-slate-600 disabled:cursor-not-allowed"

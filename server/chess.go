@@ -101,7 +101,9 @@ func onClose(conn *websocket.Conn) {
 
 func chessWatcher() {
 	for chess.GetMatch() != nil {
-		chess.GetMatch().Update()
+		if !chess.GetMatch().Update() {
+			break
+		}
 		sendMatch()
 	}
 }
@@ -153,14 +155,7 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			match := chess.NewMatch(time.Millisecond * time.Duration(ms))
-			if err = chess.SetMatch(match); err != nil {
-				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
-					Message: "Could not store match",
-					Error:   err,
-				})
-				break
-			}
-
+			chess.SetMatch(match)
 			go chessWatcher()
 			sendMatch()
 			break

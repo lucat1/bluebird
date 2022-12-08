@@ -23,16 +23,11 @@ export interface State {
   end: CalendarDateTime | null;
   timeout: NodeJS.Timer | null;
 
-  gameover: boolean;
   game: string | null;
+  gameover: "w" | "b" | "p" | null;
   tweets: Tweet[] | null;
   board: Chess | null;
   turn: Color | null;
-}
-
-export enum Player {
-  WHITE,
-  BLACK,
 }
 
 export interface Actions {
@@ -57,7 +52,7 @@ const initialState: State = {
   code: "",
   end: null,
 
-  gameover: false,
+  gameover: null,
   game: null,
   tweets: null,
   board: null,
@@ -115,8 +110,21 @@ const store = create<State & Actions>((set, get) => ({
         const board = new Chess(data.game);
 
         // clear any previous timeout
-        const { timeout, _timeout } = get();
+        let { timeout, _timeout } = get();
         if (timeout) clearTimeout(timeout);
+
+        const gameover = board.isDraw()
+          ? "p"
+          : board.isCheckmate()
+          ? board.turn() == "w"
+            ? "b"
+            : "w"
+          : null;
+        if (!gameover)
+          timeout = setTimeout(
+            _timeout,
+            new Date(data.ends_at).getTime() - new Date().getTime()
+          );
 
         set({
           ...data,
@@ -124,12 +132,9 @@ const store = create<State & Actions>((set, get) => ({
           end,
           board,
           tweets: data.tweets?.map(convert),
-          gameover: board.isGameOver(),
+          gameover,
           turn: board.turn(),
-          timeout: setTimeout(
-            _timeout,
-            new Date(data.ends_at).getTime() - new Date().getTime()
-          ),
+          timeout,
         });
         console.log("match", get());
         break;
@@ -157,8 +162,9 @@ const store = create<State & Actions>((set, get) => ({
     );
   },
   play: (turnDuration: TimeDuration) => {
-    set({ ...get(), loading: true });
-    get().connection?.send(
+    const { connection } = get();
+    set({ ...initialState, connection, connecting: false, loading: true });
+    connection?.send(
       JSON.stringify({
         type: ChessMessageType.Start,
         data: (

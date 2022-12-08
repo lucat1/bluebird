@@ -3,11 +3,9 @@ package chess
 import (
 	"bufio"
 	"bytes"
-	"encoding/json"
 	"errors"
 	"image"
 	"image/png"
-	"io/ioutil"
 	"log"
 	"math"
 	"math/rand"
@@ -30,12 +28,12 @@ const (
 var match *Match = nil
 
 type Match struct {
-	Code     string          `json:"code"`
-	Duration time.Duration   `json:"duration"`
-	EndsAt   time.Time       `json:"ends_at"`
-	Game     *chess.Game     `json:"game"`
-	TweetID  string          `json:"tweet_id"`
-	Tweets   []request.Tweet `json:"tweets"`
+	Code     string
+	Duration time.Duration
+	EndsAt   time.Time
+	Game     *chess.Game
+	TweetID  string
+	Tweets   []request.Tweet
 
 	timeout chan bool
 	ticking atomic.Bool
@@ -141,8 +139,11 @@ func (m *Match) randomMove() *string {
 		return nil
 	}
 	randMove := moves[rand.Intn(len(moves))]
-	rand := randMove.String()
-	return &rand
+	if randMove == nil {
+		return nil
+	}
+	move := chess.AlgebraicNotation{}.Encode(m.Game.Position(), randMove)
+	return &move
 }
 
 func (m *Match) onTurnEnd() {
@@ -150,8 +151,8 @@ func (m *Match) onTurnEnd() {
 	if m.Game.Position().Turn() == playerColor {
 		mv := m.randomMove()
 		if mv == nil {
-			// TODO: handle lost by master
-			log.Println("TODO: handle lost by crowd")
+			log.Println("Game lost by crowd")
+			m.close()
 			return
 		}
 		move = *mv
@@ -172,8 +173,8 @@ func (m *Match) onTurnEnd() {
 		} else {
 			mv := m.randomMove()
 			if mv == nil {
-				// TODO: handle lost by crowd
-				log.Println("TODO: handle lost by crowd")
+				log.Println("Game lost by crowd")
+				m.close()
 				return
 			}
 			move = *mv
@@ -189,13 +190,17 @@ func (m *Match) Move(move string) error {
 		return err
 	}
 
-	log.Printf("Moving %s", move)
-	m.EndsAt = time.Now().UTC().Add(m.Duration)
+	log.Printf("Moved %s", move)
+	if m.Game.Outcome() == chess.NoOutcome {
+		m.EndsAt = time.Now().UTC().Add(m.Duration)
+		m.Tweets = []request.Tweet{}
+	}
 	m.sendUpdate()
-	m.Tweets = []request.Tweet{}
-	m.PostGame()
-	m.delay()
-	return Store()
+	if m.Game.Outcome() == chess.NoOutcome {
+		m.PostGame()
+		m.delay()
+	}
+	return nil
 }
 
 func (m *Match) PlayerMove(move string) error {
@@ -296,16 +301,12 @@ func (m *Match) sendUpdate() {
 	m.updates <- true
 }
 
-func (m *Match) Update() {
-	<-m.updates
+func (m *Match) Update() bool {
+	return <-m.updates
 }
 
-func SetMatch(m *Match) error {
+func SetMatch(m *Match) {
 	match = m
-	if err := Store(); err != nil {
-		log.Printf("Could not store chess match state: %v", err)
-	}
-	return Store()
 }
 
 func GetMatch() *Match {
@@ -330,8 +331,8 @@ func (m *Match) setup() {
 }
 
 func (m *Match) close() {
-	m.quit <- true
-	// TODO
+	m.quit <- false
+	m.updates <- false
 }
 
 func NewMatch(duration time.Duration) *Match {
@@ -345,24 +346,4 @@ func NewMatch(duration time.Duration) *Match {
 
 	m.setup()
 	return &m
-}
-
-func Store() (err error) {
-	buf, err := json.Marshal(match)
-	err = ioutil.WriteFile(stateFile, buf, 0666)
-	return
-}
-
-func Resume() (err error) {
-	var m Match
-	buf, err := ioutil.ReadFile(stateFile)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(buf, &m); err != nil {
-		return err
-	}
-	m.setup()
-	match = &m
-	return
 }

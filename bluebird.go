@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"git.hjkl.gq/team14/team14/cache"
-	"git.hjkl.gq/team14/team14/chess"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
 	"github.com/jasonlvhit/gocron"
@@ -53,11 +52,6 @@ func main() {
 	}
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
-	err = chess.Resume()
-	if err == nil {
-		log.Printf("Resumed match state: %v", chess.GetMatch())
-	}
-	defer chess.Store()
 
 	go scheduler()
 	if err = server.RunServer(ADDR); err != nil {
