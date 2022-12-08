@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"git.hjkl.gq/team14/team14/cache"
-	"git.hjkl.gq/team14/team14/ocr"
 	"git.hjkl.gq/team14/team14/request"
 )
 
@@ -101,9 +100,9 @@ func searchHandlerTeam(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var teamInfo ocr.Team
+		var teamInfo request.OCRTeam
 		if ocrEnable, err := strconv.ParseBool(r.URL.Query().Get("ocr")); err == nil && ocrEnable == true {
-			teamInfo, _ = ocr.GetTeamInfo(team.PictureURL)
+			teamInfo, _ = request.GetTeamInfo(team.PictureURL)
 		}
 
 		sendJSON(w, http.StatusOK, TeamResponse{Username: team.Username, PictureURL: team.PictureURL, Name: teamInfo.Name, Leader: teamInfo.Leader, Members: teamInfo.Members})

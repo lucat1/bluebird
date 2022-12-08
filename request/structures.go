@@ -329,3 +329,17 @@ type Sentiment struct {
 type sentimentResponse struct {
 	Sentiments Sentiments `json:"sentiment"`
 }
+
+type ocrText struct {
+	ParsedText string `json:"ParsedText"`
+}
+
+type ocrResponse struct {
+	ParsedResults []ocrText `json:"ParsedResults"`
+}
+
+type OCRTeam struct {
+	Name    string
+	Leader  string
+	Members []string
+}

@@ -1,4 +1,4 @@
-package ocr
+package request
 
 import (
 	"encoding/json"
@@ -9,21 +9,7 @@ import (
 	"strings"
 )
 
-type OCRParsedResult struct {
-	ParsedText string `json:"ParsedText"`
-}
-
-type OCRResponse struct {
-	ParsedResults []OCRParsedResult `json:"ParsedResults"`
-}
-
-type Team struct {
-	Name    string
-	Leader  string
-	Members []string
-}
-
-func GetTeamInfo(imageURL string) (team Team, err error) {
+func GetTeamInfo(imageURL string) (team OCRTeam, err error) {
 	client := &http.Client{}
 	form := url.Values{}
 	form.Add("url", imageURL)
@@ -54,7 +40,7 @@ func GetTeamInfo(imageURL string) (team Team, err error) {
 	if err != nil {
 		return
 	}
-	var response OCRResponse
+	var response ocrResponse
 	err = json.Unmarshal(bodyText, &response)
 	if err != nil {
 		return
