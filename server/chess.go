@@ -37,11 +37,11 @@ type IncomingMessage[T any, D any] struct {
 type ChessMessageType string
 
 const (
-	ChessMessageTypeMatch     ChessMessageType = "match"
-	ChessMessageTypeStart                      = "start"
-	ChessMessageTypeTweets                     = "tweets"
-	ChessMessageTypeMove                       = "move"
-	ChessMessageTypeSurrender                  = "surrender"
+	ChessMessageTypeMatch   ChessMessageType = "match"
+	ChessMessageTypeStart                    = "start"
+	ChessMessageTypeTweets                   = "tweets"
+	ChessMessageTypeMove                     = "move"
+	ChessMessageTypeForfeit                  = "forfeit"
 )
 
 func sendMessage[T any, D any](conn *websocket.Conn, msg OutgoingMessage[T, D]) {
@@ -198,7 +198,7 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			break
-		case ChessMessageTypeSurrender:
+		case ChessMessageTypeForfeit:
 			if chess.GetMatch() == nil {
 				msg := "Cannot forfeit while the match hasn't been started"
 				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{

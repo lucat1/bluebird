@@ -24,7 +24,7 @@ export interface State {
   timeout: NodeJS.Timer | null;
 
   game: string | null;
-  gameover: "w" | "b" | "p" | null;
+  gameover: "w" | "b" | "d" | "f" | null;
   tweets: Tweet[] | null;
   board: Chess | null;
   turn: Color | null;
@@ -40,6 +40,7 @@ export interface Actions {
   play(turnDuration: TimeDuration): void;
   algebraic(from: Square, to: Square, piece: Pieces): string | null;
   move(mv: string): void;
+  forfeit(): void;
 }
 
 const initialState: State = {
@@ -113,13 +114,13 @@ const store = create<State & Actions>((set, get) => ({
         let { timeout, _timeout } = get();
         if (timeout) clearTimeout(timeout);
 
-        const gameover = board.isDraw()
-          ? "p"
+        const gameover = data.forfeited ? 'f' : board.isDraw()
+          ? "d"
           : board.isCheckmate()
-          ? board.turn() == "w"
-            ? "b"
-            : "w"
-          : null;
+            ? board.turn() == "w"
+              ? "b"
+              : "w"
+            : null;
         if (!gameover)
           timeout = setTimeout(
             _timeout,
@@ -189,8 +190,9 @@ const store = create<State & Actions>((set, get) => ({
     return null;
   },
   move: (move) => {
-    const { connection, game, ...other } = get();
-    if (!game) return;
+    const { connecting, connection, game, ...other } = get();
+    if (connecting || !game || !connection) return;
+
     console.log("moving", move);
     connection?.send(
       JSON.stringify({
@@ -202,6 +204,13 @@ const store = create<State & Actions>((set, get) => ({
     tmp.move(move);
     set({ ...other, connection, game: tmp.fen(), loading: true });
   },
+  forfeit: () => {
+    const { connecting, connection } = get();
+    if (connecting || !connection) return null;
+
+    console.log("surrendering");
+    connection.send(JSON.stringify({ type: ChessMessageType.Forfeit, data: "" } as OutgoingMessage))
+  }
 }));
 
 export default store;
