@@ -45,6 +45,7 @@ const Chess: React.FC = () => {
     algebraic,
     gameover,
     move,
+    forfeit,
     end,
     turn,
     code,
@@ -111,9 +112,10 @@ const Chess: React.FC = () => {
       {gameover != null && (
         <>
           <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 py-4 px-6">
-            {gameover == "p"
-              ? "Pareggio"
-              : `Scacco matto, vince il ${gameover == "w" ? "Bianco" : "Nero"}`}
+            {gameover == "d"
+              ? "Pareggio" :
+              gameover == "f" ? "Il giocatore si è arreso, vince il Nero" :
+                `Scacco matto, vince il ${gameover == "w" ? "Bianco" : "Nero"}`}
             ! La partita e' finita.
             <ChessStart onAuthorize={() => setAuthorized(true)} />
           </div>
@@ -182,6 +184,13 @@ const Chess: React.FC = () => {
                   </div>
                 </div>
               </form>
+              {authorized && (
+                <button
+                  className="my-4 text-white mx-auto hover:bg-red-700 right-2.5 bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 disabled:hover:bg-slate-700 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                  onClick={(_) => forfeit()}
+                >
+                  Arrenditi
+                </button>)}
               <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
                 <div className="my-auto p-2">
                   <White />
@@ -217,7 +226,7 @@ const Chess: React.FC = () => {
               disabled={turn == myTurn}
               onClick={(_) => getTweets()}
             >
-              Fetch tweets
+              Aggiorna i tweets
             </button>
             <MoveList tweets={tweets || []} />
           </div>

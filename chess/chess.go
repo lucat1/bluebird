@@ -28,12 +28,13 @@ const (
 var match *Match = nil
 
 type Match struct {
-	Code     string
-	Duration time.Duration
-	EndsAt   time.Time
-	Game     *chess.Game
-	TweetID  string
-	Tweets   []request.Tweet
+	Code      string
+	Duration  time.Duration
+	EndsAt    time.Time
+	Game      *chess.Game
+	TweetID   string
+	Tweets    []request.Tweet
+	Forfeited bool
 
 	timeout chan bool
 	ticking atomic.Bool
@@ -181,6 +182,7 @@ func (m *Match) onTurnEnd() {
 
 func (m *Match) Forfeit() {
 	log.Printf("The master has forfeited")
+	m.Forfeited = true
 	m.Game.Resign(chess.White)
 	m.sendUpdate()
 	m.PostGame()
@@ -223,8 +225,11 @@ func (m *Match) PostGame() {
 			msg = "Il giocatore ha fatto la sua mossa, ora tocca al popolo!"
 		}
 	} else {
-		if m.Game.Position().Turn() == playerColor {
-			msg = "Il pubblico ha vinto! (per scacco o forfeit)"
+		if m.Game.Position().Turn() == playerColor || m.Forfeited {
+			msg = "Il pubblico ha vinto!"
+			if m.Forfeited {
+				msg += " (forfeit del giocatore)"
+			}
 		} else {
 			msg = "Il giocatore ha vinto!"
 		}
@@ -292,20 +297,22 @@ func (m *Match) ASCII() string {
 }
 
 type SerializedMatch struct {
-	Code     string          `json:"code"`
-	Duration time.Duration   `json:"duration"`
-	EndsAt   time.Time       `json:"ends_at"`
-	Game     string          `json:"game"`
-	Tweets   []request.Tweet `json:"tweets"`
+	Code      string          `json:"code"`
+	Duration  time.Duration   `json:"duration"`
+	EndsAt    time.Time       `json:"ends_at"`
+	Game      string          `json:"game"`
+	Tweets    []request.Tweet `json:"tweets"`
+	Forfeited bool            `json:"forfeited"`
 }
 
 func (m *Match) Serialized() SerializedMatch {
 	return SerializedMatch{
-		Code:     m.Code,
-		Duration: m.Duration,
-		EndsAt:   m.EndsAt,
-		Game:     m.Game.FEN(),
-		Tweets:   m.Tweets,
+		Code:      m.Code,
+		Duration:  m.Duration,
+		EndsAt:    m.EndsAt,
+		Game:      m.Game.FEN(),
+		Tweets:    m.Tweets,
+		Forfeited: m.Forfeited,
 	}
 }
 
@@ -359,7 +366,8 @@ func NewMatch(duration time.Duration) *Match {
 		Duration: duration,
 		EndsAt:   time.Now().Add(duration).UTC(),
 
-		Game: chess.NewGame(),
+		Game:      chess.NewGame(),
+		Forfeited: false,
 	}
 
 	m.setup()

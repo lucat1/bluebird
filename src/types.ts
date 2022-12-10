@@ -70,6 +70,7 @@ export enum ChessMessageType {
   Start = "start",
   Tweets = "tweets",
   Move = "move",
+  Forfeit = "forfeit",
 }
 
 export interface IncomingMessage<T> {
@@ -88,4 +89,5 @@ export interface Match {
   ends_at: string;
   game: string;
   tweets: Tweet[] | null;
+  forfeited: boolean;
 }
