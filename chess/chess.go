@@ -147,15 +147,10 @@ func (m *Match) randomMove() *string {
 }
 
 func (m *Match) onTurnEnd() {
-	var move string
+	var move *string
 	if m.Game.Position().Turn() == playerColor {
-		mv := m.randomMove()
-		if mv == nil {
-			log.Println("Game lost by crowd")
-			m.close()
-			return
-		}
-		move = *mv
+		// Play a random move if the palyer didn't pick in time
+		move = m.randomMove()
 	} else {
 		moves, err := m.getMoves()
 		if err != nil {
@@ -166,22 +161,21 @@ func (m *Match) onTurnEnd() {
 			var mostValued uint
 			for mv, val := range moves {
 				if val > mostValued {
-					move = mv
+					move = &mv
 					mostValued = val
 				}
 			}
 		} else {
-			mv := m.randomMove()
-			if mv == nil {
-				log.Println("Game lost by crowd")
-				m.close()
-				return
-			}
-			move = *mv
+			move = m.randomMove()
 		}
 	}
-	if err := m.Move(move); err != nil {
-		log.Printf("WARN: move %s failed:  %v", move, err)
+	if move != nil {
+		if err := m.Move(*move); err != nil {
+			log.Printf("WARN: move %s failed:  %v", *move, err)
+		}
+	} else {
+		// should never be reached
+		m.close()
 	}
 }
 
@@ -196,9 +190,11 @@ func (m *Match) Move(move string) error {
 		m.Tweets = []request.Tweet{}
 	}
 	m.sendUpdate()
+	m.PostGame()
 	if m.Game.Outcome() == chess.NoOutcome {
-		m.PostGame()
 		m.delay()
+	} else {
+		m.close()
 	}
 	return nil
 }
@@ -212,10 +208,19 @@ func (m *Match) PlayerMove(move string) error {
 
 func (m *Match) PostGame() {
 	var msg string
-	if m.Game.Position().Turn() == playerColor {
-		msg = "Il pubblico ha scelto!"
+	status := m.Game.Position().Status()
+	if status == chess.NoMethod {
+		if m.Game.Position().Turn() == playerColor {
+			msg = "Il pubblico ha scelto!"
+		} else {
+			msg = "Il giocatore ha fatto la sua mossa, ora tocca al popolo!"
+		}
 	} else {
-		msg = "Il giocatore ha fatto la sua mossa, ora tocca al popolo!"
+		if m.Game.Position().Turn() == playerColor {
+			msg = "Il pubblico ha vinto! (per scacco o forfeit)"
+		} else {
+			msg = "Il giocatore ha vinto!"
+		}
 	}
 	image, err := m.Image()
 	if err != nil {
@@ -333,6 +338,12 @@ func (m *Match) setup() {
 func (m *Match) close() {
 	m.quit <- false
 	m.updates <- false
+
+	if m.Game.Position().Turn() == playerColor {
+		log.Println("Game closed. The mater lost")
+	} else {
+		log.Println("Game closed. The crowd lost")
+	}
 }
 
 func NewMatch(duration time.Duration) *Match {
