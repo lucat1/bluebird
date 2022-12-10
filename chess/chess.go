@@ -179,6 +179,14 @@ func (m *Match) onTurnEnd() {
 	}
 }
 
+func (m *Match) Forfeit() {
+	log.Printf("The master has forfeited")
+	m.Game.Resign(chess.White)
+	m.sendUpdate()
+	m.PostGame()
+	m.close()
+}
+
 func (m *Match) Move(move string) error {
 	if err := m.Game.MoveStr(move); err != nil {
 		return err
@@ -208,8 +216,7 @@ func (m *Match) PlayerMove(move string) error {
 
 func (m *Match) PostGame() {
 	var msg string
-	status := m.Game.Position().Status()
-	if status == chess.NoMethod {
+	if m.Game.Outcome() == chess.NoOutcome {
 		if m.Game.Position().Turn() == playerColor {
 			msg = "Il pubblico ha scelto!"
 		} else {

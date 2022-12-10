@@ -37,10 +37,11 @@ type IncomingMessage[T any, D any] struct {
 type ChessMessageType string
 
 const (
-	ChessMessageTypeMatch  ChessMessageType = "match"
-	ChessMessageTypeStart                   = "start"
-	ChessMessageTypeTweets                  = "tweets"
-	ChessMessageTypeMove                    = "move"
+	ChessMessageTypeMatch     ChessMessageType = "match"
+	ChessMessageTypeStart                      = "start"
+	ChessMessageTypeTweets                     = "tweets"
+	ChessMessageTypeMove                       = "move"
+	ChessMessageTypeSurrender                  = "surrender"
 )
 
 func sendMessage[T any, D any](conn *websocket.Conn, msg OutgoingMessage[T, D]) {
@@ -180,7 +181,7 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 			break
 
 		case ChessMessageTypeTweets:
-			if chess.GetMatch() == nil {
+			if chess.GetMatch() == nil || chess.GetMatch().TweetID == "" {
 				msg := "Cannot get tweets hasn't been started"
 				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
 					Message: msg,
@@ -197,6 +198,16 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			break
+		case ChessMessageTypeSurrender:
+			if chess.GetMatch() == nil {
+				msg := "Cannot forfeit while the match hasn't been started"
+				sendMessage(conn, OutgoingMessage[ChessMessageType, int]{
+					Message: msg,
+					Error:   errors.New(msg),
+				})
+				break
+			}
+			chess.GetMatch().Forfeit()
 		}
 	}
 }
