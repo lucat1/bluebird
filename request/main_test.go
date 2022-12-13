@@ -15,15 +15,16 @@ var (
 	byUserClient         *RequestClient
 	rawSentimentResponse sentimentResponse
 	byKeywordGeoResponse tweetResponse
-	byConvIDClient       *RequestClient
+	repliesClient        *RequestClient
 )
 
 func TestMain(m *testing.M) {
 	var err error
-	byConvIDServer := test.CreateMultiServer(map[string][]byte{
+	repliesServer := test.CreateMultiServer(map[string][]byte{
 		"/tweets/search/recent": test.ReadFile("../mock/by_convid.json"),
+		"/tweets":               test.ReadFile("../mock/by_tweetid.json"),
 	})
-	defer byConvIDServer.Close()
+	defer repliesServer.Close()
 	byKeywordServer := test.CreateMultiServer(map[string][]byte{
 		"/tweets/search/recent": test.ReadFile("../mock/by_keyword.json"),
 	})
@@ -38,7 +39,7 @@ func TestMain(m *testing.M) {
 	})
 	defer sentimentServer.Close()
 
-	byConvIDClient, err = NewClient(byConvIDServer.URL, "", "")
+	repliesClient, err = NewClient(repliesServer.URL, "", "")
 	if err != nil {
 		panic(err)
 	}
