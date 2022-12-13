@@ -26,8 +26,8 @@ const Fantacitorio: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto xl:overflow-hidden lg:flex-1">
-                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
+                <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto lg:flex-1">
+                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2">
                     <div className="flex items-center justify-center">
                       Best climbers ecc...
                     </div>
@@ -35,7 +35,7 @@ const Fantacitorio: React.FC = () => {
                       Classifica in base a tempo
                     </div>
                   </div>
-                  <div className="p-2 flex items-center flex-col flex-initial xl:h-1/2 lg:overflow-none aspect-video">
+                  <div className="p-2 flex items-center flex-col flex-initial xl:h-1/2  aspect-video">
                     <Slideshow />
                   </div>
                 </div>
