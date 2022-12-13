@@ -3,7 +3,7 @@ module git.hjkl.gq/team14/team14
 go 1.18
 
 require (
-	github.com/dghubble/oauth1 v0.7.2
+	git.hjkl.gq/luca.tagliavini5/oauth1 v0.7.8
 	github.com/gorilla/websocket v1.5.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/joho/godotenv v1.4.0
@@ -17,7 +17,6 @@ require (
 )
 
 require (
-	git.hjkl.gq/luca.tagliavini5/oauth1 v0.7.8 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
