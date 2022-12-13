@@ -103,7 +103,6 @@ const store = create<State & Actions>((set, get) => ({
       const ghigliottina = await fetch<Ghigliottina>(
         searchURL("ghigliottina", query)
       );
-      console.log(ghigliottina.word);
       const trueTweets = gTweets.map((t) => {
         if (t.text.toUpperCase().includes(ghigliottina.word))
           return { ...t, rightWord: true };

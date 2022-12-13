@@ -2,7 +2,6 @@ package request
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strings"
 	"time"
@@ -42,8 +41,7 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 		t := tweets[i]
 		if strings.Contains(t.Text, sub) {
 			match := r.FindStringSubmatch(t.Text)
-			fmt.Println(match)
-			if len(match) > 0 && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt) {
+			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt)) {
 				found = true
 				tweet = t
 			}

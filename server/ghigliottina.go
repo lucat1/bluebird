@@ -16,7 +16,7 @@ func getGhigliottina(w http.ResponseWriter, r *http.Request) {
 	}
 	startTime, err := time.Parse(time.RFC3339, rawStartTime)
 	if err == nil {
-		startTime = startTime.Add(time.Hour * time.Duration(-24))
+		startTime = time.Now().Add(time.Hour * time.Duration(-24))
 	}
 	res, err := request.Ghigliottina(&startTime, &endTime)
 	if err != nil {

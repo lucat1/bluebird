@@ -9,17 +9,11 @@ import (
 	"git.hjkl.gq/team14/team14/cache"
 	"git.hjkl.gq/team14/team14/request"
 	"git.hjkl.gq/team14/team14/server"
-	"github.com/jasonlvhit/gocron"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm/logger"
 )
 
 const ADDR = ":8080"
-
-func scheduler() {
-	<-gocron.Start()
-	log.Fatal("WARN The scheduler exited")
-}
 
 func main() {
 	if godotenv.Load() != nil {
@@ -53,7 +47,17 @@ func main() {
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
 
-	go scheduler()
+	go func() {
+		politicians, err := request.PoliticiansScore(2000, "2022-09-29T11:02:59.263Z", time.Now().Format(time.RFC3339))
+		if err == nil {
+			cache.AddPointsPoliticians(politicians)
+		}
+		teams, err := request.Teams()
+		if err == nil {
+			cache.InsertTeams(teams)
+		}
+	}()
+
 	if err = server.RunServer(ADDR); err != nil {
 		log.Fatalf("Could not open HTTP server: %v", err)
 	}

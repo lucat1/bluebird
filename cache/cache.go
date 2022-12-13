@@ -3,6 +3,7 @@ package cache
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"git.hjkl.gq/team14/team14/request"
@@ -37,7 +38,7 @@ func Open(path string, level logger.LogLevel) (err error) {
 	}); err != nil {
 		return
 	}
-	return db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{})
+	return db.AutoMigrate(&request.Tweet{}, &request.User{}, &request.Geo{}, &request.Politician{}, &request.Team{})
 }
 
 func Close() error {
@@ -56,6 +57,9 @@ func InsertTweets(tweets []request.Tweet) error {
 
 func TweetsAll() (res []request.Tweet, _ error) {
 	return res, db.Preload("User").Preload("Geo").Find(&res).Error
+}
+func PoliticiansAll() (res []request.Politician, _ error) {
+	return res, db.Find(&res).Error
 }
 
 func TweetsCount() (n int64, _ error) {
@@ -84,5 +88,71 @@ func TweetsByUser(username string, n uint, startTime, endTime *time.Time) (res [
 	} else {
 		err = query.Find(&res).Error
 	}
+	return res, err
+}
+
+func InsertPoliticians(politicians []request.Politician) (err error) {
+	return db.Clauses(clause.OnConflict{
+		DoNothing: true,
+	}).Create(&politicians).Error
+}
+
+func PoliticianByNameSurname(name string, surname string) (res request.Politician, err error) {
+	err = db.First(&res, request.Politician{Name: strings.ToUpper(name), Surname: strings.ToUpper(surname)}).Error
+	return res, err
+}
+func PoliticiansScoreboard() (res []request.Politician, err error) {
+	err = db.Model(&request.Politician{}).Order("points desc").Find(&res).Error
+	return res, err
+}
+func PoliticianBestSingleScore() (res request.Politician, err error) {
+	err = db.Model(&request.Politician{}).Order("best_single_score desc").First(&res).Error
+	return res, err
+}
+func PoliticianBestAverage() (res request.Politician, err error) {
+	err = db.Model(&request.Politician{}).Order("average desc").First(&res).Error
+	return res, err
+}
+
+func AddPointsPoliticianByNameSurname(p request.Politician) (err error) {
+	politician, err := PoliticianByNameSurname(p.Name, p.Surname)
+	if err != nil {
+		err = InsertPoliticians([]request.Politician{p})
+		if err != nil {
+			return
+		}
+		politician, _ = PoliticianByNameSurname(p.Name, p.Surname)
+	} else {
+		// update just in case it's new
+		if politician.LastUpdated.Before(p.LastUpdated) {
+			politician.Points += p.Points
+			politician.LastUpdated = p.LastUpdated
+			return db.Model(&request.Politician{}).Where(request.Politician{ID: politician.ID}).Update("points", politician.Points).Update("last_updated", politician.LastUpdated).Error
+		}
+	}
+	return
+}
+
+func AddPointsPoliticians(politicians []request.Politician) (err error) {
+	for _, p := range politicians {
+		if err = AddPointsPoliticianByNameSurname(p); err != nil {
+			return
+		}
+	}
+	return
+}
+
+func InsertTeams(teams []request.Team) (err error) {
+	return db.Clauses(clause.OnConflict{
+		DoNothing: true,
+	}).Create(&teams).Error
+}
+
+func TeamsAll() (res []request.Team, _ error) {
+	return res, db.Find(&res).Error
+}
+
+func SearchTeamByUsername(username string) (res request.Team, err error) {
+	err = db.First(&res, request.Team{Username: username}).Error
 	return res, err
 }

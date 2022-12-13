@@ -1,9 +1,13 @@
 package request
 
 import (
+	"math"
 	"net/url"
+	"strconv"
 	"time"
 )
+
+const MaxMaxResults = 100
 
 type RequestSortOrder string
 
@@ -20,6 +24,7 @@ const (
 	RequestFieldCreatedAt                    = "created_at"
 	RequestFieldDescription                  = "description"
 	RequestFieldEntities                     = "entities"
+	RequestFieldAttachments                  = "attachments"
 	RequestFieldID                           = "id"
 	RequestFieldLocation                     = "location"
 	RequestFieldName                         = "name"
@@ -38,8 +43,9 @@ const (
 type RequestExpansions string
 
 const (
-	RequestExpansionAuthorID   RequestExpansions = "author_id"
-	RequestExpansionGeoPlaceID                   = "geo.place_id"
+	RequestExpansionAuthorID             RequestExpansions = "author_id"
+	RequestExpansionGeoPlaceID                             = "geo.place_id"
+	RequestExpansionAttachmentsMediaKeys                   = "attachments.media_keys"
 )
 
 type RequestQuery string
@@ -48,8 +54,10 @@ const (
 	RequestQueryQuery           RequestQuery = "query"
 	RequestQueryTweetIDs                     = "ids"
 	RequestQuerySortOrder                    = "sort_order"
+	RequestQueryMaxResults                   = "max_results"
 	RequestQueryTweetFields                  = "tweet.fields"
 	RequestQueryUserFields                   = "user.fields"
+	RequestQueryMediaFields                  = "media.fields"
 	RequestQueryPlaceFields                  = "place.fields"
 	RequestQueryStartTime                    = "start_time"
 	RequestQueryEndTime                      = "end_time"
@@ -69,8 +77,10 @@ type RequestURL struct {
 	query           string
 	ids             []string
 	sortOrder       RequestSortOrder
+	maxResults      uint
 	tweetFields     []RequestField
 	userFields      []RequestField
+	mediaFields     []RequestField
 	placeFields     []RequestField
 	expansions      []RequestExpansions
 	startTime       *time.Time
@@ -84,6 +94,7 @@ func NewRequest(base string) RequestURL {
 		query:           "",
 		ids:             []string{},
 		sortOrder:       "",
+		maxResults:      0,
 		tweetFields:     []RequestField{},
 		userFields:      []RequestField{},
 		expansions:      []RequestExpansions{},
@@ -113,6 +124,11 @@ func (req RequestURL) SortOrder(sort RequestSortOrder) RequestURL {
 	return req
 }
 
+func (req RequestURL) MaxResults(n uint) RequestURL {
+	req.maxResults = uint(math.Min(float64(n), MaxMaxResults))
+	return req
+}
+
 func (req RequestURL) AddTweetFields(fields ...RequestField) RequestURL {
 	req.tweetFields = append(req.tweetFields, fields...)
 	return req
@@ -125,6 +141,11 @@ func (req RequestURL) AddPlaceFields(fields ...RequestField) RequestURL {
 
 func (req RequestURL) AddUserFields(fields ...RequestField) RequestURL {
 	req.userFields = append(req.userFields, fields...)
+	return req
+}
+
+func (req RequestURL) AddMediaFields(fields ...RequestField) RequestURL {
+	req.mediaFields = append(req.mediaFields, fields...)
 	return req
 }
 
@@ -169,8 +190,12 @@ func buildURL(req RequestURL) (parsed *url.URL, err error) {
 	queryAdd(query, string(RequestQueryQuery), req.query)
 	queryAdd(query, string(RequestQueryTweetIDs), join(req.ids, ","))
 	queryAdd(query, string(RequestQuerySortOrder), string(req.sortOrder))
+	if req.maxResults > 0 {
+		queryAdd(query, string(RequestQueryMaxResults), strconv.Itoa(int(req.maxResults)))
+	}
 	queryAdd(query, string(RequestQueryTweetFields), join(req.tweetFields, ","))
 	queryAdd(query, string(RequestQueryUserFields), join(req.userFields, ","))
+	queryAdd(query, string(RequestQueryMediaFields), join(req.mediaFields, ","))
 	queryAdd(query, string(RequestQueryPlaceFields), join(req.placeFields, ","))
 	queryAdd(query, string(RequestQueryExpansions), join(req.expansions, ","))
 	if req.startTime != nil {

@@ -7,6 +7,7 @@ import (
 func TweetsByConversationID(conversationID string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		ConversationID(RequestQueryConversationID(conversationID)).
+		MaxResults(n).
 		SortOrder(RequestSortOrderRecency).
 		AddStartTime(startTime).
 		AddEndTime(endTime).

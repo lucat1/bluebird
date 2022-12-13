@@ -72,4 +72,5 @@ const Ghigliottina: React.FC = () => {
     </div>
   );
 };
+
 export default Ghigliottina;
