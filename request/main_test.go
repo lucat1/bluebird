@@ -16,6 +16,7 @@ var (
 	rawSentimentResponse sentimentResponse
 	byKeywordGeoResponse tweetResponse
 	byConvIDClient       *RequestClient
+	fantacitorioClient   *RequestClient
 )
 
 func TestMain(m *testing.M) {
