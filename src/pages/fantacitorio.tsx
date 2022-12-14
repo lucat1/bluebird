@@ -6,13 +6,16 @@ import Loading from "../components/loading";
 import Search from "../components/f-search";
 import TweetList from "../components/f-tweet-list";
 import Slideshow from "../components/f-slideshow";
+import { map } from "leaflet";
 
 
 const Fantacitorio: React.FC = () => {
-  const { query, loading, fetch } = useStore(s => ( {
+  const { query, loading, fetch, scoreboard } = useStore(s => ( {
     fetch: s.fetch,
     query: s.query,
-    loading: s.loading,}), shallow)
+    loading: s.loading,
+    scoreboard: s.scoreboard
+  }), shallow)
 
   React.useEffect(() => {
     fetch(query);
@@ -26,13 +29,25 @@ const Fantacitorio: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto lg:flex-1">
-                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2">
-                    <div className="flex items-center justify-center">
-                      Best climbers ecc...
+                <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col xl:overflow-auto lg:flex-1 ">
+                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2 box-border ">
+                    <div className="flex items-center justify-center m-2">
+                      <div className="flex flex-col">
+                        <p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST AVERAGE</span>: {scoreboard.best_average.name} {scoreboard.best_average.surname}</p>
+                        {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST CLIMBER</span>: {scoreboard.best_climber.name} {scoreboard.best_climber.surname}</p> */}
+                        {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST SINGLE SCORE</span>: {scoreboard.best_sigle_score.name} {scoreboard.best_sigle_score.name}</p>*/}
+                      </div>
+                    
                     </div>
-                    <div className="flex items-center justify-center aspect-video lg:p-2 overflow-auto">
-                      Classifica in base a tempo
+                    <div className="box-border flex items-center justify-evenly aspect-video lg:p-2 ">
+                      <div className="flex flex-col">
+                      {scoreboard.politicians.slice(0, 32).map((p, index) => (<p key={p.id}>{index+1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
+                      )}
+                      </div>
+                      <div className="flex flex-col">
+                      {scoreboard.politicians.slice(32, 64).map((p, index) => (<p key={p.id}> {index+33}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
+                      )}
+                      </div>
                     </div>
                   </div>
                   <div className="p-2 flex items-center flex-col flex-initial xl:h-1/2  aspect-video">
