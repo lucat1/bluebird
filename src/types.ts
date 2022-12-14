@@ -91,3 +91,22 @@ export interface Match {
   tweets: Tweet[] | null;
   forfeited: boolean;
 }
+
+export interface Politician {
+  id: number;
+  name: string;
+  surname: string;
+  points: number;
+  //- : number; NPosts
+  average: number;
+  best_single_score: number;
+  //- : number; LastUpdated
+}
+
+export interface PoliticiansScoreboard {
+	politicians: Politician[];
+  best_climber: Politician;
+  best_average: Politician;
+  best_sigle_score: Politician;
+}
+
