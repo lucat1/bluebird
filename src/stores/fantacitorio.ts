@@ -24,6 +24,7 @@ export interface State {
   loading: boolean;
   tweets: Tweet[];
   scoreboard: PoliticiansScoreboard;
+  weekly: Politician[];
   teams: Team[];
 }
 
@@ -64,7 +65,7 @@ const getInitialState = (): State => ({
     best_single_score: emptyPol,
   },
   teams:[],
- 
+  weekly: []
 });
 
 const searchURL = (url: string, { type, query, timeRange }: Query): string => {
@@ -93,8 +94,12 @@ const store = create<State & Actions>((set, get) => ({
 
     const scoreboard = await fetch<PoliticiansScoreboard>("fantacitorio/scoreboards")
     const {teams} = await fetch<{teams:Team[]}>("fantacitorio/teams")
-    console.log(teams)
-    set({ ...get(), loading: false, tweets, scoreboard, teams});
+    const end_date =  new Date()
+    const start_time= new Date(end_date)
+    start_time.setDate(start_time.getDate() - 7)
+    const weekly = await fetch<Politician[]>(`fantacitorio/points?startTime=${start_time.toISOString()}&endTime=${end_date.toISOString()}`)
+    console.log(weekly)
+    set({ ...get(), loading: false, tweets, scoreboard, teams, weekly});
   },
   
 }));
