@@ -1,6 +1,7 @@
 package chess
 
 import (
+	"log"
 	"math/rand"
 	"sync/atomic"
 	"time"
@@ -25,18 +26,33 @@ type Match struct {
 	Tweets    []request.Tweet
 	Forfeited bool
 
-	timeout chan bool
+	// player move cancel
+	cancel  chan bool
 	ticking atomic.Bool
 
+	// updates chanel
 	updates chan bool
-	quit    chan bool
+
+	// periodic
+	quit chan bool
 }
 
-func (m *Match) setup() {
-	m.updates = make(chan bool)
-	m.quit = make(chan bool)
+func (m *Match) start() {
 	m.delay(m.onTurnEnd)
 	m.periodic()
+}
+
+func (m *Match) end() {
+	select {
+	case m.quit <- false:
+	default:
+	}
+	select {
+	case m.cancel <- false:
+	default:
+	}
+
+	log.Println("Chess game ended")
 }
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -57,9 +73,13 @@ func NewMatch(duration time.Duration) *Match {
 
 		Game:      chess.NewGame(),
 		Forfeited: false,
+
+		cancel:  make(chan bool),
+		updates: make(chan bool),
+		quit:    make(chan bool),
 	}
 
-	m.setup()
+	m.start()
 	return &m
 }
 
