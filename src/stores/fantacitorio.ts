@@ -5,7 +5,8 @@ import { now } from "@internationalized/date";
 
 import fetch from "../fetch";
 import { convert } from "./store";
-import { Search, Tweet, Politician, PoliticiansScoreboard, Team } from "../types";
+import { Search, Tweet, Politician, PoliticiansScoreboard, Team, Points } from "../types";
+import { Point } from "leaflet";
 
 export enum QueryType {
   Keyword = "keyword",
@@ -24,7 +25,7 @@ export interface State {
   loading: boolean;
   tweets: Tweet[];
   scoreboard: PoliticiansScoreboard;
-  weekly: Politician[];
+  weekly: Points;
   teams: Team[];
 }
 
@@ -65,7 +66,9 @@ const getInitialState = (): State => ({
     best_single_score: emptyPol,
   },
   teams:[],
-  weekly: []
+  weekly: {
+    politicians: [],
+  }
 });
 
 const searchURL = (url: string, { type, query, timeRange }: Query): string => {
@@ -97,8 +100,7 @@ const store = create<State & Actions>((set, get) => ({
     const end_date =  new Date()
     const start_time= new Date(end_date)
     start_time.setDate(start_time.getDate() - 7)
-    const weekly = await fetch<Politician[]>(`fantacitorio/points?startTime=${start_time.toISOString()}&endTime=${end_date.toISOString()}`)
-    console.log(weekly)
+    const weekly = await fetch<Points>(`fantacitorio/points?startTime=${start_time.toISOString()}&endTime=${end_date.toISOString()}`)
     set({ ...get(), loading: false, tweets, scoreboard, teams, weekly});
   },
   
