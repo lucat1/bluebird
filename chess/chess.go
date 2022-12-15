@@ -10,7 +10,6 @@ import (
 	"math"
 	"math/rand"
 	"strings"
-	"sync/atomic"
 	"time"
 
 	"git.hjkl.gq/team14/team14/request"
@@ -19,31 +18,9 @@ import (
 	"github.com/rogpeppe/misc/svg"
 )
 
-const (
-	playerColor       = chess.White
-	stateFile         = "chess.json"
-	ReplyPollInterval = 15 // seconds
-)
+type delayFunc func()
 
-var match *Match = nil
-
-type Match struct {
-	Code      string
-	Duration  time.Duration
-	EndsAt    time.Time
-	Game      *chess.Game
-	TweetID   string
-	Tweets    []request.Tweet
-	Forfeited bool
-
-	timeout chan bool
-	ticking atomic.Bool
-
-	updates chan bool
-	quit    chan bool
-}
-
-func (m *Match) delay() {
+func (m *Match) delay(fn delayFunc) {
 	if m.ticking.Load() {
 		m.timeout <- true
 	}
@@ -57,7 +34,7 @@ func (m *Match) delay() {
 
 		case <-time.After(m.EndsAt.Sub(time.Now())):
 			m.ticking.Store(false)
-			m.onTurnEnd()
+			fn()
 		}
 	}()
 }
@@ -202,7 +179,7 @@ func (m *Match) Move(move string) error {
 	m.sendUpdate()
 	m.PostGame()
 	if m.Game.Outcome() == chess.NoOutcome {
-		m.delay()
+		m.delay(m.onTurnEnd)
 	} else {
 		m.close()
 	}
@@ -324,31 +301,6 @@ func (m *Match) Update() bool {
 	return <-m.updates
 }
 
-func SetMatch(m *Match) {
-	match = m
-}
-
-func GetMatch() *Match {
-	return match
-}
-
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-func code(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
-}
-
-func (m *Match) setup() {
-	m.updates = make(chan bool)
-	m.quit = make(chan bool)
-	m.delay()
-	m.periodic()
-}
-
 func (m *Match) close() {
 	m.quit <- false
 	m.updates <- false
@@ -358,18 +310,4 @@ func (m *Match) close() {
 	} else {
 		log.Println("Game closed. The crowd lost")
 	}
-}
-
-func NewMatch(duration time.Duration) *Match {
-	m := Match{
-		Code:     code(6),
-		Duration: duration,
-		EndsAt:   time.Now().Add(duration).UTC(),
-
-		Game:      chess.NewGame(),
-		Forfeited: false,
-	}
-
-	m.setup()
-	return &m
 }
