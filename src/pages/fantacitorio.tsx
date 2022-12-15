@@ -6,15 +6,15 @@ import Loading from "../components/loading";
 import Search from "../components/f-search";
 import TweetList from "../components/f-tweet-list";
 import Slideshow from "../components/f-slideshow";
-import { map } from "leaflet";
 
 
 const Fantacitorio: React.FC = () => {
-  const { query, loading, fetch, scoreboard } = useStore(s => ( {
+  const { query, loading, fetch, scoreboard, teams } = useStore(s => ( {
     fetch: s.fetch,
     query: s.query,
     loading: s.loading,
-    scoreboard: s.scoreboard
+    scoreboard: s.scoreboard,
+    teams: s.teams
   }), shallow)
 
   React.useEffect(() => {
@@ -30,12 +30,12 @@ const Fantacitorio: React.FC = () => {
             ) : (
               <>
                 <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col xl:overflow-auto lg:flex-1 ">
-                  <div className="lg:p-2 flex flex-col flex-initial xl:h-1/2 box-border ">
+                  <div className="lg:p-2 flex flex-col flex-initial box-border ">
                     <div className="flex items-center justify-center m-2">
                       <div className="flex flex-col">
                         <p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST AVERAGE</span>: {scoreboard.best_average.name} {scoreboard.best_average.surname}</p>
                         {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST CLIMBER</span>: {scoreboard.best_climber.name} {scoreboard.best_climber.surname}</p> */}
-                        {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST SINGLE SCORE</span>: {scoreboard.best_sigle_score.name} {scoreboard.best_sigle_score.name}</p>*/}
+                        <p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST SINGLE SCORE</span>: {scoreboard.best_single_score.name} {scoreboard.best_single_score.name}</p>
                       </div>
                     
                     </div>
@@ -50,8 +50,8 @@ const Fantacitorio: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-2 flex items-center flex-col flex-initial xl:h-1/2  aspect-video">
-                    <Slideshow />
+                  <div className="p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none  aspect-video">
+                    <Slideshow {...{teams}} />
                   </div>
                 </div>
                 <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">

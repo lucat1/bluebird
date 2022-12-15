@@ -107,6 +107,10 @@ export interface PoliticiansScoreboard {
 	politicians: Politician[];
   best_climber: Politician;
   best_average: Politician;
-  best_sigle_score: Politician;
+  best_single_score: Politician;
 }
 
+export interface Team {
+  username: string;
+  picture_url: string;
+}
