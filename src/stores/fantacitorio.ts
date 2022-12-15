@@ -5,12 +5,13 @@ import { now } from "@internationalized/date";
 
 import fetch from "../fetch";
 import { convert } from "./store";
-import { Search, Tweet, Politician, PoliticiansScoreboard } from "../types";
+import { Search, Tweet, Politician, PoliticiansScoreboard, Team } from "../types";
 
 export enum QueryType {
   Keyword = "keyword",
   User = "user",
 }
+
 
 export interface Query {
   type: QueryType;
@@ -23,7 +24,7 @@ export interface State {
   loading: boolean;
   tweets: Tweet[];
   scoreboard: PoliticiansScoreboard;
-
+  teams: Team[];
 }
 
 export interface Actions {
@@ -60,8 +61,9 @@ const getInitialState = (): State => ({
     politicians: [],
     best_climber: emptyPol,
     best_average: emptyPol,
-    best_sigle_score: emptyPol,
-  }
+    best_single_score: emptyPol,
+  },
+  teams:[],
  
 });
 
@@ -90,8 +92,9 @@ const store = create<State & Actions>((set, get) => ({
     const tweets = req.tweets.map(convert);
 
     const scoreboard = await fetch<PoliticiansScoreboard>("fantacitorio/scoreboards")
-    console.log(scoreboard)
-    set({ ...get(), loading: false, tweets, scoreboard});
+    const {teams} = await fetch<{teams:Team[]}>("fantacitorio/teams")
+    console.log(teams)
+    set({ ...get(), loading: false, tweets, scoreboard, teams});
   },
   
 }));
