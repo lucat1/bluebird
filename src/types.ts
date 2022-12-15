@@ -114,3 +114,7 @@ export interface Team {
   username: string;
   picture_url: string;
 }
+
+export interface Points{
+  politicians: Politician[]
+}
