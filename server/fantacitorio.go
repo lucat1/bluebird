@@ -38,11 +38,7 @@ func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	amount, err := strconv.Atoi(r.URL.Query().Get("amount"))
 	if err != nil {
-		sendError(w, http.StatusBadRequest, APIError{
-			Message: "Invalid amount query",
-			Error:   err,
-		})
-		return
+		amount = 500
 	}
 
 	rawStartTime := r.URL.Query().Get("startTime")
@@ -65,6 +61,13 @@ func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	politiciansScore, err = request.PoliticiansScore(uint(amount), startTime, endTime)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: "Error while fetching politicians' scores",
+			Error:   err,
+		})
+		return
+	}
 	// adds to db
 	cache.AddPointsPoliticians(politiciansScore)
 	sendJSON(w, http.StatusOK, PoliticiansScoreResponse{
