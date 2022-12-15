@@ -9,12 +9,13 @@ import Slideshow from "../components/f-slideshow";
 
 
 const Fantacitorio: React.FC = () => {
-  const { query, loading, fetch, scoreboard, teams } = useStore(s => ( {
+  const { query, loading, fetch, scoreboard, teams, weekly } = useStore(s => ( {
     fetch: s.fetch,
     query: s.query,
     loading: s.loading,
     scoreboard: s.scoreboard,
-    teams: s.teams
+    teams: s.teams,
+    weekly: s.weekly
   }), shallow)
 
   React.useEffect(() => {
@@ -33,6 +34,8 @@ const Fantacitorio: React.FC = () => {
                   <div className="lg:p-2 flex flex-col flex-initial box-border ">
                     <div className="flex items-center justify-center m-2">
                       <div className="flex flex-col">
+                      <span className="text-xl text-orange-500 m-1 text-center font-bold">Clasifica Globale</span>
+
                         <p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST AVERAGE</span>: {scoreboard.best_average.name} {scoreboard.best_average.surname}</p>
                         {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST CLIMBER</span>: {scoreboard.best_climber.name} {scoreboard.best_climber.surname}</p> */}
                         <p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST SINGLE SCORE</span>: {scoreboard.best_single_score.name} {scoreboard.best_single_score.name}</p>
@@ -53,6 +56,14 @@ const Fantacitorio: React.FC = () => {
                   <div className="p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none  aspect-video">
                     <Slideshow {...{teams}} />
                   </div>
+                  
+                  <div className="box-border flex flex-col items-center justify-evenly aspect-video lg:p-2 m-3">
+                    <span className="text-xl text-orange-500 m-1 font-bold">Clasifica settimanale</span>
+                    {weekly.politicians.map((p, index) => (<p key={p.id}>{index+1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>))}
+                    
+                    </div>
+
+
                 </div>
                 <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">
                   <TweetList />
