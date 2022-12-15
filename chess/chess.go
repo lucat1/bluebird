@@ -22,14 +22,14 @@ type delayFunc func()
 
 func (m *Match) delay(fn delayFunc) {
 	if m.ticking.Load() {
-		m.timeout <- true
+		m.cancel <- true
 	}
-	m.timeout = make(chan bool)
+	m.cancel = make(chan bool)
 
 	m.ticking.Store(true)
 	go func() {
 		select {
-		case <-m.timeout:
+		case <-m.cancel:
 			m.ticking.Store(false)
 
 		case <-time.After(m.EndsAt.Sub(time.Now())):
@@ -153,7 +153,7 @@ func (m *Match) onTurnEnd() {
 		}
 	} else {
 		// should never be reached
-		m.close()
+		m.end()
 	}
 }
 
@@ -163,7 +163,7 @@ func (m *Match) Forfeit() {
 	m.Game.Resign(chess.White)
 	m.sendUpdate()
 	m.PostGame()
-	m.close()
+	m.end()
 }
 
 func (m *Match) Move(move string) error {
@@ -181,7 +181,7 @@ func (m *Match) Move(move string) error {
 	if m.Game.Outcome() == chess.NoOutcome {
 		m.delay(m.onTurnEnd)
 	} else {
-		m.close()
+		m.end()
 	}
 	return nil
 }
@@ -299,15 +299,4 @@ func (m *Match) sendUpdate() {
 
 func (m *Match) Update() bool {
 	return <-m.updates
-}
-
-func (m *Match) close() {
-	m.quit <- false
-	m.updates <- false
-
-	if m.Game.Position().Turn() == playerColor {
-		log.Println("Game closed. The mater lost")
-	} else {
-		log.Println("Game closed. The crowd lost")
-	}
 }
