@@ -33,23 +33,23 @@ type TeamsResponse struct {
 }
 
 func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("query")
 	politiciansScore := []request.Politician{}
-	if query != "" {
-		var err error
-		amount, err := strconv.Atoi(r.URL.Query().Get("amount"))
-		if err != nil {
-			sendError(w, http.StatusBadRequest, APIError{
-				Message: "Invalid amount query",
-				Error:   err,
-			})
-			return
-		}
+	var err error
+	amount, err := strconv.Atoi(r.URL.Query().Get("amount"))
+	if err != nil {
+		amount = 500
+	}
 
-		rawStartTime := r.URL.Query().Get("startTime")
-		rawEndTime := r.URL.Query().Get("endTime")
+	rawStartTime := r.URL.Query().Get("startTime")
+	rawEndTime := r.URL.Query().Get("endTime")
 
-		politiciansScore, err = request.PoliticiansScore(uint(amount), rawStartTime, rawEndTime)
+	politiciansScore, err = request.PoliticiansScore(uint(amount), rawStartTime, rawEndTime)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: "Error while fetching politicians' scores",
+			Error:   err,
+		})
+		return
 	}
 	sendJSON(w, http.StatusOK, PoliticiansScoreResponse{
 		Politicians: politiciansScore,
