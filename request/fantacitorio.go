@@ -52,7 +52,6 @@ func checkNameSurname(nameSurname string) (name string, surname string, err erro
 			return
 		}
 		if name != nameCheck {
-			fmt.Println("mh", name, nameCheck)
 			return "", "", fmt.Errorf("Invalid name and surname")
 		}
 	}
@@ -95,7 +94,6 @@ func parsePolitician(text string) (res Politician, err error) {
 			return
 		}
 		res = Politician{ID: 0, Name: name, Surname: surname, Points: points, BestSingleScore: points, Average: float64(points), NPosts: 1}
-		fmt.Println(text)
 	} else {
 		return res, fmt.Errorf("Error while parsing politician")
 	}

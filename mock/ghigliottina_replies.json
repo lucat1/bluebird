@@ -1,0 +1,56 @@
+{
+  "data": [
+    {
+      "created_at": "2022-12-13T18:33:55.000Z",
+      "text": "Difficile #parola per la #ghigliottina de #leredita ma 3 giocatori ce l'hanno fatta!\n\nLa #parola della #ghigliottina de #leredita di oggi è: CANTANTE\n\nI 5 indizi di oggi sono:\nMOMENTO\nCOMPAGNIA\nSTRADA\nGALLO\nAMARA\n\nDivertiti con il nuovo canale YouTube https://t.co/ZNdb06YKtM https://t.co/9hNchik3vO",
+      "id": "1602733569750835202",
+      "edit_history_tweet_ids": [
+        "1602733569750835202"
+      ],
+      "conversation_id": "1602733569750835202",
+      "author_id": "1499992669480755204"
+    }
+  ],
+  "includes": {
+    "users": [
+      {
+        "public_metrics": {
+          "followers_count": 656,
+          "following_count": 536,
+          "tweet_count": 3593,
+          "listed_count": 2
+        },
+        "protected": false,
+        "name": "quizzettone",
+        "verified": false,
+        "pinned_tweet_id": "1593728519548260352",
+        "description": "Giochiamo insieme al quiz TV #leredità. \nTwitta la tua parola della #ghigliottina e scopri chi è il #ghigliottinista più veloce di Twitter.",
+        "created_at": "2022-03-05T06:18:38.000Z",
+        "id": "1499992669480755204",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1594604580616167425/S1Qn9zgZ_normal.jpg",
+        "username": "quizzettone",
+        "entities": {
+          "description": {
+            "hashtags": [
+              {
+                "start": 29,
+                "end": 38,
+                "tag": "leredità"
+              },
+              {
+                "start": 68,
+                "end": 81,
+                "tag": "ghigliottina"
+              },
+              {
+                "start": 100,
+                "end": 116,
+                "tag": "ghigliottinista"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

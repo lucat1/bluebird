@@ -65,6 +65,8 @@ func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	politiciansScore, err = request.PoliticiansScore(uint(amount), startTime, endTime)
+	// adds to db
+	cache.AddPointsPoliticians(politiciansScore)
 	sendJSON(w, http.StatusOK, PoliticiansScoreResponse{
 		Politicians: politiciansScore,
 	})

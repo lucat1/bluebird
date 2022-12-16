@@ -219,7 +219,7 @@ type Politician struct {
 }
 
 type Team struct {
-	Username   string `json:"username"`
+	Username   string `json:"username" gorm:"primaryKey;uniqueIndex"`
 	PictureURL string `json:"picture_url"`
 }
 

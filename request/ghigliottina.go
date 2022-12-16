@@ -24,8 +24,10 @@ type GhigliottinaWinner struct {
 }
 
 var sub = "La #parola della #ghigliottina de #leredita di oggi è:"
-var reg = "La #parola della #ghigliottina de #leredita di oggi è: (.*?)\n"
-var winnersReg = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
+var regText = "La #parola della #ghigliottina de #leredita di oggi è: (.*?)\n"
+var reg, _ = regexp.Compile(regText)
+var winnersRegText = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
+var winnersReg, _ = regexp.Compile(winnersRegText)
 
 const timeFormat = "15:04:05"
 
@@ -34,13 +36,12 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	if err != nil {
 		return
 	}
-	r, _ := regexp.Compile(reg)
 	var tweet Tweet
 	found := false
 	for i := len(tweets) - 1; i >= 0; i-- {
 		t := tweets[i]
 		if strings.Contains(t.Text, sub) {
-			match := r.FindStringSubmatch(t.Text)
+			match := reg.FindStringSubmatch(t.Text)
 			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt)) {
 				found = true
 				tweet = t
@@ -50,7 +51,7 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	if !found {
 		return res, errors.New("No tweets were found")
 	}
-	match := r.FindStringSubmatch(tweet.Text)
+	match := reg.FindStringSubmatch(tweet.Text)
 	res.Word = (strings.Trim(match[1], " "))
 
 	var tweetsReplies []Tweet
@@ -63,22 +64,15 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	}
 
 	winTweet := (tweetsReplies[len(tweetsReplies)-1])
-	w, _ := regexp.Compile(winnersReg)
-	winnersRaw := w.FindStringSubmatch(winTweet.Text)
+	winnersRaw := winnersReg.FindStringSubmatch(winTweet.Text)
 	if len(winnersRaw) < 7 {
-		return
+		return res, errors.New("Winners are malformed")
 	}
-	firstTime, err := time.Parse(timeFormat, winnersRaw[2])
-	if err != nil {
-		return
-	}
-	secondTime, err := time.Parse(timeFormat, winnersRaw[4])
-	if err != nil {
-		return
-	}
-	thirdTime, err := time.Parse(timeFormat, winnersRaw[6])
-	if err != nil {
-		return
+	firstTime, errFirst := time.Parse(timeFormat, winnersRaw[2])
+	secondTime, errSecond := time.Parse(timeFormat, winnersRaw[4])
+	thirdTime, errThird := time.Parse(timeFormat, winnersRaw[6])
+	if errFirst != nil || errSecond != nil || errThird != nil {
+		return res, errors.New("Times are malformed")
 	}
 	res.Podium.First = GhigliottinaWinner{Username: winnersRaw[1], Time: firstTime}
 	res.Podium.Second = GhigliottinaWinner{Username: winnersRaw[3], Time: secondTime}

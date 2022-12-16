@@ -63,5 +63,13 @@ func TestParsePolitician(t *testing.T) {
 }
 
 func TestPoliticianScore(t *testing.T) {
-	PoliticiansScore(100, time.Now(), time.Now().Add(64))
+	SetClient(fantacitorioClient)
+	politicians, _ := PoliticiansScore(2000, time.Now(), time.Now())
+	assert.Equal(t, 52, len(politicians), "Politicians should be 52")
+}
+
+func TestTeams(t *testing.T) {
+	SetClient(fantacitorioClient)
+	politicians, _ := PoliticiansScore(2000, time.Now(), time.Now())
+	assert.Equal(t, 52, len(politicians), "Politicians should be 52")
 }

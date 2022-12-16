@@ -1,0 +1,810 @@
+{
+  "data": [
+    {
+      "edit_history_tweet_ids": [
+        "1602778625585070081"
+      ],
+      "text": "@FortunatoBille Il gioco su YouTube riproduce il video con il gioco… è pensato per essere fatto tra amici dove ognuno poi darà la propria risposta quindi non si gioca online.\nNon è necessario iscriversi per vedere i video \uD83D\uDE09",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 15,
+            "username": "FortunatoBille",
+            "id": "713470862406631424"
+          }
+        ]
+      },
+      "id": "1602778625585070081",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T21:32:57.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602773285124464640"
+      ],
+      "text": "@FortunatoBille Grazie Fortunato \uD83D\uDE0A\uD83D\uDE0A\uD83D\uDE0A",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 15,
+            "username": "FortunatoBille",
+            "id": "713470862406631424"
+          }
+        ]
+      },
+      "id": "1602773285124464640",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T21:11:43.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602758461929836544"
+      ],
+      "text": "@H90CJNow @metantacauta72 @equuscavallo Bravissimaaaaa \uD83D\uDE0E\uD83D\uDE0E\uD83D\uDE0E",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 9,
+            "username": "H90CJNow",
+            "id": "1479408750"
+          },
+          {
+            "start": 10,
+            "end": 25,
+            "username": "metantacauta72",
+            "id": "379162658"
+          },
+          {
+            "start": 26,
+            "end": 39,
+            "username": "equuscavallo",
+            "id": "337551671"
+          }
+        ]
+      },
+      "id": "1602758461929836544",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T20:12:49.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602756939787620352"
+      ],
+      "text": "@LauraFo2022 Clicka sul link… ci sono le ghigliottine di dicembre (esclusa quella di oggi) da rigiocare con gli amici \uD83D\uDE09\n\nhttps://t.co/tsg4D78sgL",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 12,
+            "username": "LauraFo2022",
+            "id": "1475542158677618704"
+          }
+        ],
+        "urls": [
+          {
+            "start": 121,
+            "end": 144,
+            "url": "https://t.co/tsg4D78sgL",
+            "expanded_url": "https://youtube.com/playlist?list=PLG5DAVe5bl-NjTK1beIP7l8OP031jgQwW",
+            "display_url": "youtube.com/playlist?list=…",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602756941020684288/3SaTAW8J?format=jpg&name=orig",
+                "width": 168,
+                "height": 94
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602756941020684288/3SaTAW8J?format=jpg&name=150x150",
+                "width": 94,
+                "height": 94
+              }
+            ],
+            "status": 200,
+            "title": "Ri-Ghigliottina Dicembre 2022",
+            "description": "Share your videos with friends, family, and the world",
+            "unwound_url": "https://www.youtube.com/playlist?list=PLG5DAVe5bl-NjTK1beIP7l8OP031jgQwW"
+          }
+        ]
+      },
+      "id": "1602756939787620352",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T20:06:46.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602748354781499392"
+      ],
+      "text": "@zendunetta Posso partecipare? \uD83D\uDE0D\uD83D\uDE0D\uD83D\uDE0D",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 11,
+            "username": "zendunetta",
+            "id": "1520123239317577728"
+          }
+        ]
+      },
+      "id": "1602748354781499392",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T19:32:40.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602748271122079744"
+      ],
+      "text": "@zendunetta Grazieee ❤️❤️❤️",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 11,
+            "username": "zendunetta",
+            "id": "1520123239317577728"
+          }
+        ]
+      },
+      "id": "1602748271122079744",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T19:32:20.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602743007475900417"
+      ],
+      "text": "@RobertoScolla Grazie caro Roberto \uD83D\uDE0D\uD83D\uDE0D\uD83D\uDE0D",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 14,
+            "username": "RobertoScolla",
+            "id": "378489654"
+          }
+        ]
+      },
+      "id": "1602743007475900417",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T19:11:25.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602740997775056897"
+      ],
+      "text": "@LauraFo2022 Grazie Laura \uD83D\uDE09\uD83D\uDE09\uD83D\uDE09",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 12,
+            "username": "LauraFo2022",
+            "id": "1475542158677618704"
+          }
+        ]
+      },
+      "id": "1602740997775056897",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T19:03:26.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602740956104622080"
+      ],
+      "text": "@LauraFo2022 https://t.co/H8aPPpQhNH",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 12,
+            "username": "LauraFo2022",
+            "id": "1475542158677618704"
+          }
+        ],
+        "urls": [
+          {
+            "start": 13,
+            "end": 36,
+            "url": "https://t.co/H8aPPpQhNH",
+            "expanded_url": "https://YouTube.com/@quizzett1",
+            "display_url": "YouTube.com/@quizzett1",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=orig",
+                "width": 900,
+                "height": 900
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=150x150",
+                "width": 150,
+                "height": 150
+              }
+            ],
+            "status": 200,
+            "title": "quizzettone",
+            "description": "Benvenuto nel mio canale YouTube! Ho creato questo spazio per condividere con te video legati al mondo dei Quiz TV ed in particolare al quiz L'Eredità, in onda su Rai 1 e condotto da Flavio Insinna.",
+            "unwound_url": "https://www.youtube.com/@quizzett1"
+          }
+        ]
+      },
+      "id": "1602740956104622080",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T19:03:16.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602735004454424578"
+      ],
+      "text": "@climottantasei Grazie caro Claudio ❤️❤️❤️",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 15,
+            "username": "climottantasei",
+            "id": "1528815121946095617"
+          }
+        ]
+      },
+      "id": "1602735004454424578",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:39:37.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602733587329171457"
+      ],
+      "text": "Amici de #leredità, è con immenso piacere che vi presento il canale YouTube dove poter rigiocare alla #ghigliottina \uD83D\uDE0A\nLe #righigliottine sono riproposizioni delle vere ghigliottine che danno la possibilità di giocare con amici o di allenarsi da soli.\n\nhttps://t.co/ZNdb06YKtM",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 9,
+            "end": 18,
+            "tag": "leredità"
+          },
+          {
+            "start": 102,
+            "end": 115,
+            "tag": "ghigliottina"
+          },
+          {
+            "start": 121,
+            "end": 136,
+            "tag": "righigliottine"
+          }
+        ],
+        "urls": [
+          {
+            "start": 252,
+            "end": 275,
+            "url": "https://t.co/ZNdb06YKtM",
+            "expanded_url": "https://www.youtube.com/@quizzett1",
+            "display_url": "youtube.com/@quizzett1",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=orig",
+                "width": 900,
+                "height": 900
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=150x150",
+                "width": 150,
+                "height": 150
+              }
+            ],
+            "status": 200,
+            "title": "quizzettone",
+            "description": "Benvenuto nel mio canale YouTube! Ho creato questo spazio per condividere con te video legati al mondo dei Quiz TV ed in particolare al quiz L'Eredità, in onda su Rai 1 e condotto da Flavio Insinna.",
+            "unwound_url": "https://www.youtube.com/@quizzett1"
+          }
+        ]
+      },
+      "id": "1602733587329171457",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:33:59.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602733583977922560"
+      ],
+      "text": "https://t.co/wHp3jLcQDG\n\nOggi per #leredita il Tweet di @madalon721 ha ricevuto più like!\nGli altri twittatori con più like sono:\n@LellaFastidiosa\n@Marina31297272\n@Chicca60183574\n@Lucianone73\n@LmMaggio\n@anna_frank2\n@tonino_m https://t.co/cMShvdvU2O",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 34,
+            "end": 43,
+            "tag": "leredita"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 56,
+            "end": 67,
+            "username": "madalon721",
+            "id": "3355299459"
+          },
+          {
+            "start": 130,
+            "end": 146,
+            "username": "LellaFastidiosa",
+            "id": "368888739"
+          },
+          {
+            "start": 147,
+            "end": 162,
+            "username": "Marina31297272",
+            "id": "802108800127922176"
+          },
+          {
+            "start": 163,
+            "end": 178,
+            "username": "Chicca60183574",
+            "id": "1428304533940228099"
+          },
+          {
+            "start": 179,
+            "end": 191,
+            "username": "Lucianone73",
+            "id": "1544054657093439491"
+          },
+          {
+            "start": 192,
+            "end": 201,
+            "username": "LmMaggio",
+            "id": "1352844895"
+          },
+          {
+            "start": 202,
+            "end": 214,
+            "username": "anna_frank2",
+            "id": "754642776579514368"
+          },
+          {
+            "start": 215,
+            "end": 224,
+            "username": "tonino_m",
+            "id": "913712454529675264"
+          }
+        ],
+        "urls": [
+          {
+            "start": 0,
+            "end": 23,
+            "url": "https://t.co/wHp3jLcQDG",
+            "expanded_url": "https://twitter.com/twitter/status/1602719006766628866",
+            "display_url": "twitter.com/twitter/status…"
+          },
+          {
+            "start": 225,
+            "end": 248,
+            "url": "https://t.co/cMShvdvU2O",
+            "expanded_url": "https://twitter.com/quizzettone/status/1602733583977922560/photo/1",
+            "display_url": "pic.twitter.com/cMShvdvU2O",
+            "media_key": "3_1602733288598159360"
+          }
+        ]
+      },
+      "attachments": {
+        "media_keys": [
+          "3_1602733288598159360"
+        ]
+      },
+      "id": "1602733583977922560",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:33:58.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602733578097463298"
+      ],
+      "text": "Top 10 dei Twitters più attivi per #leredita.\n@fr33b1t\n@CarlaGigia\n@LaLuneSurtout\n@alessandra14961\n@Chicca60183574\n@bloggonotes\n@Lucianone73\n@LauraFo2022\n@RobertoScolla\n@LmMaggio \n\nDivertiti con il nuovo canale YouTube https://t.co/ZNdb06YKtM https://t.co/op2BVZj8e5",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 35,
+            "end": 44,
+            "tag": "leredita"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 46,
+            "end": 54,
+            "username": "fr33b1t",
+            "id": "392616384"
+          },
+          {
+            "start": 55,
+            "end": 66,
+            "username": "CarlaGigia",
+            "id": "353171758"
+          },
+          {
+            "start": 67,
+            "end": 81,
+            "username": "LaLuneSurtout",
+            "id": "215359494"
+          },
+          {
+            "start": 82,
+            "end": 98,
+            "username": "alessandra14961",
+            "id": "1281306612"
+          },
+          {
+            "start": 99,
+            "end": 114,
+            "username": "Chicca60183574",
+            "id": "1428304533940228099"
+          },
+          {
+            "start": 115,
+            "end": 127,
+            "username": "bloggonotes",
+            "id": "1600167048436400130"
+          },
+          {
+            "start": 128,
+            "end": 140,
+            "username": "Lucianone73",
+            "id": "1544054657093439491"
+          },
+          {
+            "start": 141,
+            "end": 153,
+            "username": "LauraFo2022",
+            "id": "1475542158677618704"
+          },
+          {
+            "start": 154,
+            "end": 168,
+            "username": "RobertoScolla",
+            "id": "378489654"
+          },
+          {
+            "start": 169,
+            "end": 178,
+            "username": "LmMaggio",
+            "id": "1352844895"
+          }
+        ],
+        "urls": [
+          {
+            "start": 219,
+            "end": 242,
+            "url": "https://t.co/ZNdb06YKtM",
+            "expanded_url": "https://www.youtube.com/@quizzett1",
+            "display_url": "youtube.com/@quizzett1",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=orig",
+                "width": 900,
+                "height": 900
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=150x150",
+                "width": 150,
+                "height": 150
+              }
+            ],
+            "status": 200,
+            "title": "quizzettone",
+            "description": "Benvenuto nel mio canale YouTube! Ho creato questo spazio per condividere con te video legati al mondo dei Quiz TV ed in particolare al quiz L'Eredità, in onda su Rai 1 e condotto da Flavio Insinna.",
+            "unwound_url": "https://www.youtube.com/@quizzett1"
+          },
+          {
+            "start": 243,
+            "end": 266,
+            "url": "https://t.co/op2BVZj8e5",
+            "expanded_url": "https://twitter.com/quizzettone/status/1602733578097463298/photo/1",
+            "display_url": "pic.twitter.com/op2BVZj8e5",
+            "media_key": "3_1602733097304326150"
+          }
+        ]
+      },
+      "attachments": {
+        "media_keys": [
+          "3_1602733097304326150"
+        ]
+      },
+      "id": "1602733578097463298",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:33:57.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602733573286813696"
+      ],
+      "text": "Per #leredità su Twitter, i campioni più veloci della #ghigliottina sono:\n\n\uD83E\uDD47 @H90CJNow - 19:18:56\n\uD83E\uDD48 @metantacauta72 - 19:19:32\n\uD83E\uDD49 @equuscavallo - 19:19:54\n\nDivertiti con il nuovo canale YouTube https://t.co/ZNdb06Zijk",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 4,
+            "end": 13,
+            "tag": "leredità"
+          },
+          {
+            "start": 54,
+            "end": 67,
+            "tag": "ghigliottina"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 77,
+            "end": 86,
+            "username": "H90CJNow",
+            "id": "1479408750"
+          },
+          {
+            "start": 100,
+            "end": 115,
+            "username": "metantacauta72",
+            "id": "379162658"
+          },
+          {
+            "start": 129,
+            "end": 142,
+            "username": "equuscavallo",
+            "id": "337551671"
+          }
+        ],
+        "urls": [
+          {
+            "start": 193,
+            "end": 216,
+            "url": "https://t.co/ZNdb06Zijk",
+            "expanded_url": "https://www.youtube.com/@quizzett1",
+            "display_url": "youtube.com/@quizzett1",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=orig",
+                "width": 900,
+                "height": 900
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=150x150",
+                "width": 150,
+                "height": 150
+              }
+            ],
+            "status": 200,
+            "title": "quizzettone",
+            "description": "Benvenuto nel mio canale YouTube! Ho creato questo spazio per condividere con te video legati al mondo dei Quiz TV ed in particolare al quiz L'Eredità, in onda su Rai 1 e condotto da Flavio Insinna.",
+            "unwound_url": "https://www.youtube.com/@quizzett1"
+          }
+        ]
+      },
+      "id": "1602733573286813696",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:33:55.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602733569750835202"
+      ],
+      "text": "Difficile #parola per la #ghigliottina de #leredita ma 3 giocatori ce l'hanno fatta!\n\nLa #parola TE\n\nI 5 indizi di oggi sono:\nMOMENTO\nCOMPAGNIA\nSTRADA\nGALLO\nAMARA\n\nDivertiti con il nuovo canale YouTube https://t.co/ZNdb06YKtM https://t.co/9hNchik3vO",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 10,
+            "end": 17,
+            "tag": "parola"
+          },
+          {
+            "start": 25,
+            "end": 38,
+            "tag": "ghigliottina"
+          },
+          {
+            "start": 42,
+            "end": 51,
+            "tag": "leredita"
+          },
+          {
+            "start": 89,
+            "end": 96,
+            "tag": "parola"
+          },
+          {
+            "start": 103,
+            "end": 116,
+            "tag": "ghigliottina"
+          },
+          {
+            "start": 120,
+            "end": 129,
+            "tag": "leredita"
+          }
+        ],
+        "urls": [
+          {
+            "start": 252,
+            "end": 275,
+            "url": "https://t.co/ZNdb06YKtM",
+            "expanded_url": "https://www.youtube.com/@quizzett1",
+            "display_url": "youtube.com/@quizzett1",
+            "images": [
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=orig",
+                "width": 900,
+                "height": 900
+              },
+              {
+                "url": "https://pbs.twimg.com/news_img/1602733570891681793/bWitNeXO?format=jpg&name=150x150",
+                "width": 150,
+                "height": 150
+              }
+            ],
+            "status": 200,
+            "title": "quizzettone",
+            "description": "Benvenuto nel mio canale YouTube! Ho creato questo spazio per condividere con te video legati al mondo dei Quiz TV ed in particolare al quiz L'Eredità, in onda su Rai 1 e condotto da Flavio Insinna.",
+            "unwound_url": "https://www.youtube.com/@quizzett1"
+          },
+          {
+            "start": 276,
+            "end": 299,
+            "url": "https://t.co/9hNchik3vO",
+            "expanded_url": "https://twitter.com/quizzettone/status/1602733569750835202/photo/1",
+            "display_url": "pic.twitter.com/9hNchik3vO",
+            "media_key": "3_1602732344871469062"
+          }
+        ]
+      },
+      "attachments": {
+        "media_keys": [
+          "3_1602732344871469062"
+        ]
+      },
+      "id": "1602733569750835202",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:33:55.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602731251483529216"
+      ],
+      "text": "@RobertoScolla @insinnaflavio Arrivo amici… stasera ho una sorpresa per tutti voi e per @insinnaflavio … sperando che vi piaccia",
+      "entities": {
+        "mentions": [
+          {
+            "start": 0,
+            "end": 14,
+            "username": "RobertoScolla",
+            "id": "378489654"
+          },
+          {
+            "start": 15,
+            "end": 29,
+            "username": "insinnaflavio",
+            "id": "3310695107"
+          },
+          {
+            "start": 88,
+            "end": 102,
+            "username": "insinnaflavio",
+            "id": "3310695107"
+          }
+        ]
+      },
+      "id": "1602731251483529216",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T18:24:42.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602613159176585244"
+      ],
+      "text": "@climottantasei Work in progress #righigliottina https://t.co/oP0ngQPxKh",
+      "entities": {
+        "hashtags": [
+          {
+            "start": 33,
+            "end": 48,
+            "tag": "righigliottina"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 0,
+            "end": 15,
+            "username": "climottantasei",
+            "id": "1528815121946095617"
+          }
+        ],
+        "urls": [
+          {
+            "start": 49,
+            "end": 72,
+            "url": "https://t.co/oP0ngQPxKh",
+            "expanded_url": "https://twitter.com/quizzettone/status/1602613159176585244/photo/1",
+            "display_url": "pic.twitter.com/oP0ngQPxKh",
+            "media_key": "3_1602613153669562368"
+          }
+        ]
+      },
+      "attachments": {
+        "media_keys": [
+          "3_1602613153669562368"
+        ]
+      },
+      "id": "1602613159176585244",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T10:35:26.000Z"
+    },
+    {
+      "edit_history_tweet_ids": [
+        "1602563166247993344"
+      ],
+      "text": "@Peppe2379 @zendunetta Grande Peppe \uD83D\uDE0E\uD83D\uDE0E\uD83D\uDE0E",
+      "entities": {
+        "annotations": [
+          {
+            "start": 30,
+            "end": 34,
+            "probability": 0.3565,
+            "type": "Person",
+            "normalized_text": "Peppe"
+          }
+        ],
+        "mentions": [
+          {
+            "start": 0,
+            "end": 10,
+            "username": "Peppe2379",
+            "id": "954463128242311174"
+          },
+          {
+            "start": 11,
+            "end": 22,
+            "username": "zendunetta",
+            "id": "1520123239317577728"
+          }
+        ]
+      },
+      "id": "1602563166247993344",
+      "author_id": "1499992669480755204",
+      "created_at": "2022-12-13T07:16:47.000Z"
+    }
+  ],
+  "includes": {
+    "users": [
+      {
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1594604580616167425/S1Qn9zgZ_normal.jpg",
+        "created_at": "2022-03-05T06:18:38.000Z",
+        "name": "quizzettone",
+        "id": "1499992669480755204",
+        "username": "quizzettone"
+      }
+    ],
+    "media": [
+      {
+        "media_key": "3_1602733288598159360",
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/Fj4NbzCWQAATp4u.jpg"
+      },
+      {
+        "media_key": "3_1602733097304326150",
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/Fj4NQqaWAAYPjAQ.jpg"
+      },
+      {
+        "media_key": "3_1602732344871469062",
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/Fj4Mk3YXwAYSyvq.png"
+      },
+      {
+        "media_key": "3_1602613153669562368",
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/Fj2gLBjXwAAKEW0.jpg"
+      }
+    ]
+  },
+  "meta": {
+    "result_count": 18,
+    "newest_id": "1602778625585070081",
+    "oldest_id": "1602563166247993344"
+  }
+}
