@@ -22,11 +22,8 @@ type PoliticiansScoreboardResponse struct {
 }
 
 type TeamResponse struct {
-	Username   string   `json:"username"`
-	PictureURL string   `json:"picture_url"`
-	Name       string   `json:"name,omitempty"`
-	Leader     string   `json:"leader,omitempty"`
-	Members    []string `json:"members"`
+	Username   string `json:"username"`
+	PictureURL string `json:"picture_url"`
 }
 
 type TeamsResponse struct {
@@ -119,12 +116,7 @@ func searchHandlerTeam(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var teamInfo request.OCRTeam
-		if ocrEnable, err := strconv.ParseBool(r.URL.Query().Get("ocr")); err == nil && ocrEnable == true {
-			teamInfo, _ = request.GetTeamInfo(team.PictureURL)
-		}
-
-		sendJSON(w, http.StatusOK, TeamResponse{Username: team.Username, PictureURL: team.PictureURL, Name: teamInfo.Name, Leader: teamInfo.Leader, Members: teamInfo.Members})
+		sendJSON(w, http.StatusOK, TeamResponse{Username: team.Username, PictureURL: team.PictureURL})
 		return
 	}
 
