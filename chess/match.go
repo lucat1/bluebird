@@ -15,6 +15,7 @@ var match *Match = nil
 const (
 	playerColor       = chess.White
 	ReplyPollInterval = 15 // seconds
+	TokenLen          = 6
 )
 
 type Match struct {
@@ -44,6 +45,10 @@ func (m *Match) start() {
 
 func (m *Match) end() {
 	select {
+	case m.cancel <- false:
+	default:
+	}
+	select {
 	case m.quit <- false:
 	default:
 	}
@@ -67,7 +72,7 @@ func code(n int) string {
 
 func NewMatch(duration time.Duration) *Match {
 	m := Match{
-		Code:     code(6),
+		Code:     code(TokenLen),
 		Duration: duration,
 		EndsAt:   time.Now().Add(duration).UTC(),
 
@@ -89,4 +94,24 @@ func SetMatch(m *Match) {
 
 func GetMatch() *Match {
 	return match
+}
+
+type SerializedMatch struct {
+	Code      string          `json:"code"`
+	Duration  time.Duration   `json:"duration"`
+	EndsAt    time.Time       `json:"ends_at"`
+	Game      string          `json:"game"`
+	Tweets    []request.Tweet `json:"tweets"`
+	Forfeited bool            `json:"forfeited"`
+}
+
+func (m *Match) Serialized() SerializedMatch {
+	return SerializedMatch{
+		Code:      m.Code,
+		Duration:  m.Duration,
+		EndsAt:    m.EndsAt,
+		Game:      m.Game.FEN(),
+		Tweets:    m.Tweets,
+		Forfeited: m.Forfeited,
+	}
 }

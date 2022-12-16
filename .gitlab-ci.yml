@@ -12,7 +12,7 @@ golang-check:
   script:
     - apk add --no-cache librsvg-dev cairo-dev pkgconfig gcc musl-dev
     - go vet $(go list ./...)
-    - go test -v -race -coverprofile=coverage.out $(go list ./... | grep -v -e test -e server)
+    - go test -v -coverprofile=coverage.out $(go list ./... | grep -v -e test -e server)
   artifacts:
     paths:
       - coverage.out

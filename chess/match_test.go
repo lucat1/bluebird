@@ -47,6 +47,7 @@ func TestNewMatch(t *testing.T) {
 	m := NewMatch(time.Minute)
 	assert.NotNil(t, m, "Expected NewMatch to return a new match")
 	assert.NotEmpty(t, m.Code, "Expected the new mach token to be non-empty")
+	assert.Len(t, m.Code, 6, "Expected the new mach token to of length TOKEN_LEN")
 	assert.Equal(t, m.Duration, time.Minute, "Expected the new mach to have the appropriate duration")
 	assert.True(t, time.Now().Add(time.Minute).After(m.EndsAt), "Expected the new mach to have the appropriate ends at")
 	assert.NotNil(t, m.Game, "Expected the new mach to have a not-nill gochess state")
@@ -70,4 +71,16 @@ func TestGetMatch(t *testing.T) {
 	SetMatch(NewMatch(time.Minute))
 	assert.NotNil(t, GetMatch(), "Expecteeeed the mtatch to be nil")
 	GetMatch().end()
+}
+
+func TestSerializedMatch(t *testing.T) {
+	m := NewMatch(time.Minute)
+	sm := m.Serialized()
+	assert.Equal(t, m.Code, sm.Code, "Expected match codes to match")
+	assert.Equal(t, m.Duration, sm.Duration, "Expected match durations to match")
+	assert.Equal(t, m.EndsAt, sm.EndsAt, "Expected match ends_at to match")
+	assert.Equal(t, m.Game.FEN(), sm.Game, "Expected serialized game to be a the FEN representation")
+	assert.Equal(t, m.Tweets, sm.Tweets, "Expected match tweets to be the same")
+	assert.Equal(t, m.Forfeited, sm.Forfeited, "Expected forfeit status to match")
+	m.end()
 }

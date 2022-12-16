@@ -106,15 +106,15 @@ func TestMain(m *testing.M) {
 	})
 	defer ghigliottinaTimeErrorServer.Close()
 
-	repliesClient, err = NewClient(repliesServer.URL, "", "")
+	repliesClient, err = NewClient(repliesServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	byKeywordClient, err = NewClient(byKeywordServer.URL, "", "")
+	byKeywordClient, err = NewClient(byKeywordServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	byUserClient, err = NewClient(byUserServer.URL, "", "")
+	byUserClient, err = NewClient(byUserServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
