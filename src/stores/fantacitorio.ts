@@ -103,6 +103,7 @@ const store = create<State & Actions>((set, get) => ({
     const weekly = await fetch<Points>(`fantacitorio/points?startTime=${start_time.toISOString()}&endTime=${end_date.toISOString()}`)
     set({ ...get(), loading: false, tweets, scoreboard, teams, weekly });
   },
+
 }));
 
 export default store;
