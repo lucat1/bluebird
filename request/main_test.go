@@ -118,39 +118,39 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	fantacitorioClient, err = NewClient(fantacitorioServer.URL, "", "")
+	fantacitorioClient, err = NewClient(fantacitorioServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	fantacitorioNoTweetsClient, err = NewClient(fantacitorioNoTweetsServer.URL, "", "")
+	fantacitorioNoTweetsClient, err = NewClient(fantacitorioNoTweetsServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaClient, err = NewClient(ghigliottinaServer.URL, "", "")
+	ghigliottinaClient, err = NewClient(ghigliottinaServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaTweetsErrorClient, err = NewClient(ghigliottinaTweetsErrorServer.URL, "", "")
+	ghigliottinaTweetsErrorClient, err = NewClient(ghigliottinaTweetsErrorServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaNoTweetsClient, err = NewClient(ghigliottinaNoTweetsServer.URL, "", "")
+	ghigliottinaNoTweetsClient, err = NewClient(ghigliottinaNoTweetsServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaNoRepliesResponseClient, err = NewClient(ghigliottinaNoRepliesResponseServer.URL, "", "")
+	ghigliottinaNoRepliesResponseClient, err = NewClient(ghigliottinaNoRepliesResponseServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaNoRepliesClient, err = NewClient(ghigliottinaNoRepliesServer.URL, "", "")
+	ghigliottinaNoRepliesClient, err = NewClient(ghigliottinaNoRepliesServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaWinnersErrorClient, err = NewClient(ghigliottinaWinnersErrorServer.URL, "", "")
+	ghigliottinaWinnersErrorClient, err = NewClient(ghigliottinaWinnersErrorServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	ghigliottinaTimeErrorClient, err = NewClient(ghigliottinaTimeErrorServer.URL, "", "")
+	ghigliottinaTimeErrorClient, err = NewClient(ghigliottinaTimeErrorServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
