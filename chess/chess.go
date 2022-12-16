@@ -56,6 +56,33 @@ func (m *Match) periodic() {
 	}()
 }
 
+func (m *Match) move(move string) error {
+	if err := m.Game.MoveStr(move); err != nil {
+		return err
+	}
+
+	log.Printf("Moved %s", move)
+	if m.Game.Outcome() == chess.NoOutcome {
+		m.EndsAt = time.Now().UTC().Add(m.Duration)
+		m.Tweets = []request.Tweet{}
+	}
+	m.sendUpdate()
+	m.PostGame()
+	if m.Game.Outcome() == chess.NoOutcome {
+		m.delay(m.onTurnEnd)
+	} else {
+		m.end()
+	}
+	return nil
+}
+
+func (m *Match) PlayerMove(move string) error {
+	if m.Game.Position().Turn() != playerColor {
+		return errors.New("Cannot move in the opponent's turn")
+	}
+	return m.move(move)
+}
+
 func moveFromText(text string) *string {
 	parts := strings.Split(text, " ")
 	if len(parts) < 2 {
@@ -124,75 +151,6 @@ func (m *Match) randomMove() *string {
 	return &move
 }
 
-func (m *Match) onTurnEnd() {
-	var move *string
-	if m.Game.Position().Turn() == playerColor {
-		// Play a random move if the palyer didn't pick in time
-		move = m.randomMove()
-	} else {
-		moves, err := m.getMoves()
-		if err != nil {
-			log.Printf("Could not get tweets replies: %v", err)
-			return
-		}
-		if len(moves) != 0 {
-			var mostValued uint
-			for mv, val := range moves {
-				if val > mostValued {
-					move = &mv
-					mostValued = val
-				}
-			}
-		} else {
-			move = m.randomMove()
-		}
-	}
-	if move != nil {
-		if err := m.Move(*move); err != nil {
-			log.Printf("WARN: move %s failed:  %v", *move, err)
-		}
-	} else {
-		// should never be reached
-		m.end()
-	}
-}
-
-func (m *Match) Forfeit() {
-	log.Printf("The master has forfeited")
-	m.Forfeited = true
-	m.Game.Resign(chess.White)
-	m.sendUpdate()
-	m.PostGame()
-	m.end()
-}
-
-func (m *Match) Move(move string) error {
-	if err := m.Game.MoveStr(move); err != nil {
-		return err
-	}
-
-	log.Printf("Moved %s", move)
-	if m.Game.Outcome() == chess.NoOutcome {
-		m.EndsAt = time.Now().UTC().Add(m.Duration)
-		m.Tweets = []request.Tweet{}
-	}
-	m.sendUpdate()
-	m.PostGame()
-	if m.Game.Outcome() == chess.NoOutcome {
-		m.delay(m.onTurnEnd)
-	} else {
-		m.end()
-	}
-	return nil
-}
-
-func (m *Match) PlayerMove(move string) error {
-	if m.Game.Position().Turn() != playerColor {
-		return errors.New("Cannot move in the opponent's turn")
-	}
-	return m.Move(move)
-}
-
 func (m *Match) PostGame() {
 	var msg string
 	if m.Game.Outcome() == chess.NoOutcome {
@@ -245,7 +203,6 @@ export CGO_CFLAGS_ALLOW=".*"
 export CGO_LDFLAGS_ALLOW=".*"
 */
 func (m *Match) Image() (buf []byte, err error) {
-
 	in, out := bytes.NewBuffer(buf), new(bytes.Buffer)
 	if err = chessimage.SVG(in, m.Game.Position().Board()); err != nil {
 		return
@@ -266,35 +223,11 @@ func (m *Match) Image() (buf []byte, err error) {
 	return out.Bytes(), nil
 }
 
-func (m *Match) ASCII() string {
-	str := m.Game.Position().Board().Draw()
-	strings.ReplaceAll(str, "-", " - ")
-	strings.ReplaceAll(str, "\n\r", "\n")
-	return str
-}
-
-type SerializedMatch struct {
-	Code      string          `json:"code"`
-	Duration  time.Duration   `json:"duration"`
-	EndsAt    time.Time       `json:"ends_at"`
-	Game      string          `json:"game"`
-	Tweets    []request.Tweet `json:"tweets"`
-	Forfeited bool            `json:"forfeited"`
-}
-
-func (m *Match) Serialized() SerializedMatch {
-	return SerializedMatch{
-		Code:      m.Code,
-		Duration:  m.Duration,
-		EndsAt:    m.EndsAt,
-		Game:      m.Game.FEN(),
-		Tweets:    m.Tweets,
-		Forfeited: m.Forfeited,
-	}
-}
-
 func (m *Match) sendUpdate() {
-	m.updates <- true
+	select {
+	case m.updates <- true:
+	default:
+	}
 }
 
 func (m *Match) Update() bool {
