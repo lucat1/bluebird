@@ -34,14 +34,11 @@ func searchNameBySurname(surname string) (name string, err error) {
 func checkNameSurname(nameSurname string) (name string, surname string, err error) {
 	split := strings.Split(nameSurname, " ")
 	if len(split) < 2 {
-		if len(split) == 1 {
-			surname = split[0]
-			name, err = searchNameBySurname(surname)
-			if err != nil {
-				return
-			}
-		} else {
-			return "", "", fmt.Errorf("Invalid name and surname")
+		// in case of "" as nameSurname split[0] will be ""
+		surname = split[0]
+		name, err = searchNameBySurname(surname)
+		if err != nil {
+			return
 		}
 	} else {
 		name = split[0]

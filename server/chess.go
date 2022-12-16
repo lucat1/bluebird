@@ -211,6 +211,3 @@ func chessHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-func uploadBoard() {
-}

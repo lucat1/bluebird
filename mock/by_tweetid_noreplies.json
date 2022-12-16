@@ -1,0 +1,24 @@
+{
+  "data": [],
+  "includes": {
+    "users": [
+      {
+        "username": "SpookyYonno",
+        "description": "Man I love frogs",
+        "verified": false,
+        "public_metrics": {
+          "followers_count": 2,
+          "following_count": 41,
+          "tweet_count": 7,
+          "listed_count": 0
+        },
+        "id": "926734851025309696",
+        "created_at": "2017-11-04T08:56:21.000Z",
+        "profile_image_url": "https://pbs.twimg.com/profile_images/1499372338802008072/sD3WAfQ0_normal.jpg",
+        "location": "Bologna, Emilia Romagna",
+        "protected": false,
+        "name": "Yonas Catalini"
+      }
+    ]
+  }
+}

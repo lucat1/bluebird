@@ -80,6 +80,6 @@ func TestTeams(t *testing.T) {
 	assert.Equal(t, 231, len(teams), "Teams should be 231")
 
 	SetClient(fantacitorioNoTweetsClient)
-	_, err = PoliticiansScore(2000, time.Now(), time.Now())
+	_, err = Teams()
 	assert.NotNil(t, err, "Expected error while fetching tweets")
 }

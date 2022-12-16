@@ -16,6 +16,8 @@ var (
 	rawSentimentResponse                sentimentResponse
 	byKeywordGeoResponse                tweetResponse
 	repliesClient                       *RequestClient
+	repliesNoRepliesClient              *RequestClient
+	repliesNoConvClient                 *RequestClient
 	byConvIDClient                      *RequestClient
 	fantacitorioClient                  *RequestClient
 	fantacitorioNoTweetsClient          *RequestClient
@@ -35,6 +37,15 @@ func TestMain(m *testing.M) {
 		"/tweets":               test.ReadFile("../mock/by_tweetid.json"),
 	})
 	defer repliesServer.Close()
+	repliesNoRepliesServer := test.CreateMultiServer(map[string][]byte{
+		"/tweets/search/recent": test.ReadFile("../mock/by_convid.json"),
+		"/tweets":               test.ReadFile("../mock/by_tweetid_noreplies.json"),
+	})
+	defer repliesNoRepliesServer.Close()
+	repliesNoConvServer := test.CreateMultiServer(map[string][]byte{
+		"/tweets": test.ReadFile("../mock/by_tweetid.json"),
+	})
+	defer repliesNoConvServer.Close()
 	byKeywordServer := test.CreateMultiServer(map[string][]byte{
 		"/tweets/search/recent": test.ReadFile("../mock/by_keyword.json"),
 	})
@@ -107,6 +118,14 @@ func TestMain(m *testing.M) {
 	defer ghigliottinaTimeErrorServer.Close()
 
 	repliesClient, err = NewClient(repliesServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	repliesNoRepliesClient, err = NewClient(repliesNoRepliesServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	repliesNoConvClient, err = NewClient(repliesNoConvServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
