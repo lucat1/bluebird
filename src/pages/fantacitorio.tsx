@@ -65,7 +65,7 @@ const Fantacitorio: React.FC = () => {
 
 
                 </div>
-                <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">
+                <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
                   <TweetList />
                 </div>
               </>
