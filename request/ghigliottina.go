@@ -36,19 +36,17 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	if err != nil {
 		return
 	}
-	var tweet Tweet
-	found := false
+	var tweet *Tweet = nil
 	for i := len(tweets) - 1; i >= 0; i-- {
 		t := tweets[i]
 		if strings.Contains(t.Text, sub) {
 			match := reg.FindStringSubmatch(t.Text)
-			if len(match) > 0 && (found == false || (tweet.CreatedAt.After(t.CreatedAt)) && startTime.Before(t.CreatedAt) && endTime.After(t.CreatedAt)) {
-				found = true
-				tweet = t
+			if len(match) > 0 && (tweet == nil || (tweet.CreatedAt.After(t.CreatedAt))) {
+				tweet = &t
 			}
 		}
 	}
-	if !found {
+	if tweet == nil {
 		return res, errors.New("No tweets were found")
 	}
 	match := reg.FindStringSubmatch(tweet.Text)

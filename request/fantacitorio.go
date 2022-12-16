@@ -135,7 +135,7 @@ func PoliticiansScore(n uint, startTime time.Time, endTime time.Time) (politicia
 				continue
 			}
 			politician.LastUpdated = t.CreatedAt
-			AddPoliticianToList(politician, politicians)
+			politicians = AddPoliticianToList(politician, politicians)
 		}
 	}
 	return
