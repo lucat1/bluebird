@@ -64,12 +64,22 @@ func TestParsePolitician(t *testing.T) {
 
 func TestPoliticianScore(t *testing.T) {
 	SetClient(fantacitorioClient)
-	politicians, _ := PoliticiansScore(2000, time.Now(), time.Now())
+	politicians, err := PoliticiansScore(2000, time.Now(), time.Now())
+	assert.Nil(t, err, "Expected no error")
 	assert.Equal(t, 52, len(politicians), "Politicians should be 52")
+
+	SetClient(fantacitorioNoTweetsClient)
+	_, err = PoliticiansScore(2000, time.Now(), time.Now())
+	assert.NotNil(t, err, "Expected error while fetching tweets")
 }
 
 func TestTeams(t *testing.T) {
 	SetClient(fantacitorioClient)
-	politicians, _ := PoliticiansScore(2000, time.Now(), time.Now())
-	assert.Equal(t, 52, len(politicians), "Politicians should be 52")
+	teams, err := Teams()
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, 231, len(teams), "Teams should be 231")
+
+	SetClient(fantacitorioNoTweetsClient)
+	_, err = PoliticiansScore(2000, time.Now(), time.Now())
+	assert.NotNil(t, err, "Expected error while fetching tweets")
 }

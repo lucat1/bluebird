@@ -18,6 +18,7 @@ var (
 	repliesClient                       *RequestClient
 	byConvIDClient                      *RequestClient
 	fantacitorioClient                  *RequestClient
+	fantacitorioNoTweetsClient          *RequestClient
 	ghigliottinaClient                  *RequestClient
 	ghigliottinaTweetsErrorClient       *RequestClient
 	ghigliottinaNoTweetsClient          *RequestClient
@@ -52,6 +53,11 @@ func TestMain(m *testing.M) {
 		"/users/1492255549844566018/tweets": test.ReadFile("../mock/fantacitorio_tweets.json"),
 	})
 	defer fantacitorioServer.Close()
+
+	fantacitorioNoTweetsServer := test.CreateMultiServer(map[string][]byte{
+		"/users/by/username/Fanta_citorio": test.ReadFile("../mock/fantacitorio_user.json"),
+	})
+	defer fantacitorioNoTweetsServer.Close()
 
 	ghigliottinaServer := test.CreateMultiServer(map[string][]byte{
 		"/users/by/username/quizzettone":    test.ReadFile("../mock/ghigliottina_user.json"),
@@ -113,6 +119,10 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	fantacitorioClient, err = NewClient(fantacitorioServer.URL, "", "")
+	if err != nil {
+		panic(err)
+	}
+	fantacitorioNoTweetsClient, err = NewClient(fantacitorioNoTweetsServer.URL, "", "")
 	if err != nil {
 		panic(err)
 	}
