@@ -21,11 +21,12 @@ func main() {
 	}
 
 	rand.Seed(time.Now().Unix())
+	// v2 request client creation
 	bearer := os.Getenv("TWITTER_BEARER")
 	if bearer == "" {
 		log.Fatalln("Missing environment variable TWITTER_BEARER")
 	}
-	client, err := request.NewClient("https://api.twitter.com/2/", "https://upload.twitter.com/1.1/", bearer)
+	client, err := request.NewClient("https://api.twitter.com/2/", bearer)
 	if err != nil {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
@@ -36,6 +37,29 @@ func main() {
 		log.Println("Missing environment variable SENTIMENT_SERVER, the analysis will be random")
 	}
 	request.SetSentimentURL(sentiment)
+
+	// v1 request client creation
+	consumerKey := os.Getenv("CONSUMER_KEY")
+	if consumerKey == "" {
+		log.Fatalln("Missing environment variable CONSUMER_KEY")
+	}
+	consumerSecret := os.Getenv("CONSUMER_SECRET")
+	if consumerSecret == "" {
+		log.Fatalln("Missing environment variable CONSUMER_SECRET")
+	}
+	oauthToken := os.Getenv("OAUTH_TOKEN")
+	if oauthToken == "" {
+		log.Fatalln("Missing environment variable OAUTH_TOKEN")
+	}
+	oauthSecret := os.Getenv("OAUTH_SECRET")
+	if oauthSecret == "" {
+		log.Fatalln("Missing environment variable OAUTH_SECRET")
+	}
+	v1Client, err := request.NewV1Client("https://upload.twitter.com/1.1/media/upload.json?media_category=tweet_image", "https://api.twitter.com/2/", consumerKey, consumerSecret, oauthToken, oauthSecret)
+	if err != nil {
+		log.Fatalf("Could not create http.Client (v1): %v", err)
+	}
+	request.SetV1Client(v1Client)
 
 	if err = cache.Open("bluebird.db", logger.Warn); err != nil {
 		log.Fatalf("Could not open database: %v", err)

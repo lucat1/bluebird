@@ -1,12 +1,33 @@
 package chess
 
 import (
+	"os"
 	"testing"
 	"time"
 
+	"git.hjkl.gq/team14/team14/request"
+	"git.hjkl.gq/team14/team14/test"
 	"github.com/notnil/chess"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMain(m *testing.M) {
+	postImageServer := test.CreateMultiServer(map[string][]byte{
+		"/": test.ReadFile("../mock/upload.json"),
+	})
+	defer postImageServer.Close()
+	postPostServer := test.CreateMultiServer(map[string][]byte{
+		"/tweets": test.ReadFile("../mock/post.json"),
+	})
+	defer postPostServer.Close()
+	client, err := request.NewV1Client(postImageServer.URL, postPostServer.URL, "", "", "", "")
+	if err != nil {
+		panic(err)
+	}
+	request.SetV1Client(client)
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestForfeit(t *testing.T) {
 	m := NewMatch(time.Minute)
