@@ -2,6 +2,7 @@ package cache
 
 import (
 	"log"
+	"math"
 	"os"
 	"strings"
 	"time"
@@ -125,6 +126,9 @@ func AddPointsPoliticianByNameSurname(p request.Politician) (err error) {
 		// update just in case it's new
 		if politician.LastUpdated.Before(p.LastUpdated) {
 			politician.Points += p.Points
+			politician.NPosts += p.NPosts
+			politician.BestSingleScore = int(math.Max(float64(politician.BestSingleScore), float64(p.BestSingleScore)))
+			politician.Average = float64(politician.NPosts) / float64(politician.Points)
 			politician.LastUpdated = p.LastUpdated
 			return db.Model(&request.Politician{}).Where(request.Politician{ID: politician.ID}).Update("points", politician.Points).Update("last_updated", politician.LastUpdated).Error
 		}

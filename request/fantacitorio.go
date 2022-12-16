@@ -100,6 +100,27 @@ func parsePolitician(text string) (res Politician, err error) {
 	return
 }
 
+func AddPoliticianToList(politician Politician, list []Politician) []Politician {
+
+	found := false
+	for i := range list {
+		if list[i].Name == politician.Name && list[i].Surname == politician.Surname {
+			list[i].Points += politician.Points
+			list[i].NPosts += 1
+			if list[i].BestSingleScore < politician.Points {
+				list[i].BestSingleScore = politician.Points
+			}
+			list[i].Average = float64(list[i].Points) / float64(list[i].NPosts)
+			found = true
+		}
+	}
+	if !found {
+		list = append(list, politician)
+	}
+
+	return list
+}
+
 // week by week , so 4/5 posts per day -> 30/40 posts per week
 func PoliticiansScore(n uint, startTime time.Time, endTime time.Time) (politicians []Politician, err error) {
 	tweets, err := TweetsByUser(FANTAUSER, n, &startTime, &endTime)
@@ -110,24 +131,11 @@ func PoliticiansScore(n uint, startTime time.Time, endTime time.Time) (politicia
 		split := strings.Split(t.Text, "\n")
 		for _, s := range split {
 			politician, err := parsePolitician(s)
-			if err == nil {
-				found := false
-				for i := range politicians {
-					if politicians[i].Name == politician.Name && politicians[i].Surname == politician.Surname {
-						politicians[i].Points += politician.Points
-						politicians[i].NPosts += 1
-						if politicians[i].BestSingleScore < politician.Points {
-							politicians[i].BestSingleScore = politician.Points
-						}
-						politicians[i].Average = float64(politicians[i].Points) / float64(politicians[i].NPosts)
-						found = true
-					}
-				}
-				if !found {
-					politician.LastUpdated = t.CreatedAt
-					politicians = append(politicians, politician)
-				}
+			if err != nil {
+				continue
 			}
+			politician.LastUpdated = t.CreatedAt
+			AddPoliticianToList(politician, politicians)
 		}
 	}
 	return
