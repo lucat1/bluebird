@@ -45,6 +45,10 @@ func (m *Match) start() {
 
 func (m *Match) end() {
 	select {
+	case m.cancel <- false:
+	default:
+	}
+	select {
 	case m.quit <- false:
 	default:
 	}
