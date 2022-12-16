@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"git.hjkl.gq/team14/team14/cache"
 	"git.hjkl.gq/team14/team14/request"
@@ -23,8 +24,8 @@ type PoliticiansScoreboardResponse struct {
 type TeamResponse struct {
 	Username   string   `json:"username"`
 	PictureURL string   `json:"picture_url"`
-	Name       string   `json:"name"`
-	Leader     string   `json:"leader"`
+	Name       string   `json:"name,omitempty"`
+	Leader     string   `json:"leader,omitempty"`
 	Members    []string `json:"members"`
 }
 
@@ -43,7 +44,23 @@ func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
 	rawStartTime := r.URL.Query().Get("startTime")
 	rawEndTime := r.URL.Query().Get("endTime")
 
-	politiciansScore, err = request.PoliticiansScore(uint(amount), rawStartTime, rawEndTime)
+	startTime, err := time.Parse(time.RFC3339, rawStartTime)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: "Start time is wrong",
+			Error:   err,
+		})
+		return
+	}
+	endTime, err := time.Parse(time.RFC3339, rawEndTime)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, APIError{
+			Message: "End time is wrong",
+			Error:   err,
+		})
+		return
+	}
+	politiciansScore, err = request.PoliticiansScore(uint(amount), startTime, endTime)
 	if err != nil {
 		sendError(w, http.StatusBadRequest, APIError{
 			Message: "Error while fetching politicians' scores",
@@ -51,6 +68,8 @@ func politiciansScoreHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	// adds to db
+	cache.AddPointsPoliticians(politiciansScore)
 	sendJSON(w, http.StatusOK, PoliticiansScoreResponse{
 		Politicians: politiciansScore,
 	})

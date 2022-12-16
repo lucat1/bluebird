@@ -121,7 +121,6 @@ func AddPointsPoliticianByNameSurname(p request.Politician) (err error) {
 		if err != nil {
 			return
 		}
-		politician, _ = PoliticianByNameSurname(p.Name, p.Surname)
 	} else {
 		// update just in case it's new
 		if politician.LastUpdated.Before(p.LastUpdated) {

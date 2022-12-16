@@ -1,6 +1,8 @@
 package request
 
-import "time"
+import (
+	"time"
+)
 
 func TweetByTweetID(tweetID string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets").

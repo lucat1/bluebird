@@ -35,8 +35,8 @@ export interface Actions {
   fetch(query: Query): Promise<void>;
 }
 
-const emptyPol : Politician = {
-  id : 0,
+const emptyPol: Politician = {
+  id: 0,
   name: "",
   surname: "",
   points: 0,
@@ -65,7 +65,7 @@ const getInitialState = (): State => ({
     best_average: emptyPol,
     best_single_score: emptyPol,
   },
-  teams:[],
+  teams: [],
   weekly: {
     politicians: [],
   }
@@ -96,14 +96,13 @@ const store = create<State & Actions>((set, get) => ({
     const tweets = req.tweets.map(convert);
 
     const scoreboard = await fetch<PoliticiansScoreboard>("fantacitorio/scoreboards")
-    const {teams} = await fetch<{teams:Team[]}>("fantacitorio/teams")
-    const end_date =  new Date()
-    const start_time= new Date(end_date)
+    const { teams } = await fetch<{ teams: Team[] }>("fantacitorio/teams")
+    const end_date = new Date()
+    const start_time = new Date(end_date)
     start_time.setDate(start_time.getDate() - 7)
     const weekly = await fetch<Points>(`fantacitorio/points?startTime=${start_time.toISOString()}&endTime=${end_date.toISOString()}`)
-    set({ ...get(), loading: false, tweets, scoreboard, teams, weekly});
+    set({ ...get(), loading: false, tweets, scoreboard, teams, weekly });
   },
-  
 }));
 
 export default store;
