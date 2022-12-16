@@ -11,12 +11,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	noMovesClient *request.RequestClient
+	movesClient   *request.RequestClient
+)
+
 func TestMain(m *testing.M) {
-	repliesServer := test.CreateMultiServer(map[string][]byte{
+	var err error
+	movesServer := test.CreateMultiServer(map[string][]byte{
+		"/tweets/search/recent": test.ReadFile("../mock/by_convid_moves.json"),
+		"/tweets":               test.ReadFile("../mock/by_tweetid.json"),
+	})
+	defer movesServer.Close()
+	noMovesServer := test.CreateMultiServer(map[string][]byte{
 		"/tweets/search/recent": test.ReadFile("../mock/by_convid.json"),
 		"/tweets":               test.ReadFile("../mock/by_tweetid.json"),
 	})
-	defer repliesServer.Close()
+	defer movesServer.Close()
 	postImageServer := test.CreateMultiServer(map[string][]byte{
 		"/": test.ReadFile("../mock/upload.json"),
 	})
@@ -30,11 +41,15 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	request.SetV1Client(client)
-	repliesClient, err := request.NewClient(repliesServer.URL, "")
+	movesClient, err = request.NewClient(movesServer.URL, "")
 	if err != nil {
 		panic(err)
 	}
-	request.SetClient(repliesClient)
+	noMovesClient, err = request.NewClient(noMovesServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	request.SetClient(movesClient)
 	code := m.Run()
 	os.Exit(code)
 }
@@ -57,9 +72,24 @@ func TestOnTurnEndNoWhiteMove(t *testing.T) {
 }
 
 func TestOnTurnEndNoBlackMove(t *testing.T) {
+	request.SetClient(noMovesClient)
 	m := NewMatch(time.Second)
 	m.PlayerMove("d3")
 	<-time.After(time.Second*time.Duration(1) + time.Millisecond*time.Duration(100))
 	assert.Equal(t, m.Game.Position().Turn(), chess.White, "Expected the player turn to be white after a random move (from the crowd)")
+	m.end()
+	request.SetClient(movesClient)
+}
+
+func TestOnTurnEndBlackMoved(t *testing.T) {
+	m := NewMatch(time.Second)
+	m.PlayerMove("d3")
+	<-time.After(time.Second*time.Duration(1) + time.Millisecond*time.Duration(100))
+	assert.Equal(t, m.Game.Position().Turn(), chess.White, "Expected the player turn to be white after a random move (from the crowd)")
+
+	exp := chess.NewGame()
+	exp.MoveStr("d3")
+	exp.MoveStr("f6")
+	assert.Equal(t, exp.FEN(), m.Game.FEN(), "Expected the moved to have been played")
 	m.end()
 }

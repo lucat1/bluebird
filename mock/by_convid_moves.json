@@ -1,33 +1,37 @@
 {
   "data": [
     {
-      "text": "Testando @bluebird_swe con il gruppo, la gang, i fra, i pazzi fuorilegge, le scimmie ammaestrate.",
-      "id": "1600882745034428416",
-      "created_at": "2022-12-08T15:59:24.000Z",
       "author_id": "926734851025309696",
-      "edit_history_tweet_ids": ["1600882745034428416"],
-      "conversation_id": "1600882745034428416"
+      "text": "@bluebird_swe f6",
+      "edit_history_tweet_ids": ["1600883734538244097"],
+      "created_at": "2022-12-08T16:03:19.000Z",
+      "id": "1600883734538244097"
     }
   ],
   "includes": {
     "users": [
       {
-        "username": "SpookyYonno",
-        "description": "Man I love frogs",
         "verified": false,
         "public_metrics": {
           "followers_count": 2,
           "following_count": 41,
-          "tweet_count": 7,
+          "tweet_count": 6,
           "listed_count": 0
         },
         "id": "926734851025309696",
-        "created_at": "2017-11-04T08:56:21.000Z",
         "profile_image_url": "https://pbs.twimg.com/profile_images/1499372338802008072/sD3WAfQ0_normal.jpg",
         "location": "Bologna, Emilia Romagna",
+        "username": "SpookyYonno",
+        "name": "Yonas Catalini",
         "protected": false,
-        "name": "Yonas Catalini"
+        "description": "Man I love frogs",
+        "created_at": "2017-11-04T08:56:21.000Z"
       }
     ]
+  },
+  "meta": {
+    "newest_id": "1600883734538244097",
+    "oldest_id": "1600883734538244097",
+    "result_count": 1
   }
 }
