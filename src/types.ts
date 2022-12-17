@@ -104,7 +104,7 @@ export interface Politician {
 }
 
 export interface PoliticiansScoreboard {
-  politicians: Politician[];
+  politicians: Politician[] | null;
   best_climber: Politician;
   best_average: Politician;
   best_single_score: Politician;
@@ -116,5 +116,5 @@ export interface Team {
 }
 
 export interface Points {
-  politicians: Politician[]
+  politicians: Politician[] | null
 }

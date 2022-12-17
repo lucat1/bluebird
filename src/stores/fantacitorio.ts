@@ -1,4 +1,3 @@
-
 import create from "zustand";
 import type { DateRange } from "@react-types/datepicker";
 import { now } from "@internationalized/date";
@@ -6,7 +5,6 @@ import { now } from "@internationalized/date";
 import fetch from "../fetch";
 import { convert } from "./store";
 import { Search, Tweet, Politician, PoliticiansScoreboard, Team, Points } from "../types";
-import { Point } from "leaflet";
 
 export enum QueryType {
   Keyword = "keyword",
@@ -95,7 +93,7 @@ const store = create<State & Actions>((set, get) => ({
     const req = await fetch<Search>(searchURL("search", query));
     const tweets = req.tweets.map(convert);
 
-    const scoreboard = await fetch<PoliticiansScoreboard>("fantacitorio/scoreboards")
+    const scoreboard = await fetch<PoliticiansScoreboard>("fantacitorio/scoreboard")
     const { teams } = await fetch<{ teams: Team[] }>("fantacitorio/teams")
     const end_date = new Date()
     const start_time = new Date(end_date)

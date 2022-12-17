@@ -44,11 +44,11 @@ const Fantacitorio: React.FC = () => {
               </div>
               <div className="box-border flex items-center justify-evenly aspect-video lg:p-2 ">
                 <div className="flex flex-col">
-                  {scoreboard.politicians.slice(0, 32).map((p, index) => (<p key={p.id}>{index + 1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
+                  {scoreboard.politicians?.slice(0, 32).map((p, index) => (<p key={p.id}>{index + 1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
                   )}
                 </div>
                 <div className="flex flex-col">
-                  {scoreboard.politicians.slice(32, 64).map((p, index) => (<p key={p.id}> {index + 33}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
+                  {scoreboard.politicians?.slice(32, 64).map((p, index) => (<p key={p.id}> {index + 33}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>)
                   )}
                 </div>
               </div>
@@ -59,7 +59,7 @@ const Fantacitorio: React.FC = () => {
 
             <div className="box-border flex flex-col items-center justify-evenly aspect-video lg:p-2 m-3">
               <span className="text-xl text-orange-500 m-1 font-bold">Clasifica settimanale</span>
-              {weekly.politicians.map((p, index) => (<p key={index}>{index + 1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>))}
+              {weekly.politicians?.map((p, index) => (<p key={index}>{index + 1}. <span className="text-orange-500">{p.points}</span> {p.name} {p.surname}</p>))}
 
             </div>
 
