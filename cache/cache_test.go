@@ -182,6 +182,15 @@ func TestPoliticians(t *testing.T) {
 	res, err = PoliticianByNameSurname(p1.Name, p1.Surname)
 	assert.Nil(t, err, "Expected no error")
 	assert.Equal(t, backupPoints, res.Points, "Expected points not to be added")
+
+	addP1 = request.Politician{Name: "N1", Surname: "S1", NPosts: 1, Points: 4, Average: 1, BestSingleScore: 4, LastUpdated: time.Now().Add(40)}
+	addP2 := request.Politician{Name: "N2", Surname: "S2", NPosts: 1, Points: 4, Average: 1, BestSingleScore: 4, LastUpdated: time.Now().Add(40)}
+	adds := []request.Politician{addP1, addP2}
+	err = AddPointsPoliticians(adds)
+	assert.Nil(t, err, "Expected no error")
+	res, err = PoliticianByNameSurname(p1.Name, p1.Surname)
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, backupPoints+addP1.Points, res.Points, "Expected points to be added")
 }
 
 func TestTeams(t *testing.T) {
