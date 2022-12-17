@@ -9,6 +9,8 @@ import (
 	"net/url"
 )
 
+var tweets, _ = url.Parse("tweets")
+
 func sendPost(url string, bodyReq []byte, contentType string) (res []byte, err error) {
 	resp, err := v1Client.HTTP.Post(url, contentType, bytes.NewBuffer(bodyReq))
 	if err != nil {
@@ -42,14 +44,12 @@ func PostCustom(payload TweetRequest) (res TweetResponse, err error) {
 	if err != nil {
 		return
 	}
-	tweets, err := url.Parse("tweets")
-	if err != nil {
-		return
-	}
+
 	rawRes, err := sendPost(v1Client.APIURL.ResolveReference(tweets).String(), buf, "application/json")
 	if err != nil {
 		return
 	}
+
 	var rawTweetRes rawTweetResponse
 	err = json.Unmarshal(rawRes, &rawTweetRes)
 	return rawTweetRes.Data, err

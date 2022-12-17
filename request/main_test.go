@@ -139,6 +139,7 @@ func TestMain(m *testing.M) {
 
 	postMediaServer := test.CreateMultiServer(map[string][]byte{
 		"/media/upload.json": test.ReadFile("../mock/post_media.json"),
+		"/tweets":            test.ReadFile("../mock/post_custom.json"),
 	})
 	defer postMediaServer.Close()
 
@@ -215,7 +216,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	postMediaClient, err = NewV1Client(postMediaServer.URL+"/media/upload.json?media_category=tweet_image", "https://api.twitter.com/2/", "fake", "fake", "fake", "fake")
+	postMediaClient, err = NewV1Client(postMediaServer.URL+"/media/upload.json?media_category=tweet_image", postMediaServer.URL, "fake", "fake", "fake", "fake")
 	if err != nil {
 		panic(err)
 	}
