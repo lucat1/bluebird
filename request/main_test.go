@@ -15,6 +15,11 @@ var (
 	byUserClient                        *RequestClient
 	rawSentimentResponse                sentimentResponse
 	byKeywordGeoResponse                tweetResponse
+	requestRawResponse                  userResponse
+	requestRawClient                    *RequestClient
+	requestRawErrorClient               *RequestClient
+	requestUserErrorClient              *RequestClient
+	requestTweetsErrorClient            *RequestClient
 	repliesClient                       *RequestClient
 	repliesNoRepliesClient              *RequestClient
 	repliesNoConvClient                 *RequestClient
@@ -55,6 +60,20 @@ func TestMain(m *testing.M) {
 		"/users/270839361/tweets":      test.ReadFile("../mock/by_user.json"),
 	})
 	defer byUserServer.Close()
+	requestRawServer := test.CreateMultiServer(map[string][]byte{
+		"/users/by/username/quizzettone": test.ReadFile("../mock/ghigliottina_user.json"),
+	})
+	defer requestRawServer.Close()
+	requestRawErrorServer := test.CreateMultiServer(map[string][]byte{})
+	defer requestRawErrorServer.Close()
+	requestUserErrorServer := test.CreateMultiServer(map[string][]byte{
+		"/users/by/username/quizzettone": test.ReadFile("../mock/no_user.json"),
+	})
+	defer requestUserErrorServer.Close()
+	requestTweetsErrorServer := test.CreateMultiServer(map[string][]byte{
+		"/users/270839361/tweets": test.ReadFile("../mock/no_tweets.json"),
+	})
+	defer requestTweetsErrorServer.Close()
 	sentimentServer := test.CreateMultiServer(map[string][]byte{
 		"/predict": test.ReadFile("../mock/sentiment.json"),
 	})
@@ -137,6 +156,22 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
+	requestRawClient, err = NewClient(requestRawServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	requestRawErrorClient, err = NewClient(requestRawErrorServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	requestUserErrorClient, err = NewClient(requestUserErrorServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	requestTweetsErrorClient, err = NewClient(requestTweetsErrorServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
 	fantacitorioClient, err = NewClient(fantacitorioServer.URL, "")
 	if err != nil {
 		panic(err)
@@ -179,6 +214,7 @@ func TestMain(m *testing.M) {
 	test.ReadJSON("../mock/by_user.json", &byUserResponse)
 	test.ReadJSON("../mock/sentiment.json", &rawSentimentResponse)
 	test.ReadJSON("../mock/by_keyword_geo.json", &byKeywordGeoResponse)
+	test.ReadJSON("../mock/ghigliottina_user.json", &requestRawResponse)
 	os.Exit(m.Run())
 }
 
