@@ -134,3 +134,76 @@ func TestTimeRange(t *testing.T) {
 	assert.EqualValues(t, tweets[0], testTweets[0], "Expected the tweet retrieved by username and time range to match the source one")
 	assert.Nil(t, clearDB(), "Failed to clean the Database")
 }
+
+func TestPoliticians(t *testing.T) {
+	p1 := request.Politician{Name: "N1", Surname: "S1", NPosts: 1, Points: 1, Average: 1, BestSingleScore: 1, LastUpdated: time.Now()}
+	p2 := request.Politician{Name: "N2", Surname: "S2", NPosts: 2, Points: 2, Average: 2, BestSingleScore: 2, LastUpdated: time.Now()}
+	p3 := request.Politician{Name: "N3", Surname: "S3", NPosts: 15, Points: 20, Average: 1.33, BestSingleScore: 4, LastUpdated: time.Now()}
+	ps := []request.Politician{p1, p2, p3}
+	err := InsertPoliticians(ps)
+	assert.Nil(t, err, "Failed to insert politicians")
+	res, err := PoliticianByNameSurname(p1.Name, p1.Surname)
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, p1.Name, res.Name, "Same name expected")
+	assert.Equal(t, p1.Surname, res.Surname, "Same surname expected")
+
+	scoreboard, err := PoliticiansScoreboard()
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, p3.Name, scoreboard[0].Name, "P3 expected to be first place")
+	assert.Equal(t, p3.Surname, scoreboard[0].Surname, "P3 expected to be first place")
+	assert.Equal(t, p2.Name, scoreboard[1].Name, "P2 expected to be second place")
+	assert.Equal(t, p2.Surname, scoreboard[1].Surname, "P2 expected to be second place")
+
+	res, err = PoliticianBestAverage()
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, p2.Name, res.Name, "P2 expected to had the best average")
+	assert.Equal(t, p2.Surname, res.Surname, "P2 expected to had the best average")
+
+	res, err = PoliticianBestSingleScore()
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, p3.Name, res.Name, "P3 expected to had the best single score")
+	assert.Equal(t, p3.Surname, res.Surname, "P3 expected to had the best single score")
+
+	addNew := request.Politician{Name: "N4", Surname: "S4", NPosts: 1, Points: 4, Average: 1, BestSingleScore: 4, LastUpdated: time.Now().Add(20)}
+	err = AddPointsPoliticianByNameSurname(addNew)
+	assert.Nil(t, err, "Expected no error")
+
+	addP1 := request.Politician{Name: "N1", Surname: "S1", NPosts: 1, Points: 4, Average: 1, BestSingleScore: 4, LastUpdated: time.Now().Add(20)}
+	err = AddPointsPoliticianByNameSurname(addP1)
+	assert.Nil(t, err, "Expected no error")
+	res, err = PoliticianByNameSurname(p1.Name, p1.Surname)
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, p1.Points+addP1.Points, res.Points, "Expected points to be added")
+	backupPoints := res.Points
+
+	addP1 = request.Politician{Name: "N1", Surname: "S1", NPosts: 1, Points: 4, Average: 1, BestSingleScore: 4, LastUpdated: time.Now().AddDate(0, 0, -1)}
+	err = AddPointsPoliticianByNameSurname(addP1)
+	assert.Nil(t, err, "Expected no error")
+	res, err = PoliticianByNameSurname(p1.Name, p1.Surname)
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, backupPoints, res.Points, "Expected points not to be added")
+}
+
+func TestTeams(t *testing.T) {
+	t1 := request.Team{Username: "t1", PictureURL: "url1"}
+	t2 := request.Team{Username: "t2", PictureURL: "url2"}
+	ts := []request.Team{t1, t2}
+	err := InsertTeams(ts)
+	assert.Nil(t, err, "Expected no error")
+
+	res, err := TeamsAll()
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, ts, res, "Teams should be the same inserted before")
+
+	st1, err := SearchTeamByUsername(t1.Username)
+	assert.Nil(t, err, "Expected no error")
+	assert.Equal(t, t1, st1, "Expected no error")
+
+	_, err = SearchTeamByUsername("not found")
+	assert.NotNil(t, err, "Expected error")
+}
+
+func TestClose(t *testing.T) {
+	err := Close()
+	assert.Nil(t, err, "Expected no error")
+}
