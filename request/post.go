@@ -16,7 +16,8 @@ func sendPost(url string, bodyReq []byte, contentType string) (res []byte, err e
 	}
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(resp.Body)
+	r, err := ioutil.ReadAll(resp.Body)
+	return r, err
 }
 
 func PostMedia(media []byte) (res MediaResponse, err error) {
