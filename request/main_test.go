@@ -33,6 +33,7 @@ var (
 	ghigliottinaNoRepliesClient         *RequestClient
 	ghigliottinaWinnersErrorClient      *RequestClient
 	ghigliottinaTimeErrorClient         *RequestClient
+	postMediaClient 					*RequestClientV1
 )
 
 func TestMain(m *testing.M) {
@@ -136,6 +137,11 @@ func TestMain(m *testing.M) {
 	})
 	defer ghigliottinaTimeErrorServer.Close()
 
+	postMediaServer := test.CreateMultiServer(map[string][]byte{
+		"/media/upload.json?media_category=tweet_image": test.ReadFile("../mock/post_media.json"),
+	})
+	defer postMediaServer.Close()
+
 	repliesClient, err = NewClient(repliesServer.URL, "")
 	if err != nil {
 		panic(err)
@@ -205,6 +211,11 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 	ghigliottinaTimeErrorClient, err = NewClient(ghigliottinaTimeErrorServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+
+	postMediaClient, err = NewV1Client("https://upload.twitter.com/1.1/media/upload.json?media_category=tweet_image", "https://api.twitter.com/2/", "fake","fake","fake","fake",)
 	if err != nil {
 		panic(err)
 	}
