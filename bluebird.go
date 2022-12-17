@@ -71,10 +71,6 @@ func main() {
 	log.Printf("Tweets in cache: %d", len(tweets))
 	defer cache.Close()
 
-	ss := time.Now().AddDate(0, 0, -1)
-	ee := time.Now()
-	request.Ghigliottina(&ss, &ee)
-
 	go func() {
 		startTime, _ := time.Parse(time.RFC3339, "2022-09-29T11:02:59.263Z")
 		politicians, err := request.PoliticiansScore(2000, startTime, time.Now())
