@@ -19,6 +19,7 @@ export interface State {
   error: string | null;
   loading: boolean;
 
+  moves: { [key: string]: number } | null;
   code: string | null;
   end: CalendarDateTime | null;
   timeout: NodeJS.Timer | null;
@@ -58,6 +59,7 @@ const initialState: State = {
   tweets: null,
   board: null,
   turn: null,
+  moves: null,
 };
 
 const algebraic = (
@@ -109,18 +111,21 @@ const store = create<State & Actions>((set, get) => ({
         }
         const end = parseDateTime(data.ends_at.slice(0, -1));
         const board = new Chess(data.game);
+        const moves = data.moves;
 
         // clear any previous timeout
         let { timeout, _timeout } = get();
         if (timeout) clearTimeout(timeout);
 
-        const gameover = data.forfeited ? 'f' : board.isDraw()
+        const gameover = data.forfeited
+          ? "f"
+          : board.isDraw()
           ? "d"
           : board.isCheckmate()
-            ? board.turn() == "w"
-              ? "b"
-              : "w"
-            : null;
+          ? board.turn() == "w"
+            ? "b"
+            : "w"
+          : null;
         if (!gameover)
           timeout = setTimeout(
             _timeout,
@@ -136,6 +141,7 @@ const store = create<State & Actions>((set, get) => ({
           gameover,
           turn: board.turn(),
           timeout,
+          moves,
         });
         console.log("match", get());
         break;
@@ -209,8 +215,13 @@ const store = create<State & Actions>((set, get) => ({
     if (connecting || !connection) return null;
 
     console.log("surrendering");
-    connection.send(JSON.stringify({ type: ChessMessageType.Forfeit, data: "" } as OutgoingMessage))
-  }
+    connection.send(
+      JSON.stringify({
+        type: ChessMessageType.Forfeit,
+        data: "",
+      } as OutgoingMessage)
+    );
+  },
 }));
 
 export default store;

@@ -6,7 +6,7 @@ import { useElementSize } from "usehooks-ts";
 import { Color } from "chess.js";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
-
+import ChessBars from "../components/chess-bars";
 import useChess from "../stores/chess";
 import MoveList from "../components/move-list";
 import Loading from "../components/loading";
@@ -113,9 +113,10 @@ const Chess: React.FC = () => {
         <>
           <div className="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-lg shadow dark:bg-gray-700 py-4 px-6">
             {gameover == "d"
-              ? "Pareggio" :
-              gameover == "f" ? "Il giocatore si è arreso, vince il Nero" :
-                `Scacco matto, vince il ${gameover == "w" ? "Bianco" : "Nero"}`}
+              ? "Pareggio"
+              : gameover == "f"
+              ? "Il giocatore si è arreso, vince il Nero"
+              : `Scacco matto, vince il ${gameover == "w" ? "Bianco" : "Nero"}`}
             ! La partita e' finita.
             <ChessStart onAuthorize={() => setAuthorized(true)} />
           </div>
@@ -190,7 +191,8 @@ const Chess: React.FC = () => {
                   onClick={(_) => forfeit()}
                 >
                   Arrenditi
-                </button>)}
+                </button>
+              )}
               <div className="flex flex-row m-3 p-1 self-center border border-orange-300 dark:bg-opacity-50 bg-opacity-40 bg-orange-400 shadow-md shadow-orange-300">
                 <div className="my-auto p-2">
                   <White />
@@ -215,8 +217,8 @@ const Chess: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="flex flex-row p-2 m-1 self-center">
-                Grafico a barre
+              <div className="flex flex-1 w-96 p-2 m-1 self-center">
+                <ChessBars />
               </div>
             </div>
           )}
