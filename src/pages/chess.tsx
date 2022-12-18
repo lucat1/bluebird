@@ -215,6 +215,9 @@ const Chess: React.FC = () => {
                   )}
                 </div>
               </div>
+              <div className="flex flex-row p-2 m-1 self-center">
+                Grafico a barre
+              </div>
             </div>
           )}
           <div className="flex flex-1 basis-1/4 flex-col p-2">
