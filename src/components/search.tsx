@@ -31,7 +31,7 @@ const Search: React.FC = () => {
               htmlFor="type"
               className="sr-only block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
             >
-              Search type
+              Tipo di ricerca
             </label>
             <select
               id="type"
@@ -75,7 +75,7 @@ const Search: React.FC = () => {
               id="query"
               type="search"
               className="block p-4 pl-10 hover:border-gray-400   text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
-              placeholder="Search"
+              placeholder="Cerca"
               {...register("query", { required: true })}
             />
             <div className="relative">
@@ -83,11 +83,11 @@ const Search: React.FC = () => {
                 type="submit"
                 className="text-white absolute hover:bg-sky-700  right-2.5 bottom-2.5 bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
               >
-                Search
+                Cerca
               </button>
             </div>
           </div>
-          
+
         </form>
         {errors.query && <label className="text-red-500 mt-2 mb-4">A query is required</label>}
 

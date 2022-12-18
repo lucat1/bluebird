@@ -14,7 +14,7 @@ const TweetList: React.FC = () => {
     <>
       <div className="flex justify-center mb-4">
         <span className="dark:text-white">
-          Found{" "}
+          Trovati{" "}
           <span className="text-sky-800 dark:text-sky-600">
             {tweets.length || 0}
           </span>{" "}
