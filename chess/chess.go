@@ -98,6 +98,7 @@ func (m *Match) FetchTweets() (err error) {
 		return
 	}
 	m.Tweets = []request.Tweet{}
+	m.Moves = map[string]uint{}
 	for _, twt := range twts {
 		clone := m.Game.Clone()
 		first := moveFromText(twt.Text)
@@ -106,34 +107,12 @@ func (m *Match) FetchTweets() (err error) {
 		}
 		if err := clone.MoveStr(*first); err == nil {
 			tw := twt
-			first := moveFromText(twt.Text)
-			if first == nil {
-				continue
-			}
 			tw.Text = *first
 			m.Tweets = append(m.Tweets, tw)
+			m.Moves[*first]++
 		}
 	}
 	m.sendUpdate()
-	return
-}
-
-func (m *Match) getMoves() (moves map[string]uint, err error) {
-	moves = map[string]uint{}
-	tweets, err := request.Replies(m.TweetID, math.MaxInt, nil, nil)
-	if err != nil {
-		return
-	}
-	for _, tweet := range tweets {
-		clone := m.Game.Clone()
-		first := moveFromText(tweet.Text)
-		if first == nil {
-			continue
-		}
-		if err := clone.MoveStr(*first); err == nil {
-			moves[*first]++
-		}
-	}
 	return
 }
 

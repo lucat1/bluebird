@@ -25,6 +25,7 @@ type Match struct {
 	Game      *chess.Game
 	TweetID   string
 	Tweets    []request.Tweet
+	Moves     map[string]uint
 	Forfeited bool
 
 	// player move cancel
@@ -102,6 +103,7 @@ type SerializedMatch struct {
 	EndsAt    time.Time       `json:"ends_at"`
 	Game      string          `json:"game"`
 	Tweets    []request.Tweet `json:"tweets"`
+	Moves     map[string]uint `json:"moves"`
 	Forfeited bool            `json:"forfeited"`
 }
 
@@ -112,6 +114,7 @@ func (m *Match) Serialized() SerializedMatch {
 		EndsAt:    m.EndsAt,
 		Game:      m.Game.FEN(),
 		Tweets:    m.Tweets,
+		Moves:     m.Moves,
 		Forfeited: m.Forfeited,
 	}
 }

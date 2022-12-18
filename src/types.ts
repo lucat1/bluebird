@@ -89,6 +89,9 @@ export interface Match {
   ends_at: string;
   game: string;
   tweets: Tweet[] | null;
+  moves: {
+    [key: string]: number;
+  };
   forfeited: boolean;
 }
 

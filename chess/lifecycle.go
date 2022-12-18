@@ -15,15 +15,15 @@ func (m *Match) Forfeit() {
 	m.end()
 }
 
-func (m *Match) twitterMoves() (move *string) {
-	moves, err := m.getMoves()
+func (m *Match) bestTwitterMove() (move *string) {
+	err := m.FetchTweets()
 	if err != nil {
 		log.Printf("Could not get tweets replies: %v", err)
 		return
 	}
-	if len(moves) != 0 {
+	if len(m.Moves) != 0 {
 		var mostValued uint
-		for mv, val := range moves {
+		for mv, val := range m.Moves {
 			if val > mostValued {
 				move = &mv
 				mostValued = val
@@ -41,7 +41,7 @@ func (m *Match) onTurnEnd() {
 		// Play a random move if the palyer didn't pick in time
 		move = m.randomMove()
 	} else {
-		move = m.twitterMoves()
+		move = m.bestTwitterMove()
 	}
 	if move != nil {
 		if err := m.move(*move); err != nil {
