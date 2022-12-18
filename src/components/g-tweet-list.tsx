@@ -31,10 +31,11 @@ const TweetList: React.FC = () => {
         return (
           <div
             key={tweet.id}
-            className={`${tweet.rightWord
+            className={`${
+              tweet.rightWord
                 ? "border border-green-600"
                 : "border border-red-600"
-              } dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900`}
+            } dark:bg-gray-800 p-4 my-4 rounded-lg shadow-2xl shadow-zinc-400 dark:shadow-sky-900`}
           >
             <div className="flex items-center justify-between mb-4">
               <a

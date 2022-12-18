@@ -119,5 +119,5 @@ export interface Team {
 }
 
 export interface Points {
-  politicians: Politician[] | null
+  politicians: Politician[] | null;
 }

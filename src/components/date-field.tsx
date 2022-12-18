@@ -1,11 +1,23 @@
 import * as React from "react";
 import { useLocale } from "@react-aria/i18n";
-import { DateFieldState, DateFieldStateOptions, DateSegment, useDateFieldState } from "@react-stately/datepicker";
-import { AriaDatePickerProps, useDateField, useDateSegment } from "@react-aria/datepicker";
+import {
+  DateFieldState,
+  DateFieldStateOptions,
+  DateSegment,
+  useDateFieldState,
+} from "@react-stately/datepicker";
+import {
+  AriaDatePickerProps,
+  useDateField,
+  useDateSegment,
+} from "@react-aria/datepicker";
 import { createCalendar } from "@internationalized/date";
 import { DateValue } from "@react-types/calendar";
 
-const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }> = ({ segment, state }) => {
+const DateSegmentView: React.FC<{
+  segment: DateSegment;
+  state: DateFieldState;
+}> = ({ segment, state }) => {
   let ref = React.useRef();
   let { segmentProps } = useDateSegment(segment, state, ref as any);
 
@@ -15,11 +27,13 @@ const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }>
       ref={ref as any}
       style={{
         ...segmentProps.style,
-        minWidth:
-          segment.maxValue && String(segment.maxValue).length + "ch"
+        minWidth: segment.maxValue && String(segment.maxValue).length + "ch",
       }}
-      className={`px-0.5 box-content tabular-nums text-right outline-none rounded-sm focus:bg-sky-600 focus:text-white group ${!segment.isEditable ? "text-gray-500 dark:text-gray-500" : "text-gray-800 dark:text-gray-400"
-        }`}
+      className={`px-0.5 box-content tabular-nums text-right outline-none rounded-sm focus:bg-sky-600 focus:text-white group ${
+        !segment.isEditable
+          ? "text-gray-500 dark:text-gray-500"
+          : "text-gray-800 dark:text-gray-400"
+      }`}
     >
       {/* Always reserve space for the placeholder, to prevent layout shift when editing. */}
       <span
@@ -28,7 +42,7 @@ const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }>
         style={{
           visibility: segment.isPlaceholder ? undefined : "hidden",
           height: segment.isPlaceholder ? "" : 0,
-          pointerEvents: "none"
+          pointerEvents: "none",
         }}
       >
         {segment.placeholder}
@@ -36,13 +50,13 @@ const DateSegmentView: React.FC<{ segment: DateSegment, state: DateFieldState }>
       {segment.isPlaceholder ? "" : segment.text}
     </div>
   );
-}
+};
 const DateField: React.FC<AriaDatePickerProps<DateValue>> = (props) => {
   let { locale } = useLocale();
   let state = useDateFieldState({
     ...props,
     locale,
-    createCalendar
+    createCalendar,
   });
 
   let ref = React.useRef();
@@ -55,7 +69,6 @@ const DateField: React.FC<AriaDatePickerProps<DateValue>> = (props) => {
       ))}
     </div>
   );
-}
+};
 
-
-export default DateField
+export default DateField;

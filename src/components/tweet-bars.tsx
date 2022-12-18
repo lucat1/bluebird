@@ -1,15 +1,15 @@
 import * as React from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Tooltip } from "react-leaflet";
-import { CalendarDateTime, isSameDay } from '@internationalized/date';
-import format from 'tinydate'
+import { CalendarDateTime, isSameDay } from "@internationalized/date";
+import format from "tinydate";
 
-import useStore from '../stores/store'
+import useStore from "../stores/store";
 import type { Tweet } from "../types";
 
 interface Data {
-  name: string,
-  value: number,
+  name: string;
+  value: number;
 }
 
 const findBounds = (tweets: Tweet[]): [CalendarDateTime, CalendarDateTime] => {
@@ -17,62 +17,69 @@ const findBounds = (tweets: Tweet[]): [CalendarDateTime, CalendarDateTime] => {
   oldest = newest = tweets[0].date;
   for (const element of tweets) {
     let curr = element.date;
-    if (curr.compare(newest) > 0)
-      newest = curr;
-    if (curr.compare(oldest) < 0)
-      oldest = curr;
+    if (curr.compare(newest) > 0) newest = curr;
+    if (curr.compare(oldest) < 0) oldest = curr;
   }
   return [oldest, newest];
-}
+};
 
 enum TimeDifference {
   Day,
   Hour,
-  Minutes
+  Minutes,
 }
 
 const dayFormatter = format("{DD}/{MM}/{YYYY}"),
   hourFormatter = format("{HH}"),
-  minutesFormatter = format("{HH}:{mm}")
+  minutesFormatter = format("{HH}:{mm}");
 
 const TweetBars: React.FC = () => {
-  const tweets = useStore(s => s.tweets)
+  const tweets = useStore((s) => s.tweets);
 
   const data = React.useMemo(() => {
-    if (tweets.length == 0) return null
+    if (tweets.length == 0) return null;
     let [oldest, newest] = findBounds(tweets);
     const map: Map<string, [number, CalendarDateTime]> = new Map();
-    let diff = TimeDifference.Day
+    let diff = TimeDifference.Day;
     if (isSameDay(oldest, newest) && oldest.hour - newest.hour <= 2) {
-      diff = TimeDifference.Hour
+      diff = TimeDifference.Hour;
       if (oldest.hour == newest.hour) {
-        diff = TimeDifference.Minutes
+        diff = TimeDifference.Minutes;
       }
     }
     for (const element of tweets) {
       let key;
       switch (diff) {
         case TimeDifference.Day:
-          key = dayFormatter(element.date.toDate('utc'))
+          key = dayFormatter(element.date.toDate("utc"));
           break;
         case TimeDifference.Hour:
-          key = hourFormatter(element.date.toDate('utc'))
+          key = hourFormatter(element.date.toDate("utc"));
           break;
         case TimeDifference.Minutes:
-          key = minutesFormatter(element.date.toDate('utc'))
+          key = minutesFormatter(element.date.toDate("utc"));
           break;
       }
       let val = (map.get(key) || [0])[0] + 1;
       map.set(key, [val, element.date]);
     }
 
-    return Array.from(map.keys()).reduce<(Data & { date: CalendarDateTime })[]>((prev, name) => [...prev, {
-      name,
-      value: map.get(name)![0], date: map.get(name)![1]
-    }], []).sort((a, b) => a.date.compare(b.date));
-  }, [tweets])
+    return Array.from(map.keys())
+      .reduce<(Data & { date: CalendarDateTime })[]>(
+        (prev, name) => [
+          ...prev,
+          {
+            name,
+            value: map.get(name)![0],
+            date: map.get(name)![1],
+          },
+        ],
+        []
+      )
+      .sort((a, b) => a.date.compare(b.date));
+  }, [tweets]);
 
-  if (data == null) return null
+  if (data == null) return null;
 
   return (
     <div className="w-full h-full">
@@ -83,7 +90,6 @@ const TweetBars: React.FC = () => {
           <Tooltip />
           <Bar isAnimationActive={true} dataKey="value" fill="#0284c7" />
         </BarChart>
-
       </ResponsiveContainer>
     </div>
   );

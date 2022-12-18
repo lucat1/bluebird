@@ -1,13 +1,16 @@
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { now } from '@internationalized/date';
+import { now } from "@internationalized/date";
 import shallow from "zustand/shallow";
 
-import useStore, { Query, QueryType } from '../stores/store'
-import DateRangePicker from './date-range-picker'
+import useStore, { Query, QueryType } from "../stores/store";
+import DateRangePicker from "./date-range-picker";
 
 const Search: React.FC = () => {
-  const { query, fetch } = useStore(s => ({ query: s.query, fetch: s.fetch }), shallow)
+  const { query, fetch } = useStore(
+    (s) => ({ query: s.query, fetch: s.fetch }),
+    shallow
+  );
   const {
     register,
     control,
@@ -16,8 +19,8 @@ const Search: React.FC = () => {
     formState: { errors },
   } = useForm<Query>({ defaultValues: query });
   React.useEffect(() => {
-    setValue('query', query.query)
-  }, [query, setValue])
+    setValue("query", query.query);
+  }, [query, setValue]);
 
   return (
     <>
@@ -87,19 +90,20 @@ const Search: React.FC = () => {
               </button>
             </div>
           </div>
-
         </form>
-        {errors.query && <label className="text-red-500 mt-2 mb-4">A query is required</label>}
+        {errors.query && (
+          <label className="text-red-500 mt-2 mb-4">A query is required</label>
+        )}
 
         <div className="mb-4">
           <Controller
             control={control}
-            name='timeRange'
+            name="timeRange"
             rules={{
-              validate: range => {
+              validate: (range) => {
                 if (!range) return true;
-                return range.end.compare(now('utc')) <= 0
-              }
+                return range.end.compare(now("utc")) <= 0;
+              },
             }}
             render={({ field: { onChange, value } }) => (
               <DateRangePicker
@@ -110,8 +114,13 @@ const Search: React.FC = () => {
                 onChange={onChange}
                 value={value}
               />
-            )} />
-          {errors.timeRange && <label className="text-red-500">Cannot pick a date in the future</label>}
+            )}
+          />
+          {errors.timeRange && (
+            <label className="text-red-500">
+              Cannot pick a date in the future
+            </label>
+          )}
         </div>
       </div>
     </>

@@ -13,16 +13,12 @@ const RangeCalendar: React.FC<RangeCalendarProps<DateValue>> = (props) => {
   let state = useRangeCalendarState({
     ...props,
     locale,
-    createCalendar
+    createCalendar,
   });
 
   let ref = useRef();
-  let {
-    calendarProps,
-    prevButtonProps,
-    nextButtonProps,
-    title
-  } = useRangeCalendar(props, state, ref as any);
+  let { calendarProps, prevButtonProps, nextButtonProps, title } =
+    useRangeCalendar(props, state, ref as any);
 
   return (
     <div {...calendarProps} ref={ref as any} className="inline-block">
@@ -38,6 +34,6 @@ const RangeCalendar: React.FC<RangeCalendarProps<DateValue>> = (props) => {
       <CalendarGrid state={state} />
     </div>
   );
-}
+};
 
-export default RangeCalendar
+export default RangeCalendar;

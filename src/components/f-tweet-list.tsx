@@ -7,7 +7,6 @@ import Legend from "./legend";
 
 const dateFormatter = format("{DD}/{MM}/{YYYY} {HH}:{mm}");
 
-
 const TweetList: React.FC = () => {
   const tweets = useStore((s) => s.tweets);
   return (

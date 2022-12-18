@@ -1,10 +1,20 @@
 import * as React from "react";
 import { FocusScope } from "@react-aria/focus";
 import { useDialog } from "@react-aria/dialog";
-import { useOverlay, useModal, DismissButton, AriaOverlayProps } from "@react-aria/overlays";
+import {
+  useOverlay,
+  useModal,
+  DismissButton,
+  AriaOverlayProps,
+} from "@react-aria/overlays";
 import { mergeProps } from "@react-aria/utils";
 
-const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({ isOpen, onClose, children, ...otherProps }) => {
+const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({
+  isOpen,
+  onClose,
+  children,
+  ...otherProps
+}) => {
   let ref = React.useRef<HTMLDivElement>();
 
   // Handle events that should cause the popup to close,
@@ -14,7 +24,7 @@ const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({ isOpen, 
       isOpen,
       onClose,
       shouldCloseOnBlur: true,
-      isDismissable: true
+      isDismissable: true,
     },
     ref as any
   );
@@ -26,7 +36,7 @@ const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({ isOpen, 
   // to allow screen reader users to dismiss the popup easily.
   return (
     <FocusScope contain restoreFocus>
-      <div 
+      <div
         {...mergeProps(overlayProps, modalProps, dialogProps)}
         ref={ref as any}
         className="absolute place-self-center dark:bg-gray-300 top-full bg-white border border-gray-300 rounded-md shadow-lg text-gray-700 mt-2 p-8 z-10"
@@ -36,6 +46,6 @@ const Popover: React.FC<React.PropsWithChildren<AriaOverlayProps>> = ({ isOpen, 
       </div>
     </FocusScope>
   );
-}
+};
 
-export default Popover
+export default Popover;

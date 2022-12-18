@@ -1,18 +1,18 @@
 import * as React from "react";
 import { OverlayContainer } from "@react-aria/overlays";
-import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorBoundary } from "react-error-boundary";
 
-import useStore from '../stores/store'
-import Error from '../components/error';
+import useStore from "../stores/store";
+import Error from "../components/error";
 import Navbar from "../components/navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchPage from "./search-page";
 import Ghigliottina from "./ghigliottina";
-import Fantacitorio from "./fantacitorio"
+import Fantacitorio from "./fantacitorio";
 import Chess from "./chess";
 
 const App: React.FC = () => {
-  const reset = useStore(s => s.reset)
+  const reset = useStore((s) => s.reset);
 
   return (
     <OverlayContainer>
@@ -29,7 +29,7 @@ const App: React.FC = () => {
           </ErrorBoundary>
         </main>
       </BrowserRouter>
-    </OverlayContainer >
+    </OverlayContainer>
   );
-}
+};
 export default App;

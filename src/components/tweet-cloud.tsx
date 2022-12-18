@@ -1,11 +1,11 @@
 import * as React from "react";
 import shallow from "zustand/shallow";
-import WordCloud from "react-d3-cloud"
-import { scaleOrdinal } from 'd3-scale';
+import WordCloud from "react-d3-cloud";
+import { scaleOrdinal } from "d3-scale";
 // @ts-ignore
-import { schemeCategory10 } from 'd3-scale-chromatic';
+import { schemeCategory10 } from "d3-scale-chromatic";
 
-import useStore from '../stores/store'
+import useStore from "../stores/store";
 
 interface Word {
   [key: string]: any;
@@ -13,8 +13,28 @@ interface Word {
   value: number;
 }
 
-const blacklist = ["il", ".", "o", "e", "...", "se", "tu", "io", "noi", "lui", "i", "del", "le", "alle",
-  ";", ":", "/", "da", "alla", "?", "!",
+const blacklist = [
+  "il",
+  ".",
+  "o",
+  "e",
+  "...",
+  "se",
+  "tu",
+  "io",
+  "noi",
+  "lui",
+  "i",
+  "del",
+  "le",
+  "alle",
+  ";",
+  ":",
+  "/",
+  "da",
+  "alla",
+  "?",
+  "!",
   "la",
   "gli",
   "lo",
@@ -44,15 +64,15 @@ const blacklist = ["il", ".", "o", "e", "...", "se", "tu", "io", "noi", "lui", "
   "no",
   "al",
   "ma",
-  "che"
-]
+  "che",
+];
 
 const TweetCloud: React.FC = () => {
-  const texts = useStore(s => s.tweets.map(t => t.text), shallow)
+  const texts = useStore((s) => s.tweets.map((t) => t.text), shallow);
   const words = React.useMemo(() => {
     let obj: { [key: string]: number } = {};
     for (const text of texts) {
-      const words = text.split(/,| /)
+      const words = text.split(/,| /);
       for (const word of words) {
         obj[word] = (obj[word] || 0) + 1;
       }
@@ -60,11 +80,16 @@ const TweetCloud: React.FC = () => {
 
     return Object.keys(obj)
       .map((text) => ({ text, value: obj[text] }))
-      .filter((word) => word.value > 1 && !blacklist.includes(word.text.toLowerCase()) && !word.text.includes('#') &&
-        !(/^\d/.test(word.text)))
+      .filter(
+        (word) =>
+          word.value > 1 &&
+          !blacklist.includes(word.text.toLowerCase()) &&
+          !word.text.includes("#") &&
+          !/^\d/.test(word.text)
+      )
       .sort((a, b) => (a.value > b.value ? 1 : a.value < b.value ? -1 : 0))
       .slice(0, 80) as Word[];
-  }, [texts])
+  }, [texts]);
 
   const schemeCategory10ScaleOrdinal = scaleOrdinal(schemeCategory10);
 
