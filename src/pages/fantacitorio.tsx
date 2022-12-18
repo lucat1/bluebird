@@ -7,7 +7,6 @@ import Search from "../components/f-search";
 import TweetList from "../components/f-tweet-list";
 import Slideshow from "../components/f-slideshow";
 
-
 const Fantacitorio: React.FC = () => {
   const { query, loading, fetch, scoreboard, teams, weekly } = useStore(s => ({
     fetch: s.fetch,
@@ -53,7 +52,7 @@ const Fantacitorio: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none  aspect-video">
+            <div className="xl:p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none aspect-video">
               <Slideshow {...{ teams }} />
             </div>
 
