@@ -8,7 +8,7 @@ import TweetList from "../components/f-tweet-list";
 import Slideshow from "../components/f-slideshow";
 
 const Fantacitorio: React.FC = () => {
-  const { query, loading, fetch, scoreboard, teams, weekly } = useStore(
+  const { query, loading, fetch, scoreboard, teams } = useStore(
     (s) => ({
       fetch: s.fetch,
       query: s.query,
@@ -48,7 +48,6 @@ const Fantacitorio: React.FC = () => {
                       </span>: {scoreboard.best_average.name}{" "}
                       {scoreboard.best_average.surname}
                     </p>
-                    {/*<p className="border-b-2 border-gray-500"> <span className="text-orange-500">BEST CLIMBER</span>: {scoreboard.best_climber.name} {scoreboard.best_climber.surname}</p> */}
                     <p className="border-b-2 border-gray-500">
                       {" "}
                       <span className="text-orange-500">BEST SINGLE SCORE</span>
@@ -80,20 +79,10 @@ const Fantacitorio: React.FC = () => {
                 </div>
               </div>
               <div className="xl:p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none aspect-video">
-                <Slideshow {...{ teams }} />
-              </div>
-
-              <div className="box-border flex flex-col items-center justify-evenly aspect-video lg:p-2 m-3">
-                <span className="text-xl text-orange-500 m-1 font-bold">
-                  Clasifica settimanale
+                <span className="text-xl mb-3 text-orange-500 m-1 text-center font-bold">
+                  Team
                 </span>
-                {weekly.politicians?.map((p, index) => (
-                  <p key={index}>
-                    {index + 1}.{" "}
-                    <span className="text-orange-500">{p.points}</span> {p.name}{" "}
-                    {p.surname}
-                  </p>
-                ))}
+                <Slideshow {...{ teams }} />
               </div>
             </div>
             <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">

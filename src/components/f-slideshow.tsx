@@ -42,7 +42,7 @@ const Slideshow: React.FC<{ teams: Team[] }> = (props) => {
           id="query"
           type="search"
           className="block p-4 hover:border-gray-400   text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
-          placeholder="Search username"
+          placeholder="Cerca per username"
           // {...register("query", { required: true })}
         />
       </div>
