@@ -65,6 +65,7 @@ func (m *Match) move(move string) error {
 	if m.Game.Outcome() == chess.NoOutcome {
 		m.EndsAt = time.Now().UTC().Add(m.Duration)
 		m.Tweets = []request.Tweet{}
+		m.Moves = map[string]uint{}
 	}
 	m.sendUpdate()
 	m.PostGame()
