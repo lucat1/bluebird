@@ -1,7 +1,7 @@
 FROM golang:alpine AS go-builder
 WORKDIR /workdir
 COPY . .
-RUN apk add --no-cache gcc musl-dev ca-certificates librsvg-dev cairo-dev pkgconfig
+RUN apk add --no-cache gcc musl-dev ca-certificates librsvg-dev cairo-dev pkgconfig font-misc-misc
 ENV CGO_CFLAGS_ALLOW=".*"
 ENV CGO_LDFLAGS_ALLOW=".*"
 RUN go get -d -v
