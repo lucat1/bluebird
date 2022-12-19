@@ -135,7 +135,7 @@ func PoliticiansScore(n uint, startTime time.Time, endTime time.Time) (politicia
 			politicians = AddPoliticianToList(politician, politicians)
 		}
 	}
-	return
+	return politicians, nil
 }
 
 func Teams() (teams []Team, err error) {
