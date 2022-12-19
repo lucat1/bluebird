@@ -72,7 +72,7 @@ const TweetMap: React.FC = () => {
         scrollWheelZoom={true}
         ref={map as any}
       >
-        <TileLayer url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png" />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {mappedTweets.map(
           (tweet, i) =>
             tweet.geo && (
