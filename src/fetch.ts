@@ -24,7 +24,7 @@ export const searchURL = (
 
   let base = `${url}?type=${type}&query=${encodeURIComponent(
     query
-  )}&amount=100`;
+  )}&amount=500`;
   if (timeRange) {
     const start = timeRange.start
       .subtract({ hours: 1 })
