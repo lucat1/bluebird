@@ -52,7 +52,7 @@ const Fantacitorio: React.FC = () => {
                       {" "}
                       <span className="text-orange-500">BEST SINGLE SCORE</span>
                       : {scoreboard.best_single_score.name}{" "}
-                      {scoreboard.best_single_score.name}
+                      {scoreboard.best_single_score.surname}
                     </p>
                   </div>
                 </div>
