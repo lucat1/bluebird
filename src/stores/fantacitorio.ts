@@ -53,12 +53,10 @@ const getInitialState = (): State => ({
     type: QueryType.Keyword,
     query: "#fantacitorio",
     timeRange: {
-      start: now("utc")
-        .subtract({
-          days: 1,
-        })
-        .set({ hour: 18, minute: 0 }),
-      end: now("utc").subtract({ days: 1 }).set({ hour: 21, minute: 0 }),
+      start: now("utc").subtract({
+        days: 7,
+      }),
+      end: now("utc"),
     },
   },
   loading: true,
