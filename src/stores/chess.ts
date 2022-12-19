@@ -82,7 +82,8 @@ const store = create<State & Actions>((set, get) => ({
     set({ connecting: true });
     try {
       const connection = new WebSocket(
-        `${import.meta.env.DEV ? "ws://localhost:8080" : ""}/api/chess`
+        `${import.meta.env.DEV ? "ws://localhost:8080" : "wss://team14.hjkl.gq"
+        }/api/chess`
       );
       set({ connecting: true, connection });
       connection.onerror = (_) =>
@@ -120,12 +121,12 @@ const store = create<State & Actions>((set, get) => ({
         const gameover = data.forfeited
           ? "f"
           : board.isDraw()
-          ? "d"
-          : board.isCheckmate()
-          ? board.turn() == "w"
-            ? "b"
-            : "w"
-          : null;
+            ? "d"
+            : board.isCheckmate()
+              ? board.turn() == "w"
+                ? "b"
+                : "w"
+              : null;
         if (!gameover)
           timeout = setTimeout(
             _timeout,
