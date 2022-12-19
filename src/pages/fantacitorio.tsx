@@ -33,7 +33,7 @@ const Fantacitorio: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto lg:flex-1 ">
+            <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col lg:overflow-auto lg:flex-1 ">
               <div className="lg:p-2 flex flex-col flex-initial box-border ">
                 <div className="flex items-center justify-center m-2">
                   <div className="flex flex-col">
@@ -78,7 +78,7 @@ const Fantacitorio: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="xl:p-2 flex items-center flex-col flex-initial flex-1 xl:overflow-none aspect-video">
+              <div className="xl:p-2 p-4 flex items-center flex-col flex-initial flex-1 xl:overflow-none aspect-video">
                 <span className="text-xl mb-3 text-orange-500 m-1 text-center font-bold">
                   Team
                 </span>
