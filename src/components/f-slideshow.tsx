@@ -19,7 +19,7 @@ const Slideshow: React.FC<{ teams: Team[] }> = (props) => {
             </span>
           </div>
         ) : (
-          <Carousel dynamicHeight={true} renderIndicator={false}>
+          <Carousel dynamicHeight={true} renderIndicator={() => null}>
             {filteredTeams.map((team) => (
               <div key={team.username} className="w-full aspect-video">
                 <img src={team.picture_url} />
