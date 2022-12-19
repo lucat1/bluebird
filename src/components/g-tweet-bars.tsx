@@ -25,7 +25,7 @@ const GhigliottinaBars: React.FC = () => {
 
     for (const element of tweets) {
       let key;
-      key = minutesFormatter(element.date.toDate(getLocalTimeZone()));
+      key = minutesFormatter(element.date.toDate("UTC"));
       let mapElement = map.get(key) || [0, 0, element.date];
       element.rightWord ? mapElement[0]++ : mapElement[1]++;
       map.set(key, mapElement);

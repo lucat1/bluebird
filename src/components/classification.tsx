@@ -12,8 +12,11 @@ const Classification: React.FC = () => {
   }));
 
   const first = new Date(ghigliottina!.podium.first.time);
+  first.setHours(first.getHours() - 1);
   const second = new Date(ghigliottina!.podium.second.time);
+  second.setHours(second.getHours() - 1);
   const third = new Date(ghigliottina!.podium.third.time);
+  third.setHours(third.getHours() - 1);
   return (
     <div className="flex flex-col py-3">
       <div className="flex felx-row items-center justify-between mb-4 px-2 border-b-2 border-gray-500">

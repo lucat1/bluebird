@@ -55,9 +55,7 @@ const TweetList: React.FC = () => {
                   </div>
                 </div>
               </a>
-              <span>
-                {dateFormatter(tweet.date.toDate(getLocalTimeZone()))}
-              </span>
+              <span>{dateFormatter(tweet.date.toDate("UTC"))}</span>
             </div>
             {tweet.text}
             {tweet.sentiments && <Legend sentiments={tweet.sentiments || []} />}
