@@ -1,7 +1,43 @@
+import type { DateRange } from "@react-types/datepicker";
+
 interface Err {
   message: string;
   error: string;
 }
+
+export enum QueryType {
+  Keyword = "keyword",
+  User = "user",
+}
+
+export interface Query {
+  type: QueryType;
+  query: string;
+  timeRange: DateRange;
+}
+
+export const searchURL = (
+  url: string,
+  { type, query, timeRange }: Query
+): string => {
+  if (!type || !query) return url;
+
+  let base = `${url}?type=${type}&query=${encodeURIComponent(
+    query
+  )}&amount=100`;
+  if (timeRange) {
+    const start = timeRange.start
+      .subtract({ hours: 1 })
+      .toDate("utc")
+      .toISOString();
+    const end = timeRange.end
+      .subtract({ hours: 1 })
+      .toDate("utc")
+      .toISOString();
+    base += `&startTime=${start}&endTime=${end}`;
+  }
+  return base;
+};
 
 const f = async <T>(api: string, options?: RequestInit): Promise<T> => {
   const req = await fetch(

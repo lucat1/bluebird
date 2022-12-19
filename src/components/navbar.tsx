@@ -1,25 +1,8 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import shallow from "zustand/shallow";
-
-import useStore, { QueryType } from "../stores/store";
 
 const Navbar: React.FC = () => {
   const [open, setOpen] = React.useState(false);
-  const { query, fetch } = useStore(
-    (s) => ({ query: s.query, fetch: s.fetch }),
-    shallow
-  );
-  const search =
-    (hashtag: string): React.MouseEventHandler<HTMLAnchorElement> =>
-    (e) => {
-      e.preventDefault();
-      fetch({
-        type: QueryType.Keyword,
-        query: hashtag,
-        timeRange: query.timeRange,
-      });
-    };
 
   return (
     <nav className="flex flex-wrap justify-between bg-sky-800 border-gray-200 py-2 px-4 lg:px-8 dark:bg-gray-900">

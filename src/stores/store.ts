@@ -1,20 +1,8 @@
 import create from "zustand";
-import type { DateRange } from "@react-types/datepicker";
 import { parseDateTime, now } from "@internationalized/date";
 
-import fetch from "../fetch";
+import fetch, { searchURL, Query, QueryType } from "../fetch";
 import { Search, RawTweet, Tweet, SentimentSearch } from "../types";
-
-export enum QueryType {
-  Keyword = "keyword",
-  User = "user",
-}
-
-export interface Query {
-  type: QueryType;
-  query: string;
-  timeRange: DateRange;
-}
 
 export interface State {
   query: Query;
@@ -43,20 +31,6 @@ const getInitialState = (): State => ({
   tweets: [],
 });
 
-const searchURL = ({ type, query, timeRange }: Query): string => {
-  if (!type || !query) return `search`;
-
-  let base = `search?type=${type}&query=${encodeURIComponent(
-    query
-  )}&amount=100`;
-  if (timeRange) {
-    const start = timeRange.start.toDate("utc").toISOString();
-    const end = timeRange.end.toDate("utc").toISOString();
-    base += `&startTime=${start}&endTime=${end}`;
-  }
-  return base;
-};
-
 export const convert = (raw: RawTweet): Tweet => ({
   ...raw,
   date: parseDateTime(raw.created_at.slice(0, -1)),
@@ -69,7 +43,7 @@ const store = create<State & Actions>((set, get) => ({
   clearTweets: () => set({ ...get(), tweets: [] }),
   fetch: async (query: Query) => {
     set({ ...get(), loading: true, query, tweets: [] });
-    const res = await fetch<Search>(searchURL(query));
+    const res = await fetch<Search>(searchURL("search", query));
     const tweets = res.tweets.map(convert);
     set({ ...get(), loading: false, tweets });
     for (const tweet of tweets) {

@@ -1,8 +1,7 @@
 import create from "zustand";
-import type { DateRange } from "@react-types/datepicker";
 import { now } from "@internationalized/date";
 
-import fetch from "../fetch";
+import fetch, { searchURL, Query, QueryType } from "../fetch";
 import { convert } from "./store";
 import {
   Search,
@@ -12,17 +11,6 @@ import {
   Team,
   Points,
 } from "../types";
-
-export enum QueryType {
-  Keyword = "keyword",
-  User = "user",
-}
-
-export interface Query {
-  type: QueryType;
-  query: string;
-  timeRange: DateRange;
-}
 
 export interface State {
   query: Query;
@@ -72,20 +60,6 @@ const getInitialState = (): State => ({
     politicians: [],
   },
 });
-
-const searchURL = (url: string, { type, query, timeRange }: Query): string => {
-  if (!type || !query) return url;
-
-  let base = `${url}?type=${type}&query=${encodeURIComponent(
-    query
-  )}&amount=100`;
-  if (timeRange) {
-    const start = timeRange.start.toDate("utc").toISOString();
-    const end = timeRange.end.toDate("utc").toISOString();
-    base += `&startTime=${start}&endTime=${end}`;
-  }
-  return base;
-};
 
 const store = create<State & Actions>((set, get) => ({
   ...getInitialState(),

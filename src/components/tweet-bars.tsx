@@ -49,15 +49,16 @@ const TweetBars: React.FC = () => {
     }
     for (const element of tweets) {
       let key;
+      const date = element.date.toDate("utc");
       switch (diff) {
         case TimeDifference.Day:
-          key = dayFormatter(element.date.toDate("utc"));
+          key = dayFormatter(date);
           break;
         case TimeDifference.Hour:
-          key = hourFormatter(element.date.toDate("utc"));
+          key = hourFormatter(date);
           break;
         case TimeDifference.Minutes:
-          key = minutesFormatter(element.date.toDate("utc"));
+          key = minutesFormatter(date);
           break;
       }
       let val = (map.get(key) || [0])[0] + 1;
