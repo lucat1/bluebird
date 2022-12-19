@@ -33,7 +33,7 @@ const Fantacitorio: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col xl:overflow-auto lg:flex-1 ">
+            <div className="row-start-2 lg:row-start-1 lg:row-span-2 col-span-1 flex flex-col overflow-auto lg:flex-1 ">
               <div className="lg:p-2 flex flex-col flex-initial box-border ">
                 <div className="flex items-center justify-center m-2">
                   <div className="flex flex-col">
@@ -85,7 +85,7 @@ const Fantacitorio: React.FC = () => {
                 <Slideshow {...{ teams }} />
               </div>
             </div>
-            <div className="lg:p-4 flex flex-col flex-initial xl:h-1/2 lg:overflow-none">
+            <div className="row-start-4 lg:row-start-2 lg:col-start-2 lg:overflow-auto">
               <TweetList />
             </div>
           </>
