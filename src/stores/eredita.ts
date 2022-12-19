@@ -35,7 +35,7 @@ const getInitialState = (): State => ({
   show: Show.All,
   query: {
     type: QueryType.Keyword,
-    query: "#ghigliottina",
+    query: "#ghigliottina OR #leredita OR #leredità",
     timeRange: {
       start: now("utc")
         .subtract({

@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"os"
@@ -52,7 +51,6 @@ func Close() error {
 }
 
 func InsertTweets(tweets []request.Tweet) error {
-	fmt.Println(len(tweets))
 	return db.Clauses(clause.OnConflict{
 		DoNothing: true,
 	}).Create(&tweets).Error
@@ -69,14 +67,27 @@ func TweetsCount() (n int64, _ error) {
 	return n, db.Model(&request.Tweet{}).Count(&n).Error
 }
 
+const (
+	Like = "text LIKE ?"
+)
+
 func TweetsByKeyword(filter string, n uint, startTime, endTime *time.Time) (res []request.Tweet, err error) {
 	query := db.Limit(int(n)).Preload("User").Preload("Geo")
-	if startTime != nil && endTime != nil {
-		err = query.Find(&res, "text LIKE ? AND created_at >= ? AND created_at <= ?", "%"+filter+"%", startTime, endTime).Error
-	} else {
-		err = query.Find(&res, "text LIKE ?", filter).Error
+	text := ""
+	likes := []interface{}{}
+	parts := strings.Split(filter, " OR ")
+	for i, part := range parts {
+		likes = append(likes, "%"+part+"%")
+		text += Like
+		if i < len(parts)-1 {
+			text += " OR "
+		}
 	}
-	return res, err
+	if startTime != nil && endTime != nil {
+		likes = append(likes, startTime, endTime)
+		text += " AND created_at >= ? AND created_at <= ?"
+	}
+	return res, query.Where(text, likes...).Find(&res).Error
 }
 
 func TweetByID(id string) (res request.Tweet, err error) {

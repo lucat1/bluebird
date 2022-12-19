@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Tooltip } from "react-leaflet";
-import { CalendarDateTime, getLocalTimeZone } from "@internationalized/date";
+import { CalendarDateTime } from "@internationalized/date";
 import format from "tinydate";
 import useStore, { Show } from "../stores/eredita";
 
