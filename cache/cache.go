@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"os"
@@ -73,7 +74,7 @@ const (
 
 func TweetsByKeyword(filter string, n uint, startTime, endTime *time.Time) (res []request.Tweet, err error) {
 	query := db.Limit(int(n)).Preload("User").Preload("Geo")
-	text := ""
+	text := "("
 	likes := []interface{}{}
 	parts := strings.Split(filter, " OR ")
 	for i, part := range parts {
@@ -83,10 +84,12 @@ func TweetsByKeyword(filter string, n uint, startTime, endTime *time.Time) (res 
 			text += " OR "
 		}
 	}
+	text += ")"
 	if startTime != nil && endTime != nil {
 		likes = append(likes, startTime, endTime)
 		text += " AND created_at >= ? AND created_at <= ?"
 	}
+	fmt.Println(text, likes)
 	return res, query.Where(text, likes...).Find(&res).Error
 }
 

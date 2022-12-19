@@ -41,8 +41,8 @@ const getInitialState = (): State => ({
         .subtract({
           days: 1,
         })
-        .set({ hour: 18, minute: 0 }),
-      end: now("utc").subtract({ days: 1 }).set({ hour: 21, minute: 0 }),
+        .set({ hour: 19, minute: 0 }),
+      end: now("utc").subtract({ days: 1 }).set({ hour: 20, minute: 30 }),
     },
   },
   loading: true,
