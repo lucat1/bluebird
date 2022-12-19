@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -90,7 +91,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		log.Printf("Querying: \"%s\" %d %v %v", query, nOfAPITweets, startTime, endTime)
-		tweets, err = handler1(query, nOfAPITweets, &startTime, &endTime)
+		tweets, err = handler1(query, uint(math.Min(float64(nOfAPITweets), float64(amount))), &startTime, &endTime)
 		if err != nil {
 			log.Printf("Error while querying Twitter: %v", err)
 		}

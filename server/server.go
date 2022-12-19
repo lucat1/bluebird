@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	nOfAPITweets   uint = 100
+	nOfAPITweets   uint = 500
 	nOfDaysAllowed      = 7
 )
 

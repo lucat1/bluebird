@@ -61,7 +61,7 @@ func main() {
 	}
 	request.SetV1Client(v1Client)
 
-	if err = cache.Open("bluebird.db", logger.Warn); err != nil {
+	if err = cache.Open("bluebird.db", logger.Silent); err != nil {
 		log.Fatalf("Could not open database: %v", err)
 	}
 	tweets, err := cache.TweetsAll()

@@ -5,7 +5,6 @@ import "time"
 func TweetsByKeyword(keyword string, n uint, startTime, endTime *time.Time) (tweets []Tweet, err error) {
 	url, err := buildURL(NewRequest("tweets/search/recent").
 		WithQuery(keyword).
-		Lang(RequestQueryLangIT).
 		AddStartTime(startTime).
 		AddEndTime(endTime).
 		MaxResults(n).

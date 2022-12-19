@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"os"
@@ -51,6 +52,7 @@ func Close() error {
 }
 
 func InsertTweets(tweets []request.Tweet) error {
+	fmt.Println(len(tweets))
 	return db.Clauses(clause.OnConflict{
 		DoNothing: true,
 	}).Create(&tweets).Error
