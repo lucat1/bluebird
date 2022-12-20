@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Map } from "leaflet";
+import { Map, Icon } from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import markerIconPng from "leaflet/dist/images/marker-icon.png";
 
 import useStore from "../stores/store";
 import type { Tweet } from "../types";
@@ -76,7 +77,17 @@ const TweetMap: React.FC = () => {
         {mappedTweets.map(
           (tweet, i) =>
             tweet.geo && (
-              <Marker key={i} position={tweet.coordinates}>
+              <Marker
+                key={i}
+                position={tweet.coordinates}
+                icon={
+                  new Icon({
+                    iconUrl: markerIconPng,
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                  })
+                }
+              >
                 <Popup>{tweet.text}</Popup>
               </Marker>
             )
