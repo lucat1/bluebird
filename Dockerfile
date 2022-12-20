@@ -14,7 +14,7 @@ RUN yarn
 RUN yarn build
 
 FROM alpine
-RUN apk add --no-cache ca-certificates librsvg cairo font-misc-misc
+RUN apk add --no-cache ca-certificates librsvg cairo font-misc-misc ttf-inconsolata
 COPY --from=go-builder /workdir/bluebird /bluebird
 COPY --from=node-builder /workdir/dist /dist
 ENTRYPOINT ["/bluebird"]
