@@ -25,7 +25,8 @@ func (m *Match) bestTwitterMove() (move *string) {
 		var mostValued uint
 		for mv, val := range m.Moves {
 			if val > mostValued {
-				move = &mv
+				newmv := mv
+				move = &newmv
 				mostValued = val
 			}
 		}
