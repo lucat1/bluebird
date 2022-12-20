@@ -68,12 +68,12 @@ func (m *Match) move(move string) error {
 		m.Moves = map[string]uint{}
 	}
 	m.sendUpdate()
-	m.PostGame()
 	if m.Game.Outcome() == chess.NoOutcome {
 		m.delay(m.onTurnEnd)
 	} else {
 		m.end()
 	}
+	m.PostGame()
 	return nil
 }
 
