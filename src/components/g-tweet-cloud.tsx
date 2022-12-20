@@ -58,21 +58,27 @@ const TweetCloud: React.FC = () => {
       }
     }
 
-    return Object.keys(obj)
+    const words = Object.keys(obj)
       .map((text) => ({ text, value: obj[text] }))
       .filter(
         (word) =>
           !blacklist.includes(word.text.toLowerCase()) &&
           !word.text.includes("#") &&
+          !(word.text.length == 1) &&
           !/^\d/.test(word.text)
       )
       .sort((a, b) => (a.value < b.value ? 1 : a.value > b.value ? -1 : 0))
       .slice(0, 80) as Word[];
+
+    const max = words[0].value;
+    return words.map((word) => ({
+      ...word,
+      value: word.value / max,
+    })) as Word[];
   }, [texts]);
 
   const schemeCategory10ScaleOrdinal = scaleOrdinal(schemeCategory10);
 
-  console.log(words);
   return (
     <div className="bg-white dark:bg-gray-900 px-5 text-sm font-light overflow-hidden [&>*]:h-full [&>*]:flex [&>*]:justify-center [&>*>*]:h-full">
       <WordCloud
@@ -80,9 +86,9 @@ const TweetCloud: React.FC = () => {
         width={600}
         height={340}
         fontWeight="bold"
-        fontSize={(word) => Math.log2(word.value) * 10}
+        fontSize={(word) => Math.max(20, word.value * 80)}
         spiral="rectangular"
-        rotate={(word) => word.value % 360}
+        rotate={() => Math.random() * 180 - 90}
         padding={5}
         random={Math.random}
         fill={(_: any, i: any) => schemeCategory10ScaleOrdinal(i)}
