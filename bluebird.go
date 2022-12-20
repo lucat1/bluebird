@@ -31,6 +31,11 @@ func main() {
 		log.Fatalf("Could not create http.Client: %v", err)
 	}
 	request.SetClient(client)
+	ocrClient, err := request.NewClient("https://api8.ocr.space/parse/image", "")
+	if err != nil {
+		log.Fatalf("Could not create http.Client: %v", err)
+	}
+	request.SetOCRClient(ocrClient)
 
 	sentiment := os.Getenv("SENTIMENT_SERVER")
 	if sentiment == "" {

@@ -32,6 +32,13 @@ var winnersReg, _ = regexp.Compile(winnersRegText)
 
 const timeFormat = "15:04:05"
 
+func parseWord(word string, url string) (w string) {
+	if word == "" {
+		word, _ = GetWord(url)
+	}
+	return word
+}
+
 func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err error) {
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
@@ -51,14 +58,11 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 		return res, errors.New("No tweets were found")
 	}
 	match := reg.FindStringSubmatch(tweet.Text)
-	res.Word = (strings.Trim(match[1], " "))
-	if res.Word == "" {
-		ww, err := GetWord(((*tweet.Media)[0].URL))
-		if err != nil {
-			return res, err
-		}
-		res.Word = ww
+	mediaURL := ""
+	if len(*tweet.Media) > 0 {
+		mediaURL = (*tweet.Media)[0].URL
 	}
+	res.Word = parseWord((strings.Trim(match[1], " ")), mediaURL)
 
 	var tweetsReplies []Tweet
 	tweetsReplies, err = Replies(tweet.ID, 50, nil, nil)

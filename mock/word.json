@@ -1,0 +1,175 @@
+{
+  "ParsedResults": [
+    {
+      "TextOverlay": {
+        "Lines": [
+          {
+            "LineText": "LEREDITA",
+            "Words": [
+              {
+                "WordText": "LEREDITA",
+                "Left": 133.33332824707031,
+                "Top": 83.333328247070313,
+                "Height": 83.333328247070313,
+                "Width": 543.33331298828125
+              }
+            ],
+            "MaxHeight": 83.333328247070313,
+            "MinTop": 83.333328247070313
+          },
+          {
+            "LineText": "19 dicembre 2022",
+            "Words": [
+              {
+                "WordText": "19",
+                "Left": 175.83332824707031,
+                "Top": 190.83332824707031,
+                "Height": 39.166664123535156,
+                "Width": 55.833332061767578
+              },
+              {
+                "WordText": "dicembre",
+                "Left": 250.83332824707031,
+                "Top": 189.16665649414063,
+                "Height": 41.666664123535156,
+                "Width": 234.16665649414063
+              },
+              {
+                "WordText": "2022",
+                "Left": 501.66665649414063,
+                "Top": 190.83332824707031,
+                "Height": 40.0,
+                "Width": 123.33332824707031
+              }
+            ],
+            "MaxHeight": 41.666664123535156,
+            "MinTop": 189.16665649414063
+          },
+          {
+            "LineText": "#ghigliottina",
+            "Words": [
+              {
+                "WordText": "#ghigliottina",
+                "Left": 199.16665649414063,
+                "Top": 264.16665649414063,
+                "Height": 74.166664123535156,
+                "Width": 395.83331298828125
+              }
+            ],
+            "MaxHeight": 74.166664123535156,
+            "MinTop": 264.16665649414063
+          },
+          {
+            "LineText": "SOLLEVAMENTO",
+            "Words": [
+              {
+                "WordText": "SOLLEVAMENTO",
+                "Left": 148.33332824707031,
+                "Top": 389.16665649414063,
+                "Height": 65.833328247070313,
+                "Width": 508.33331298828125
+              }
+            ],
+            "MaxHeight": 65.833328247070313,
+            "MinTop": 389.16665649414063
+          },
+          {
+            "LineText": "ESSERE",
+            "Words": [
+              {
+                "WordText": "ESSERE",
+                "Left": 286.66665649414063,
+                "Top": 518.33331298828125,
+                "Height": 46.666664123535156,
+                "Width": 228.33332824707031
+              }
+            ],
+            "MaxHeight": 46.666664123535156,
+            "MinTop": 518.33331298828125
+          },
+          {
+            "LineText": "DUE MAGHI",
+            "Words": [
+              {
+                "WordText": "DUE",
+                "Left": 214.99998474121094,
+                "Top": 626.6666259765625,
+                "Height": 68.333328247070313,
+                "Width": 158.33332824707031
+              },
+              {
+                "WordText": "MAGHI",
+                "Left": 366.66665649414063,
+                "Top": 626.6666259765625,
+                "Height": 68.333328247070313,
+                "Width": 211.66665649414063
+              }
+            ],
+            "MaxHeight": 68.333328247070313,
+            "MinTop": 626.6666259765625
+          },
+          {
+            "LineText": "TAGLIA 5",
+            "Words": [
+              {
+                "WordText": "TAGLIA",
+                "Left": 251.66665649414063,
+                "Top": 756.6666259765625,
+                "Height": 48.333332061767578,
+                "Width": 226.66665649414063
+              },
+              {
+                "WordText": "5",
+                "Left": 498.33331298828125,
+                "Top": 756.6666259765625,
+                "Height": 48.333332061767578,
+                "Width": 30.833332061767578
+              }
+            ],
+            "MaxHeight": 48.333332061767578,
+            "MinTop": 756.6666259765625
+          },
+          {
+            "LineText": "RECIPIENTE",
+            "Words": [
+              {
+                "WordText": "RECIPIENTE",
+                "Left": 221.66665649414063,
+                "Top": 876.6666259765625,
+                "Height": 48.333332061767578,
+                "Width": 357.5
+              }
+            ],
+            "MaxHeight": 48.333332061767578,
+            "MinTop": 876.6666259765625
+          },
+          {
+            "LineText": "PALLONE",
+            "Words": [
+              {
+                "WordText": "PALLONE",
+                "Left": 199.99998474121094,
+                "Top": 1041.6666259765625,
+                "Height": 68.333328247070313,
+                "Width": 401.66665649414063
+              }
+            ],
+            "MaxHeight": 68.333328247070313,
+            "MinTop": 1041.6666259765625
+          }
+        ],
+        "HasOverlay": true,
+        "Message": "Total lines: 9"
+      },
+      "TextOrientation": "0",
+      "FileParseExitCode": 1,
+      "ParsedText": "LEREDITA\n19 dicembre 2022\n#ghigliottina\nSOLLEVAMENTO\nESSERE\nDUE MAGHI\nTAGLIA 5\nRECIPIENTE\nPALLONE",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    }
+  ],
+  "OCRExitCode": 1,
+  "IsErroredOnProcessing": false,
+  "ProcessingTimeInMilliseconds": "1015",
+  "SearchablePDFURL": "Searchable PDF not generated as it was not requested."
+}

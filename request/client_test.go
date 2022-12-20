@@ -18,3 +18,12 @@ func TestV1Client(t *testing.T) {
 	assert.Equal(t, client, Client(), "Client() should return the actual client")
 	assert.Equal(t, c, V1Client(), "V1Client() should return the actual v1client")
 }
+
+func TestOCRClient(t *testing.T) {
+	c, err := NewClient("https://upload.twitter.com/1.1/media/upload.json?media_category=tweet_image", "")
+	assert.Nil(t, err, "Expected no error")
+	SetOCRClient(c)
+	assert.Equal(t, c, ocrClient, "SetOCRClient should set a new client")
+	assert.Equal(t, ocrClient, OCRClient(), "OCRClient() should return the actual client")
+	assert.Equal(t, c, OCRClient(), "OCRClient() should return the actual ocrClient")
+}

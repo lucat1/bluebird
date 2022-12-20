@@ -20,8 +20,9 @@ type RequestClientV1 struct {
 }
 
 var (
-	client   *RequestClient
-	v1Client *RequestClientV1
+	client    *RequestClient
+	v1Client  *RequestClientV1
+	ocrClient *RequestClient
 )
 
 type transportWithHeader struct {
@@ -111,6 +112,10 @@ func SetV1Client(c *RequestClientV1) {
 	v1Client = c
 }
 
+func SetOCRClient(c *RequestClient) {
+	ocrClient = c
+}
+
 // Client returns the current http.Client being used to send requests
 func Client() *RequestClient {
 	return client
@@ -119,4 +124,8 @@ func Client() *RequestClient {
 // Client returns the current http.Client being used to send requests
 func V1Client() *RequestClientV1 {
 	return v1Client
+}
+
+func OCRClient() *RequestClient {
+	return ocrClient
 }

@@ -34,6 +34,9 @@ var (
 	ghigliottinaWinnersErrorClient      *RequestClient
 	ghigliottinaTimeErrorClient         *RequestClient
 	postMediaClient                     *RequestClientV1
+	ocrTestClient                       *RequestClient
+	ocrErrorClient                      *RequestClient
+	ocrJSONErrorClient                  *RequestClient
 )
 
 func TestMain(m *testing.M) {
@@ -143,6 +146,17 @@ func TestMain(m *testing.M) {
 	})
 	defer postMediaServer.Close()
 
+	ocrServer := test.CreateMultiServer(map[string][]byte{
+		"/parse/image": test.ReadFile("../mock/word.json"),
+	})
+	defer ocrServer.Close()
+	ocrErrorServer := test.CreateMultiServer(map[string][]byte{})
+	defer ocrErrorServer.Close()
+	ocrJSONErrorServer := test.CreateMultiServer(map[string][]byte{
+		"/parse/image": test.ReadFile("../mock/word_json_error.json"),
+	})
+	defer ocrJSONErrorServer.Close()
+
 	repliesClient, err = NewClient(repliesServer.URL, "")
 	if err != nil {
 		panic(err)
@@ -217,6 +231,19 @@ func TestMain(m *testing.M) {
 	}
 
 	postMediaClient, err = NewV1Client(postMediaServer.URL+"/media/upload.json?media_category=tweet_image", postMediaServer.URL, "fake", "fake", "fake", "fake")
+	if err != nil {
+		panic(err)
+	}
+
+	ocrTestClient, err = NewClient(ocrServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	ocrErrorClient, err = NewClient(ocrErrorServer.URL, "")
+	if err != nil {
+		panic(err)
+	}
+	ocrJSONErrorClient, err = NewClient(ocrJSONErrorServer.URL, "")
 	if err != nil {
 		panic(err)
 	}

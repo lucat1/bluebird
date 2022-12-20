@@ -9,8 +9,9 @@ import (
 	"strings"
 )
 
+var parseURL, _ = url.Parse("/parse/image")
+
 func GetWord(imageURL string) (word string, err error) {
-	client := &http.Client{}
 	form := url.Values{}
 	form.Add("url", imageURL)
 	form.Add("language", "ita")
@@ -25,13 +26,10 @@ func GetWord(imageURL string) (word string, err error) {
 	form.Add("detectCheckbox", "false")
 	form.Add("checkboxTemplate", "0")
 
-	req, err := http.NewRequest("POST", "https://api8.ocr.space/parse/image", strings.NewReader(form.Encode()))
-	if err != nil {
-		return
-	}
+	req, err := http.NewRequest("POST", ocrClient.URL.ResolveReference(parseURL).String(), strings.NewReader(form.Encode()))
 	req.Header.Set("apikey", os.Getenv("OCR_API_KEY"))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := client.Do(req)
+	resp, err := ocrClient.HTTP.Do(req)
 	if err != nil {
 		return
 	}
