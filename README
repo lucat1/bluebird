@@ -1,9 +1,21 @@
-embedded db: gorm.io/gorm 
-logger: github.com/rs/zerolog
-rate limiter: golang.org/x/time
-http router: github.com/kataras/muxie o github.com/gin-gonic/gin **
-oauth2: golang.org/x/oauth2
-template: https://awesome-go.com/template-engines/ **
+Bluebrid -- twitter tools
 
-** depends on how we decide to write our frontend and how much will be exposed
-through an api.
+To run (two shells are needed):
+
+$ CGO_CFLAGS_ALLOW=".*" CGO_LDFLAGS_ALLOW=".*" go run .
+
+$ yarn && yarn dev
+
+Also, a .env file is needed with the following content:
+```
+TWITTER_BEARER="AAAAAAAAAAAAAAAAAAAAALV6jwEAAAAALTTRC7rAWPkEfpH1lw0HDv2zeDw%3DMhh5Qz1r2vlwtyF8cp3uUWgZPE0ffEicOu7Xw0bsJz4NFg8BTN"
+OCR_API_KEY="K86340395588957"
+CONSUMER_KEY="byD0Zoa91L61qlRedu3sfCt4w"
+CONSUMER_SECRET="2FWir4QktLvOSgqyle4vXxFKFfDOEDGeYeeTTVUbBZoX8uf93x"
+OAUTH_TOKEN="1582385809914740736-sZ120gHzfV0x4JoAo9gz0s91X5V0do"
+OAUTH_SECRET="zE9cllCHaJigZaRvUXlmALCnyMXgbGbV45J6hj33gSkRg"
+```
+
+In production the SENTIMENT_SERVER variable may also be set, to point to a viable
+sentiment analysis server such as git.hjkl.gq/team14/sentiment.
+For a production deployment setup visit git.hjkl.gq/team14/infrastructure.
