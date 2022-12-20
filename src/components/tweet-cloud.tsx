@@ -90,7 +90,7 @@ const TweetCloud: React.FC = () => {
       )
       .sort((a, b) => (a.value < b.value ? 1 : a.value > b.value ? -1 : 0))
       .slice(0, 80);
-    // const tot = words.reduce((acc, entry) => acc + entry.value, 0);
+    if (words.length == 0) return words;
     const max = words[0].value;
     return words.map((word) => ({
       ...word,
