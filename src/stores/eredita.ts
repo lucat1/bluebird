@@ -74,20 +74,25 @@ const store = create<State & Actions>((set, get) => ({
     const oneDayAndOneHour = 25 * 60 * 60 * 1000;
     if (diff <= oneDayAndOneHour) {
       set({ ...get(), loadingGhigliottina: true });
-      const ghigliottina = await fetch<Ghigliottina>(
-        searchURL("ghigliottina", query)
-      );
-      const trueTweets = gTweets.map((t) => {
-        if (t.text.toUpperCase().includes(ghigliottina.word))
-          return { ...t, rightWord: true };
-        else return { ...t, rightWord: false };
-      });
-      set({
-        ...get(),
-        loadingGhigliottina: false,
-        ghigliottina,
-        tweets: trueTweets,
-      });
+      let ghigliottina: Ghigliottina;
+      try {
+        ghigliottina = await fetch<Ghigliottina>(
+          searchURL("ghigliottina", query)
+        );
+        const trueTweets = gTweets.map((t) => {
+          if (t.text.toUpperCase().includes(ghigliottina.word))
+            return { ...t, rightWord: true };
+          else return { ...t, rightWord: false };
+        });
+        set({
+          ...get(),
+          loadingGhigliottina: false,
+          ghigliottina,
+          tweets: trueTweets,
+        });
+      } catch (err) {
+        set({ ...get(), loadingGhigliottina: false, ghigliottina: null });
+      }
     }
 
     for (const tweet of get().tweets) {

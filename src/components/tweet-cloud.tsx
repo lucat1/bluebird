@@ -81,6 +81,7 @@ const TweetCloud: React.FC = () => {
       .map((text) => ({ text, value: obj[text] }))
       .filter(
         (word) =>
+          !!word.text.trim() &&
           word.value > 1 &&
           !blacklist.includes(word.text.toLowerCase()) &&
           !word.text.includes("#") &&
