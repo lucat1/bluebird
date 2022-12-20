@@ -39,6 +39,23 @@ func parseWord(word string, url string) (w string) {
 	return word
 }
 
+func getPodium(text string) (pod GhigliottinaPodium, err error) {
+	winnersRaw := winnersReg.FindStringSubmatch(text)
+	if len(winnersRaw) < 7 {
+		return pod, errors.New("Winners are malformed")
+	}
+	firstTime, errFirst := time.Parse(timeFormat, winnersRaw[2])
+	secondTime, errSecond := time.Parse(timeFormat, winnersRaw[4])
+	thirdTime, errThird := time.Parse(timeFormat, winnersRaw[6])
+	if errFirst != nil || errSecond != nil || errThird != nil {
+		return pod, errors.New("Times are malformed")
+	}
+	pod.First = GhigliottinaWinner{Username: winnersRaw[1], Time: firstTime}
+	pod.Second = GhigliottinaWinner{Username: winnersRaw[3], Time: secondTime}
+	pod.Third = GhigliottinaWinner{Username: winnersRaw[5], Time: thirdTime}
+	return pod, nil
+}
+
 func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err error) {
 	tweets, err := TweetsByUser("quizzettone", 50, startTime, endTime)
 	if err != nil {
@@ -74,19 +91,10 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	}
 
 	winTweet := (tweetsReplies[len(tweetsReplies)-1])
-	winnersRaw := winnersReg.FindStringSubmatch(winTweet.Text)
-	if len(winnersRaw) < 7 {
-		return res, errors.New("Winners are malformed")
+	res.Podium, err = getPodium(winTweet.Text)
+	if err != nil {
+		return
 	}
-	firstTime, errFirst := time.Parse(timeFormat, winnersRaw[2])
-	secondTime, errSecond := time.Parse(timeFormat, winnersRaw[4])
-	thirdTime, errThird := time.Parse(timeFormat, winnersRaw[6])
-	if errFirst != nil || errSecond != nil || errThird != nil {
-		return res, errors.New("Times are malformed")
-	}
-	res.Podium.First = GhigliottinaWinner{Username: winnersRaw[1], Time: firstTime}
-	res.Podium.Second = GhigliottinaWinner{Username: winnersRaw[3], Time: secondTime}
-	res.Podium.Third = GhigliottinaWinner{Username: winnersRaw[5], Time: thirdTime}
 
 	return
 }
