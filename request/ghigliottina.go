@@ -24,7 +24,8 @@ type GhigliottinaWinner struct {
 }
 
 var sub = "La #parola della #ghigliottina de #leredita di oggi è:"
-var regText = "La #parola della #ghigliottina de #leredita di oggi è: (.*?)\n"
+var sub1 = "I 5 indizi di oggi sono:"
+var regText = "La #parola della #ghigliottina de #leredita di oggi è: (.*?)\n|I 5 indizi di oggi sono:"
 var reg, _ = regexp.Compile(regText)
 var winnersRegText = ".+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)\n.+ @(.*?) - (.*?)($|\n)"
 var winnersReg, _ = regexp.Compile(winnersRegText)
@@ -39,7 +40,7 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	var tweet *Tweet = nil
 	for i := len(tweets) - 1; i >= 0; i-- {
 		t := tweets[i]
-		if strings.Contains(t.Text, sub) {
+		if strings.Contains(t.Text, sub) || strings.Contains(t.Text, sub1) {
 			match := reg.FindStringSubmatch(t.Text)
 			if len(match) > 0 && (tweet == nil || (tweet.CreatedAt.After(t.CreatedAt))) {
 				tweet = &t
@@ -51,6 +52,13 @@ func Ghigliottina(startTime, endTime *time.Time) (res GhigliottinaResponse, err 
 	}
 	match := reg.FindStringSubmatch(tweet.Text)
 	res.Word = (strings.Trim(match[1], " "))
+	if res.Word == "" {
+		ww, err := GetWord(((*tweet.Media)[0].URL))
+		if err != nil {
+			return res, err
+		}
+		res.Word = ww
+	}
 
 	var tweetsReplies []Tweet
 	tweetsReplies, err = Replies(tweet.ID, 50, nil, nil)
